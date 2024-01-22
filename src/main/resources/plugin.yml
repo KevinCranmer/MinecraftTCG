@@ -1,0 +1,7 @@
+name: MinecraftTCG
+version: '${project.version}'
+main: me.crazycranberry.minecrafttcg.MinecraftTCG
+api-version: '1.20'
+commands:
+  tc:
+    description: test
