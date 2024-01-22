@@ -1,2 +1,2 @@
 # MinecraftTCG
-A Minecraft Plugin to add a Yu-Gi-Oh like twist to Vanilla Gameplay
+A Minecraft Plugin to add a Yu-Gi-Oh type twist to Vanilla Gameplay
