@@ -9,7 +9,6 @@ import org.bukkit.entity.LivingEntity;
 public class SewerZombie extends Minion {
     public SewerZombie(MinionInfo minionInfo) {
         super(CardType.SEWER_ZOMBIE, minionInfo);
-        System.out.println("Sewer zombie has spawned!");
     }
 
     @Override

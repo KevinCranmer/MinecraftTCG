@@ -48,7 +48,6 @@ public abstract class Minion {
     }
 
     public void onEnter() {
-        System.out.println("Yeah parent onEnter()");
         removeGoals();
         setGoalOfStayingOnSpot();
         setGoalOfLookingForward();
@@ -71,17 +70,15 @@ public abstract class Minion {
     public abstract void onTurnEnd();
 
     private void removeGoals() {
-        nmsMob.goalSelector.getRunningGoals().peek(g -> System.out.println("Stopping " + g.getGoal().getClass())).forEach(WrappedGoal::stop);
+        nmsMob.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         nmsMob.removeAllGoals(g -> true);
     }
 
     private void setGoalOfStayingOnSpot() {
-        System.out.println("Setting goal to stay on the spot");
         nmsMob.goalSelector.addGoal(5, new WalkToLocationGoal(nmsMob, minionInfo().stadium().playerTargetLoc(minionInfo().master())));
     }
 
     private void setGoalOfLookingForward() {
-        System.out.println("Setting goal to look forward");
         nmsMob.goalSelector.addGoal(7, new LookForwardGoal(nmsMob, minionInfo().stadium().locOfSpot(Spot.opposingFrontRankSpot(minionInfo().spot()))));
     }
 }

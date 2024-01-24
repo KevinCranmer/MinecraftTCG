@@ -20,8 +20,10 @@ import java.util.Optional;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_1_SIGN_OFFSET;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_2_SIGN_OFFSET;
+import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
+import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
@@ -35,6 +37,8 @@ public class Stadium {
     private final Location startingCorner;
     private final Player player1;
     private final Player player2;
+    private int turn = 0;
+    private TurnPhase phase;
     private Minion redAMinion;
     private Minion redDMinion;
     private Minion red1Minion;
@@ -54,6 +58,15 @@ public class Stadium {
         this.startingCorner = startingCorner;
         this.player1 = player1;
         this.player2 = player2;
+    }
+
+    public void updatePhase(TurnPhase turnPhase) {
+        if (turnPhase == FIRST_PRECOMBAT_PHASE) {
+            turn++;
+        } else if (phase.ordinal() + 1 != turnPhase.ordinal()) {
+            System.out.println("What the hell, the turn phases are out of order!!!");
+        }
+        phase = turnPhase;
     }
 
     public void playerTargeting(Player p, Spot target) {
@@ -200,6 +213,14 @@ public class Stadium {
         }
         sign1.update();
         sign2.update();
+    }
+
+    public int turn() {
+        return turn;
+    }
+
+    public TurnPhase phase() {
+        return phase;
     }
 
     public Minion redAMinion() {

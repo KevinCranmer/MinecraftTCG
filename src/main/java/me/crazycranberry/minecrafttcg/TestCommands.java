@@ -1,10 +1,15 @@
 package me.crazycranberry.minecrafttcg;
 
 import me.crazycranberry.minecrafttcg.events.BuildStadiumEvent;
+import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
+import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
 import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
+import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
-import me.crazycranberry.minecrafttcg.managers.DuelManager;
+import me.crazycranberry.minecrafttcg.managers.DuelActionsManager;
 import me.crazycranberry.minecrafttcg.managers.LookAndHighlightManager;
+import me.crazycranberry.minecrafttcg.managers.StadiumManager;
+import me.crazycranberry.minecrafttcg.managers.TurnManager;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
@@ -32,7 +37,7 @@ public class TestCommands {
     static Zombie zombie;
 
     static LookAndHighlightManager lookAndHighlightManager;
-    static DuelManager duelManager;
+    static DuelActionsManager duelActionsManager;
 
     static RangedBowAttackGoal<net.minecraft.world.entity.monster.Skeleton> shootingGoal;
 
@@ -89,6 +94,12 @@ public class TestCommands {
             case "stopDuel":
                 stopDuel(p);
                 break;
+            case "startCombat":
+                startCombat(p);
+                break;
+            case "endCombat":
+                endCombat(p);
+                break;
             case "deck":
                 deck(p);
                 break;
@@ -97,24 +108,34 @@ public class TestCommands {
         }
     }
 
+    private static void endCombat(Player p) {
+        Bukkit.getPluginManager().callEvent(new CombatEndEvent(StadiumManager.stadium(p.getWorld())));
+    }
+
+    private static void startCombat(Player p) {
+        Bukkit.getPluginManager().callEvent(new CombatStartEvent(StadiumManager.stadium(p.getWorld())));
+    }
+
     private static void setup(Player p) {
         buildStadium(p, "Crazy_Cranberry", "GoofyCranberry", new Location(p.getWorld(), 22.5, 96, -39.5));
         trackVision(p);
         trackDuel(p);
+        Bukkit.getServer().getPluginManager().registerEvents(new TurnManager(), getPlugin());
+        Bukkit.getPluginManager().callEvent(new DuelStartEvent(StadiumManager.stadium(p.getWorld())));
     }
 
     private static void trackDuel(Player p) {
-        if (duelManager == null) {
-            duelManager = new DuelManager();
+        if (duelActionsManager == null) {
+            duelActionsManager = new DuelActionsManager();
         }
-        Bukkit.getServer().getPluginManager().registerEvents(duelManager, getPlugin());
+        Bukkit.getServer().getPluginManager().registerEvents(duelActionsManager, getPlugin());
     }
 
     private static void stopDuel(Player p) {
-        if (duelManager == null) {
+        if (duelActionsManager == null) {
             System.out.println("Not tracking anyway");
         }
-        HandlerList.unregisterAll(duelManager);
+        HandlerList.unregisterAll(duelActionsManager);
     }
 
     private static void trackVision(Player p) {
