@@ -1,7 +1,7 @@
 package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardType;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCard;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,13 +14,15 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
-import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardType.SEWER_ZOMBIE;
+import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.BLUE;
+import static org.bukkit.ChatColor.DARK_PURPLE;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
+import static org.bukkit.ChatColor.LIGHT_PURPLE;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
 
@@ -38,8 +40,8 @@ public class DeckManager implements Listener {
         bookMeta.setAuthor("CrazyCranberry Mods");
         bookMeta.setTitle(cardType.card().cardName());
         String page = "";
-        if (cardType.card() instanceof MinionCard minionCard) {
-            page = minionCardDescription(minionCard);
+        if (cardType.card() instanceof MinionCardDefinition minionCardDefinition) {
+            page = minionCardDescription(minionCardDefinition);
         }
         bookMeta.addPage(page);
         bookMeta.setLore(List.of(String.format("%sType \"/tcg\" to learn more!%s", GOLD, RESET)));
@@ -49,17 +51,23 @@ public class DeckManager implements Listener {
         return book;
     }
 
-    private String minionCardDescription(MinionCard card) {
+    private String minionCardDescription(MinionCardDefinition card) {
         return String.format("""
-            %sName:%s %s
+            %s%sName:%s %s
+            %sCard Type:%s Minion
+            %sMinion Type:%s %s
+            %sCard Cost:%s %s
             %sStrength:%s %s
             %sMax health:%s %s
             %sDescription:%s %s
             """,
-            GOLD, RESET, card.cardName(),
-            BLUE, RESET, card.strength(),
-            RED, RESET, card.maxHealth(),
-            GREEN, RESET, card.cardDescription()
+            RESET, GOLD, RESET, card.cardName(),
+            AQUA, RESET,
+            DARK_PURPLE, RESET, card.minionType(),
+            LIGHT_PURPLE, RESET, card.cost(),
+            RED, RESET, card.strength(),
+            BLUE, RESET, card.maxHealth(),
+            GREEN, RESET, card.cardDescription().replace("$", "")
             );
     }
 }

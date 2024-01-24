@@ -1,9 +1,9 @@
 package me.crazycranberry.minecrafttcg.carddefinitions;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.SewerZombie;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
 
 public enum CardType {
-    SEWER_ZOMBIE(new SewerZombie());
+    SEWER_ZOMBIE(new SewerZombieDef());
 
     final Card card;
 

@@ -1,34 +1,19 @@
 package me.crazycranberry.minecrafttcg;
 
-import com.mojang.authlib.GameProfile;
 import me.crazycranberry.minecrafttcg.events.BuildStadiumEvent;
 import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
 import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
 import me.crazycranberry.minecrafttcg.managers.DuelManager;
 import me.crazycranberry.minecrafttcg.managers.LookAndHighlightManager;
-import me.crazycranberry.minecrafttcg.managers.StadiumManager;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ClientInformation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.behavior.GoToTargetLocation;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
-import net.minecraft.world.entity.ai.goal.PathfindToRaidGoal;
 import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import net.minecraft.world.entity.ai.goal.ZombieAttackGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.player.ChatVisiblity;
-import net.minecraft.world.level.pathfinder.PathFinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftZombie;
 import org.bukkit.entity.EntityType;
@@ -74,6 +59,9 @@ public class TestCommands {
             case "removeGoals":
                 removeGoals(p);
                 break;
+            case "spawnAndRemove":
+                spawnAndRemove(p);
+                break;
             case "aion":
                 aion(p);
                 break;
@@ -84,7 +72,10 @@ public class TestCommands {
                 spawnParticle(p);
                 break;
             case "buildStadium":
-                buildStadium(p, command[1], command[2]);
+                buildStadium(p, command[1], command[2], p.getLocation());
+                break;
+            case "setup":
+                setup(p);
                 break;
             case "trackVision":
                 trackVision(p);
@@ -104,6 +95,12 @@ public class TestCommands {
             default:
                 System.out.println("Unknown command: " + command[0]);
         }
+    }
+
+    private static void setup(Player p) {
+        buildStadium(p, "Crazy_Cranberry", "GoofyCranberry", new Location(p.getWorld(), 22.5, 96, -39.5));
+        trackVision(p);
+        trackDuel(p);
     }
 
     private static void trackDuel(Player p) {
@@ -138,14 +135,14 @@ public class TestCommands {
         Bukkit.getPluginManager().callEvent(new DeckViewRequestEvent(p));
     }
 
-    private static void buildStadium(Player p, String player1Name, String player2Name) {
+    private static void buildStadium(Player p, String player1Name, String player2Name, Location startingCorner) {
         Optional<Player> player1 = Bukkit.getOnlinePlayers().stream().filter(onlinePlayer -> onlinePlayer.getName().equals(player1Name)).map(OfflinePlayer::getPlayer).findFirst();
         Optional<Player> player2 = Bukkit.getOnlinePlayers().stream().filter(onlinePlayer -> onlinePlayer.getName().equals(player2Name)).map(OfflinePlayer::getPlayer).findFirst();
         if (player1.isEmpty() || player2.isEmpty()) {
             System.out.println("NO");
             return;
         }
-        Bukkit.getPluginManager().callEvent(new BuildStadiumEvent(p.getLocation(), player1.get(), player2.get()));
+        Bukkit.getPluginManager().callEvent(new BuildStadiumEvent(startingCorner, player1.get(), player2.get()));
     }
 
     private static void stopShooting(Player p) {
@@ -188,6 +185,11 @@ public class TestCommands {
         nmsSkeleton.goalSelector.addGoal(1, shootingGoal);
     }
 
+    private static void spawnAndRemove(Player p) {
+        spawn(p);
+        removeGoals(p);
+    }
+
     private static void removeGoals(Player p) {
         CraftZombie craftZombie = (CraftZombie) zombie;
         net.minecraft.world.entity.monster.Zombie nmsZombie = craftZombie.getHandle();
@@ -202,7 +204,7 @@ public class TestCommands {
     private static void move(Player p, double x, double y, double z) {
         CraftZombie craftZombie = (CraftZombie) zombie;
         net.minecraft.world.entity.monster.Zombie nmsZombie = craftZombie.getHandle();
-        nmsZombie.goalSelector.addGoal(1, new WalkToLocationGoal(nmsZombie, x, y, z));
+        nmsZombie.goalSelector.addGoal(1, new WalkToLocationGoal(nmsZombie, new Location(p.getWorld(), x, y, z)));
 
     }
 

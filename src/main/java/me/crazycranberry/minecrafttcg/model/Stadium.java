@@ -1,14 +1,30 @@
 package me.crazycranberry.minecrafttcg.model;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Optional;
+
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
+import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_1_SIGN_OFFSET;
+import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_2_SIGN_OFFSET;
+import static org.bukkit.ChatColor.DARK_GREEN;
+import static org.bukkit.ChatColor.GOLD;
+import static org.bukkit.ChatColor.GREEN;
+import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.RESET;
 
 public class Stadium {
     public static final Material RED_MATERIAL = Material.RED_TERRACOTTA;
@@ -19,18 +35,18 @@ public class Stadium {
     private final Location startingCorner;
     private final Player player1;
     private final Player player2;
-    private LivingEntity redAEntity;
-    private LivingEntity redDEntity;
-    private LivingEntity red1Entity;
-    private LivingEntity red4Entity;
-    private LivingEntity blueBEntity;
-    private LivingEntity blueEEntity;
-    private LivingEntity blue2Entity;
-    private LivingEntity blue5Entity;
-    private LivingEntity greenCEntity;
-    private LivingEntity greenFEntity;
-    private LivingEntity green3Entity;
-    private LivingEntity green6Entity;
+    private Minion redAMinion;
+    private Minion redDMinion;
+    private Minion red1Minion;
+    private Minion red4Minion;
+    private Minion blueBMinion;
+    private Minion blueEMinion;
+    private Minion blue2Minion;
+    private Minion blue5Minion;
+    private Minion greenCMinion;
+    private Minion greenFMinion;
+    private Minion green3Minion;
+    private Minion green6Minion;
     private Spot player1Target;
     private Spot player2Target;
 
@@ -47,7 +63,9 @@ public class Stadium {
                     startingCorner.clone().add(player1Target.offset()).subtract(0, 1, 0).getBlock().setType(PLAYER_2_TARGET_MATERIAL);
                 } else if (player1Target != null) {
                     startingCorner.clone().add(player1Target.offset()).subtract(0, 1, 0).getBlock().setType(player1Target.material());
+                    hideName(player1Target);
                 }
+                showName(target);
                 startingCorner.clone().add(target.offset()).subtract(0, 1, 0).getBlock().setType(PLAYER_1_TARGET_MATERIAL);
                 player1Target = target;
             }
@@ -57,18 +75,51 @@ public class Stadium {
                     startingCorner.clone().add(player2Target.offset()).subtract(0, 1, 0).getBlock().setType(PLAYER_1_TARGET_MATERIAL);
                 } else if (player2Target != null) {
                     startingCorner.clone().add(player2Target.offset()).subtract(0, 1, 0).getBlock().setType(player2Target.material());
+                    hideName(player2Target);
                 }
+                showName(target);
                 startingCorner.clone().add(target.offset()).subtract(0, 1, 0).getBlock().setType(PLAYER_2_TARGET_MATERIAL);
                 player2Target = target;
             }
         }
     }
 
-    public void minionSummoned(Player p, LivingEntity minion) {
-        if (p.equals(player1)) {
-            player1Target.entitySetRef().accept(this, minion);
-        } else {
-            player2Target.entitySetRef().accept(this, minion);
+    private void showName(Spot spot) {
+        if (spot.minionRef() != null && spot.minionRef().apply(this) != null) {
+            Minion minion = spot.minionRef().apply(this);
+            minion.minionInfo().entity().setCustomName(String.format("%s%s %s🗡%s:%s %s❤%s:%s/%s",
+                spot.isPlayer1Spot() ? GREEN : GOLD, minion.cardDef().cardName(),
+                DARK_GREEN, RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()
+                ));
+            minion.minionInfo().entity().setCustomNameVisible(true);
+        }
+    }
+
+    private void hideName(Spot spot) {
+        if (spot.minionRef() != null && spot.minionRef().apply(this) != null) {
+            spot.minionRef().apply(this).minionInfo().entity().setCustomNameVisible(false);
+        }
+    }
+
+    public void minionSummoned(Player p, MinionCardDefinition minionDef) {
+        try {
+            Constructor<? extends Minion> c = minionDef.minionClass().getConstructor(MinionInfo.class);
+            c.setAccessible(true);
+            Minion minion;
+            if (p.equals(player1)) {
+                LivingEntity entity = (LivingEntity) p.getWorld().spawnEntity(playerTargetLoc(player1), minionDef.minionType(), false);
+                minion = c.newInstance(new MinionInfo(this, player1Target, entity, player1));
+                player1Target.minionSetRef().accept(this, minion);
+                showName(player1Target);
+            } else {
+                LivingEntity entity = (LivingEntity) p.getWorld().spawnEntity(playerTargetLoc(player2), minionDef.minionType(), false);
+                minion = c.newInstance(new MinionInfo(this, player2Target, entity, player2));
+                player2Target.minionSetRef().accept(this, minion);
+                showName(player2Target);
+            }
+            minion.onEnter();
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
+            logger().severe(String.format("Unable to create a %s\nException: %s\n%s", minionDef.minionClass(), ex.getClass().getSimpleName(), ex.getMessage()));
         }
     }
 
@@ -90,9 +141,9 @@ public class Stadium {
 
     public boolean isPlayersTargetAvailable(Player p) {
         if (p.equals(player1)) {
-            return player1Target.entityRef().apply(this) == null;
+            return player1Target.minionRef().apply(this) == null;
         } else {
-            return player2Target.entityRef().apply(this) == null;
+            return player2Target.minionRef().apply(this) == null;
         }
     }
 
@@ -112,211 +163,146 @@ public class Stadium {
         }
     }
 
-    public LivingEntity redAEntity() {
-        return redAEntity;
+    public Optional<Minion> minionFromEntity(LivingEntity entity) {
+        for (Spot spot : Spot.values()) {
+            if (spot.minionRef() != null) {
+                Minion minion = spot.minionRef().apply(this);
+                if (minion != null && entity.equals(minion.minionInfo().entity())) {
+                    System.out.println("Found the minion!");
+                    return Optional.of(minion);
+                }
+            }
+        }
+        System.out.println("Could not find the minion");
+        return Optional.empty();
     }
 
-    public LivingEntity redDEntity() {
-        return redDEntity;
+    public void displayDescription(Player player) {
+        Spot targetedSpot = player2Target;
+        Vector offset = PLAYER_2_SIGN_OFFSET;
+        if (player.equals(player1)) {
+            targetedSpot = player1Target;
+            offset = PLAYER_1_SIGN_OFFSET;
+        }
+        ChatColor minionNameColor = targetedSpot.isPlayer1Spot() ? GREEN : GOLD;
+        if (targetedSpot.minionRef() == null || targetedSpot.minionRef().apply(this) == null) {
+            return;
+        }
+        Minion minion = targetedSpot.minionRef().apply(this);
+        Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
+        Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
+        sign1.getSide(Side.FRONT).setLine(0, String.format("%s%s%s", minionNameColor, minion.cardDef().cardName(), RESET));
+        List<String> lines = List.of(minion.cardDef().cardDescription().replace("\n", "").split("\\$"));
+        for (int i = 0; i < lines.size(); i++) {
+            int lineIndex = i + 1;
+            Sign sign = lineIndex > 3 ? sign2 : sign1;
+            sign.getSide(Side.FRONT).setLine(lineIndex % 4, lines.get(i));
+        }
+        sign1.update();
+        sign2.update();
     }
 
-    public LivingEntity red1Entity() {
-        return red1Entity;
+    public Minion redAMinion() {
+        return redAMinion;
     }
 
-    public LivingEntity red4Entity() {
-        return red4Entity;
+    public Minion redDMinion() {
+        return redDMinion;
     }
 
-    public LivingEntity blueBEntity() {
-        return blueBEntity;
+    public Minion red1Minion() {
+        return red1Minion;
     }
 
-    public LivingEntity blueEEntity() {
-        return blueEEntity;
+    public Minion red4Minion() {
+        return red4Minion;
     }
 
-    public LivingEntity blue2Entity() {
-        return blue2Entity;
+    public Minion blueBMinion() {
+        return blueBMinion;
     }
 
-    public LivingEntity blue5Entity() {
-        return blue5Entity;
+    public Minion blueEMinion() {
+        return blueEMinion;
     }
 
-    public LivingEntity greenCEntity() {
-        return greenCEntity;
+    public Minion blue2Minion() {
+        return blue2Minion;
     }
 
-    public LivingEntity greenFEntity() {
-        return greenFEntity;
+    public Minion blue5Minion() {
+        return blue5Minion;
     }
 
-    public LivingEntity green3Entity() {
-        return green3Entity;
+    public Minion greenCMinion() {
+        return greenCMinion;
     }
 
-    public LivingEntity green6Entity() {
-        return green6Entity;
+    public Minion greenFMinion() {
+        return greenFMinion;
     }
 
-    public LivingEntity player1() {
+    public Minion green3Minion() {
+        return green3Minion;
+    }
+
+    public Minion green6Minion() {
+        return green6Minion;
+    }
+
+    public Player player1() {
         return player1;
     }
 
-    public LivingEntity player2() {
+    public Player player2() {
         return player2;
     }
 
-    public void setRedAEntity(LivingEntity entity) {
-        redAEntity = entity;
+    public void setRedAMinion(Minion minion) {
+        redAMinion = minion;
     }
 
-    public void setRedDEntity(LivingEntity entity) {
-        redDEntity = entity;
+    public void setRedDMinion(Minion minion) {
+        redDMinion = minion;
     }
 
-    public void setRed1Entity(LivingEntity entity) {
-        red1Entity = entity;
+    public void setRed1Minion(Minion minion) {
+        red1Minion = minion;
     }
 
-    public void setRed4Entity(LivingEntity entity) {
-        red4Entity = entity;
+    public void setRed4Minion(Minion minion) {
+        red4Minion = minion;
     }
 
-    public void setBlueBEntity(LivingEntity entity) {
-        blueBEntity = entity;
+    public void setBlueBMinion(Minion minion) {
+        blueBMinion = minion;
     }
 
-    public void setBlueEEntity(LivingEntity entity) {
-        blueEEntity = entity;
+    public void setBlueEMinion(Minion minion) {
+        blueEMinion = minion;
     }
 
-    public void setBlue2Entity(LivingEntity entity) {
-        blue2Entity = entity;
+    public void setBlue2Minion(Minion minion) {
+        blue2Minion = minion;
     }
 
-    public void setBlue5Entity(LivingEntity entity) {
-        blue5Entity = entity;
+    public void setBlue5Minion(Minion minion) {
+        blue5Minion = minion;
     }
 
-    public void setGreenCEntity(LivingEntity entity) {
-        greenCEntity = entity;
+    public void setGreenCMinion(Minion minion) {
+        greenCMinion = minion;
     }
 
-    public void setGreenFEntity(LivingEntity entity) {
-        greenFEntity = entity;
+    public void setGreenFMinion(Minion minion) {
+        greenFMinion = minion;
     }
 
-    public void setGreen3Entity(LivingEntity entity) {
-        green3Entity = entity;
+    public void setGreen3Minion(Minion minion) {
+        green3Minion = minion;
     }
 
-    public void setGreen6Entity(LivingEntity entity) {
-        green6Entity = entity;
-    }
-
-    public static LivingEntity redAEntityStatic(Stadium stadium) {
-        return stadium.redAEntity();
-    }
-
-    public static LivingEntity redDEntityStatic(Stadium stadium) {
-        return stadium.redDEntity();
-    }
-
-    public static LivingEntity red1EntityStatic(Stadium stadium) {
-        return stadium.red1Entity();
-    }
-
-    public static LivingEntity red4EntityStatic(Stadium stadium) {
-        return stadium.red4Entity();
-    }
-
-    public static LivingEntity blueBEntityStatic(Stadium stadium) {
-        return stadium.blueBEntity();
-    }
-
-    public static LivingEntity blueEEntityStatic(Stadium stadium) {
-        return stadium.blueEEntity();
-    }
-
-    public static LivingEntity blue2EntityStatic(Stadium stadium) {
-        return stadium.blue2Entity();
-    }
-
-    public static LivingEntity blue5EntityStatic(Stadium stadium) {
-        return stadium.blue5Entity();
-    }
-
-    public static LivingEntity greenCEntityStatic(Stadium stadium) {
-        return stadium.greenCEntity();
-    }
-
-    public static LivingEntity greenFEntityStatic(Stadium stadium) {
-        return stadium.greenFEntity();
-    }
-
-    public static LivingEntity green3EntityStatic(Stadium stadium) {
-        return stadium.green3Entity();
-    }
-
-    public static LivingEntity green6EntityStatic(Stadium stadium) {
-        return stadium.green6Entity();
-    }
-
-    public static LivingEntity player1Static(Stadium stadium) {
-        return stadium.player1();
-    }
-
-    public static LivingEntity player2Static(Stadium stadium) {
-        return stadium.player2();
-    }
-
-    public static void setRedAEntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setRedAEntity(entity);
-    }
-
-    public static void setRedDEntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setRedDEntity(entity);
-    }
-
-    public static void setRed1EntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setRed1Entity(entity);
-    }
-
-    public static void setRed4EntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setRed4Entity(entity);
-    }
-
-    public static void setBlueBEntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setBlueBEntity(entity);
-    }
-
-    public static void setBlueEEntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setBlueEEntity(entity);
-    }
-
-    public static void setBlue2EntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setBlue2Entity(entity);
-    }
-
-    public static void setBlue5EntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setBlue5Entity(entity);
-    }
-
-    public static void setGreenCEntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setGreenCEntity(entity);
-    }
-
-    public static void setGreenFEntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setGreenFEntity(entity);
-    }
-
-    public static void setGreen3EntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setGreen3Entity(entity);
-    }
-
-    public static void setGreen6EntityStatic(Stadium stadium, LivingEntity entity) {
-        stadium.setGreen6Entity(entity);
+    public void setGreen6Minion(Minion minion) {
+        green6Minion = minion;
     }
 }

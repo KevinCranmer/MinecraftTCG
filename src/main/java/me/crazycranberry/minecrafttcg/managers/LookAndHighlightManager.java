@@ -1,7 +1,6 @@
 package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.model.Spot;
-import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

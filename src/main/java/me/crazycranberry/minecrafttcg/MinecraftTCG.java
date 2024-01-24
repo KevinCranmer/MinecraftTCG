@@ -2,9 +2,8 @@ package me.crazycranberry.minecrafttcg;
 
 import me.crazycranberry.minecrafttcg.commands.TestCommand;
 import me.crazycranberry.minecrafttcg.managers.DeckManager;
-import me.crazycranberry.minecrafttcg.managers.ProtectMinionManager;
+import me.crazycranberry.minecrafttcg.managers.MinionManager;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,7 +25,7 @@ public final class MinecraftTCG extends JavaPlugin {
 
     private void registerManagers() {
         getServer().getPluginManager().registerEvents(new DeckManager(), this);
-        getServer().getPluginManager().registerEvents(new ProtectMinionManager(), this);
+        getServer().getPluginManager().registerEvents(new MinionManager(), this);
         getServer().getPluginManager().registerEvents(new StadiumManager(), this);
     }
 

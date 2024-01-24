@@ -2,11 +2,9 @@ package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardType;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCard;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,33 +31,33 @@ public class DuelManager implements Listener {
             Card card = cardType.card();
             // TODO: CHECK MANA COST
             Boolean successfullyCast = false;
-            if (card instanceof MinionCard minionCard) {
-                successfullyCast = summonMinion(event.getPlayer(), stadium, minionCard);
+            if (card instanceof MinionCardDefinition minionCardDefinition) {
+                successfullyCast = summonMinion(event.getPlayer(), stadium, minionCardDefinition);
             }
 
             if (successfullyCast) {
                 // TODO: LOWER MANA
                 event.getPlayer().getInventory().remove(event.getItem());
             }
+        } else if (isValidDescCheck(event, stadium)) {
+            stadium.displayDescription(event.getPlayer());
         }
     }
 
-    private Boolean summonMinion(Player caster, Stadium stadium, MinionCard minionCard) {
+    private Boolean summonMinion(Player caster, Stadium stadium, MinionCardDefinition minionCardDefinition) {
         if (summonable(caster, stadium)) {
-            LivingEntity minion = (LivingEntity) caster.getWorld().spawnEntity(stadium.playerTargetLoc(caster), minionCard.minionType(), false);
-            minion.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(minionCard.maxHealth());
-            stadium.minionSummoned(caster, minion);
-            minionCard.onEnter();
+            stadium.minionSummoned(caster, minionCardDefinition);
             return true;
         }
         return false;
     }
 
     private boolean summonable(Player caster, Stadium stadium) {
+        // TODO: MAKE SURE IT's THEIR TURN
         if (!stadium.isPlayerTargetingSummonableSpot(caster)) {
             caster.sendMessage(String.format("%s%sYou cannot summon a minion on that spot.%s", GRAY, ITALIC, RESET));
             return false;
-        }else if (!stadium.isPlayerTargetingTheirOwnSpots(caster)) {
+        } else if (!stadium.isPlayerTargetingTheirOwnSpots(caster)) {
             caster.sendMessage(String.format("%s%sYou cannot summon a minion on your opponents side of the field.%s", GRAY, ITALIC, RESET));
             return false;
         } else if (!stadium.isPlayersTargetAvailable(caster)) {
@@ -75,6 +73,13 @@ public class DuelManager implements Listener {
                 event.getItem().getType().equals(Material.WRITTEN_BOOK) &&
                 event.getItem().getItemMeta() != null &&
                 Boolean.TRUE.equals(event.getItem().getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN)) &&
+                (event.getAction().equals(LEFT_CLICK_BLOCK) || event.getAction().equals(LEFT_CLICK_AIR)) &&
+                stadium != null &&
+                stadium.isPlayerParticipating(event.getPlayer());
+    }
+
+    private boolean isValidDescCheck(PlayerInteractEvent event, Stadium stadium) {
+        return EquipmentSlot.HAND.equals(event.getHand()) &&
                 (event.getAction().equals(LEFT_CLICK_BLOCK) || event.getAction().equals(LEFT_CLICK_AIR)) &&
                 stadium != null &&
                 stadium.isPlayerParticipating(event.getPlayer());
