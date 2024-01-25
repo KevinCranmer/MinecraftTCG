@@ -3,6 +3,9 @@ package me.crazycranberry.minecrafttcg.model;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
+import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
+import me.crazycranberry.minecrafttcg.managers.StadiumManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,16 +17,19 @@ import org.bukkit.util.Vector;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_1_SIGN_OFFSET;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_2_SIGN_OFFSET;
+import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
+import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_POSTCOMBAT_PHASE;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
-import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
@@ -37,6 +43,8 @@ public class Stadium {
     private final Location startingCorner;
     private final Player player1;
     private final Player player2;
+    private int player1Mana = 0;
+    private int player2Mana = 0;
     private int turn = 0;
     private TurnPhase phase;
     private Minion redAMinion;
@@ -51,22 +59,42 @@ public class Stadium {
     private Minion greenFMinion;
     private Minion green3Minion;
     private Minion green6Minion;
+    private LivingEntity player1RedChicken;
+    private LivingEntity player1BlueChicken;
+    private LivingEntity player1GreenChicken;
+    private LivingEntity player2RedChicken;
+    private LivingEntity player2BlueChicken;
+    private LivingEntity player2GreenChicken;
     private Spot player1Target;
     private Spot player2Target;
 
-    public Stadium(Location startingCorner, Player player1, Player player2) {
+    public Stadium(Location startingCorner, Player player1, Player player2, LivingEntity player1RedChicken, LivingEntity player1BlueChicken, LivingEntity player1GreenChicken, LivingEntity player2RedChicken, LivingEntity player2BlueChicken, LivingEntity player2GreenChicken) {
         this.startingCorner = startingCorner;
         this.player1 = player1;
         this.player2 = player2;
+        this.player1RedChicken = player1RedChicken;
+        this.player1BlueChicken = player1BlueChicken;
+        this.player1GreenChicken = player1GreenChicken;
+        this.player2RedChicken = player2RedChicken;
+        this.player2BlueChicken = player2BlueChicken;
+        this.player2GreenChicken = player2GreenChicken;
     }
 
     public void updatePhase(TurnPhase turnPhase) {
         if (turnPhase == FIRST_PRECOMBAT_PHASE) {
             turn++;
+            player1Mana = Math.min(10, turn);
+            player2Mana = Math.min(10, turn);
+            StadiumManager.updateManaForANewTurn(this, turn);
         } else if (phase.ordinal() + 1 != turnPhase.ordinal()) {
             System.out.println("What the hell, the turn phases are out of order!!!");
         }
         phase = turnPhase;
+
+        // In the event that nothing is on the board able to attack, we should just skip combat
+        if (phase.equals(COMBAT_PHASE)) {
+            doneAttacking();
+        }
     }
 
     public void playerTargeting(Player p, Spot target) {
@@ -114,7 +142,7 @@ public class Stadium {
         }
     }
 
-    public void minionSummoned(Player p, MinionCardDefinition minionDef) {
+    public void summonMinion(Player p, MinionCardDefinition minionDef) {
         try {
             Constructor<? extends Minion> c = minionDef.minionClass().getConstructor(MinionInfo.class);
             c.setAccessible(true);
@@ -176,6 +204,17 @@ public class Stadium {
         }
     }
 
+    public LivingEntity getTargetInFront(Minion minion) {
+        Minion opposingMinion = Spot.opposingFrontRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
+        if (opposingMinion == null) {
+            opposingMinion = Spot.opposingBackRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
+            if (opposingMinion == null) {
+                return Spot.opposingChicken(minion.minionInfo().spot(), this);
+            }
+        }
+        return opposingMinion.minionInfo().entity();
+    }
+
     public Optional<Minion> minionFromEntity(LivingEntity entity) {
         for (Spot spot : Spot.values()) {
             if (spot.minionRef() != null) {
@@ -215,12 +254,74 @@ public class Stadium {
         sign2.update();
     }
 
+    public void doneAttacking() {
+        if (phase != COMBAT_PHASE) {
+            System.out.println("Who the hell is calling doneAttacking outside of combat >:( ");
+        }
+        boolean everyoneDone = true;
+        for (Spot spot : Spot.values()) {
+            if (spot.isSummonableSpot()) {
+                Minion minion = spot.minionRef().apply(this);
+                if (minion != null && minion.attacksLeft() > 0) {
+                    everyoneDone = false;
+                }
+            }
+        }
+        if (everyoneDone) {
+            Bukkit.getPluginManager().callEvent(new CombatEndEvent(this));
+        }
+    }
+
     public int turn() {
         return turn;
     }
 
     public TurnPhase phase() {
         return phase;
+    }
+
+    public int playerMana(Player p) {
+        return p.equals(player1) ? player1Mana : player2Mana;
+    }
+
+    public void reduceMana(Player caster, Integer cost) {
+        if (caster.equals(player1)) {
+            player1Mana = Math.max(0, player1Mana - cost);
+            StadiumManager.reduceMana(this, player1Mana, turn, true);
+        } else {
+            player2Mana = Math.max(0, player2Mana - cost);
+            StadiumManager.reduceMana(this, player2Mana, turn, false);
+        }
+    }
+
+    public Location startingCorner() {
+        return startingCorner;
+    }
+
+    public boolean isPlayersTurn(Player p) {
+        if (p.equals(player1)) {
+            switch (phase) {
+                case FIRST_PRECOMBAT_PHASE:
+                case SECOND_POSTCOMBAT_PHASE:
+                    return turn % 2 == 1;
+                case SECOND_PRECOMBAT_PHASE:
+                case FIRST_POSTCOMBAT_PHASE:
+                    return turn % 2 == 0;
+                default:
+                    return false;
+            }
+        } else {
+            switch (phase) {
+                case FIRST_PRECOMBAT_PHASE:
+                case SECOND_POSTCOMBAT_PHASE:
+                    return turn % 2 == 0;
+                case SECOND_PRECOMBAT_PHASE:
+                case FIRST_POSTCOMBAT_PHASE:
+                    return turn % 2 == 1;
+                default:
+                    return false;
+            }
+        }
     }
 
     public Minion redAMinion() {
@@ -269,6 +370,30 @@ public class Stadium {
 
     public Minion green6Minion() {
         return green6Minion;
+    }
+
+    public LivingEntity player1RedChicken() {
+        return player1RedChicken;
+    }
+
+    public LivingEntity player1BlueChicken() {
+        return player1BlueChicken;
+    }
+
+    public LivingEntity player1GreenChicken() {
+        return player1GreenChicken;
+    }
+
+    public LivingEntity player2RedChicken() {
+        return player2RedChicken;
+    }
+
+    public LivingEntity player2BlueChicken() {
+        return player2BlueChicken;
+    }
+
+    public LivingEntity player2GreenChicken() {
+        return player2GreenChicken;
     }
 
     public Player player1() {

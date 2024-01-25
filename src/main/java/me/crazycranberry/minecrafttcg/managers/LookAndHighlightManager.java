@@ -16,7 +16,7 @@ public class LookAndHighlightManager implements Listener {
     @EventHandler
     private void onPlayerLook(PlayerMoveEvent event) {
         World w = event.getPlayer().getWorld();
-        Optional<Spot> closestSpotLookedAt = Arrays.stream(Spot.values())
+        Optional<Spot> closestSpotLookedAt = Arrays.stream(Spot.values()).filter(Spot::isTargetable)
             .min((s1, s2) -> facingDistance(StadiumManager.locOfSpot(w, s1), event.getPlayer()) - facingDistance(StadiumManager.locOfSpot(w, s2), event.getPlayer()));
         closestSpotLookedAt.ifPresent(s -> StadiumManager.playerLookingAt(event.getPlayer(), s));
     }

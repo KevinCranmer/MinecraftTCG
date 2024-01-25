@@ -2,7 +2,9 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
 public class SewerZombieDef implements MinionCardDefinition {
     @Override
@@ -38,5 +40,10 @@ public class SewerZombieDef implements MinionCardDefinition {
     @Override
     public Class<? extends Minion> minionClass() {
         return SewerZombie.class;
+    }
+
+    @Override
+    public void onCast(Stadium stadium, Player caster) {
+        stadium.summonMinion(caster, this);
     }
 }

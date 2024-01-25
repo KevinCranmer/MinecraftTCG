@@ -2,6 +2,7 @@ package me.crazycranberry.minecrafttcg.model;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -13,35 +14,41 @@ import static me.crazycranberry.minecrafttcg.model.Stadium.GREEN_MATERIAL;
 import static me.crazycranberry.minecrafttcg.model.Stadium.RED_MATERIAL;
 
 public enum Spot {
-    RED_A(new Vector(20, 2, 1), RED_MATERIAL, false, true, Spot::redAMinionStatic, Spot::setRedAMinionStatic),
-    RED_D(new Vector(17, 1, 1), RED_MATERIAL, false, true, Spot::redDMinionStatic, Spot::setRedDMinionStatic),
-    RED_1(new Vector(9, 1, 1), RED_MATERIAL, true, true, Spot::red1MinionStatic, Spot::setRed1MinionStatic),
-    RED_4(new Vector(6, 2 ,1), RED_MATERIAL, true, true, Spot::red4MinionStatic, Spot::setRed4MinionStatic),
-    BLUE_B(new Vector(20, 2, 5), BLUE_MATERIAL, false, true, Spot::blueBMinionStatic, Spot::setBlueBMinionStatic),
-    BLUE_E(new Vector(17, 1, 5), BLUE_MATERIAL, false, true, Spot::blueEMinionStatic, Spot::setBlueEMinionStatic),
-    BLUE_2(new Vector(9, 1, 5), BLUE_MATERIAL, true, true, Spot::blue2MinionStatic, Spot::setBlue2MinionStatic),
-    BLUE_5(new Vector(6, 2,5), BLUE_MATERIAL, true, true, Spot::blue5MinionStatic, Spot::setBlue5MinionStatic),
-    GREEN_C(new Vector(20, 2, 9), GREEN_MATERIAL, false, true, Spot::greenCMinionStatic, Spot::setGreenCMinionStatic),
-    GREEN_F(new Vector(17, 1, 9), GREEN_MATERIAL, false, true, Spot::greenFMinionStatic, Spot::setGreenFMinionStatic),
-    GREEN_3(new Vector(9, 1, 9), GREEN_MATERIAL, true, true, Spot::green3MinionStatic, Spot::setGreen3MinionStatic),
-    GREEN_6(new Vector(6, 2, 9), GREEN_MATERIAL, true, true, Spot::green6MinionStatic, Spot::setGreen6MinionStatic),
-    PLAYER_1_OUTLOOK(new Vector(2, 8, 5), Material.BIRCH_PLANKS, true, false, null, null),
-    PLAYER_2_OUTLOOK(new Vector(24, 8, 5), Material.COBBLESTONE, false, false, null, null),
-    PLAYER_1_SMACK_ZONE(new Vector(2, 8, 5), Material.BIRCH_PLANKS, true, false, null, null),
-    PLAYER_2_SMACK_ZONE(new Vector(24, 8, 5), Material.COBBLESTONE, false, false, null, null);
+    RED_A(new Vector(20, 2, 1), RED_MATERIAL, false, true, true, Spot::redAMinionStatic, Spot::setRedAMinionStatic),
+    RED_D(new Vector(17, 1, 1), RED_MATERIAL, false, true, true, Spot::redDMinionStatic, Spot::setRedDMinionStatic),
+    RED_1(new Vector(9, 1, 1), RED_MATERIAL, true, true, true, Spot::red1MinionStatic, Spot::setRed1MinionStatic),
+    RED_4(new Vector(6, 2 ,1), RED_MATERIAL, true, true, true, Spot::red4MinionStatic, Spot::setRed4MinionStatic),
+    BLUE_B(new Vector(20, 2, 5), BLUE_MATERIAL, false, true, true, Spot::blueBMinionStatic, Spot::setBlueBMinionStatic),
+    BLUE_E(new Vector(17, 1, 5), BLUE_MATERIAL, false, true, true, Spot::blueEMinionStatic, Spot::setBlueEMinionStatic),
+    BLUE_2(new Vector(9, 1, 5), BLUE_MATERIAL, true, true, true, Spot::blue2MinionStatic, Spot::setBlue2MinionStatic),
+    BLUE_5(new Vector(6, 2,5), BLUE_MATERIAL, true, true, true, Spot::blue5MinionStatic, Spot::setBlue5MinionStatic),
+    GREEN_C(new Vector(20, 2, 9), GREEN_MATERIAL, false, true, true, Spot::greenCMinionStatic, Spot::setGreenCMinionStatic),
+    GREEN_F(new Vector(17, 1, 9), GREEN_MATERIAL, false, true, true, Spot::greenFMinionStatic, Spot::setGreenFMinionStatic),
+    GREEN_3(new Vector(9, 1, 9), GREEN_MATERIAL, true, true, true, Spot::green3MinionStatic, Spot::setGreen3MinionStatic),
+    GREEN_6(new Vector(6, 2, 9), GREEN_MATERIAL, true, true, true, Spot::green6MinionStatic, Spot::setGreen6MinionStatic),
+    PLAYER_1_OUTLOOK(new Vector(2, 8, 5), Material.BIRCH_PLANKS, true, false, true, null, null),
+    PLAYER_2_OUTLOOK(new Vector(24, 8, 5), Material.COBBLESTONE, false, false, true, null, null),
+    PLAYER_1_RED_CHICKEN(new Vector(3, 2, 1), RED_MATERIAL, true, false, false, null, null),
+    PLAYER_2_RED_CHICKEN(new Vector(23, 2, 1), RED_MATERIAL, true, false, false, null, null),
+    PLAYER_1_BLUE_CHICKEN(new Vector(3, 2, 5), BLUE_MATERIAL, true, false, false, null, null),
+    PLAYER_2_BLUE_CHICKEN(new Vector(23, 2, 5), BLUE_MATERIAL, true, false, false, null, null),
+    PLAYER_1_GREEN_CHICKEN(new Vector(3, 2, 9), GREEN_MATERIAL, true, false, false, null, null),
+    PLAYER_2_GREEN_CHICKEN(new Vector(23, 2, 9), GREEN_MATERIAL, true, false, false, null, null);
 
     private final Vector offset;
     private final Material material;
     private final Boolean isPlayer1Spot;
     private final Boolean isSummonableSpot;
+    private final Boolean isTargetable;
     private final Function<Stadium, Minion> minionRef;
     private final BiConsumer<Stadium, Minion> minionSetRef;
 
-    Spot(Vector offset, Material material, Boolean isPlayer1Spot, Boolean isSummonableSpot, Function<Stadium, Minion> minionRef, BiConsumer<Stadium, Minion> minionSetRef) {
+    Spot(Vector offset, Material material, Boolean isPlayer1Spot, Boolean isSummonableSpot, Boolean isTargetable, Function<Stadium, Minion> minionRef, BiConsumer<Stadium, Minion> minionSetRef) {
         this.offset = offset;
         this.material = material;
         this.isPlayer1Spot = isPlayer1Spot;
         this.isSummonableSpot = isSummonableSpot;
+        this.isTargetable = isTargetable;
         this.minionRef = minionRef;
         this.minionSetRef = minionSetRef;
     }
@@ -62,6 +69,10 @@ public enum Spot {
         return isSummonableSpot;
     }
 
+    public Boolean isTargetable() {
+        return isTargetable;
+    }
+
     public Function<Stadium, Minion> minionRef() {
         return minionRef;
     }
@@ -70,7 +81,7 @@ public enum Spot {
         return minionSetRef;
     }
 
-    public static Spot opposingFrontRankSpot(Spot currentSpot) {
+    public static Spot opposingBackRankSpot(Spot currentSpot) {
         return switch (currentSpot) {
             case RED_1, RED_4 -> RED_A;
             case RED_A, RED_D -> RED_1;
@@ -79,11 +90,11 @@ public enum Spot {
             case GREEN_3, GREEN_6 -> GREEN_C;
             case GREEN_C, GREEN_F -> GREEN_3;
             default ->
-                    throw new IllegalArgumentException("You cannot try to get the opposingFrontRankSpot from " + currentSpot);
+                    throw new IllegalArgumentException("You cannot try to get the opposingBackRankSpot from " + currentSpot);
         };
     }
 
-    public static Spot opposingBackRankSpot(Spot currentSpot) {
+    public static Spot opposingFrontRankSpot(Spot currentSpot) {
         return switch (currentSpot) {
             case RED_1, RED_4 -> RED_D;
             case RED_A, RED_D -> RED_4;
@@ -93,6 +104,19 @@ public enum Spot {
             case GREEN_C, GREEN_F -> GREEN_6;
             default ->
                     throw new IllegalArgumentException("You cannot try to get the opposingFrontRankSpot from " + currentSpot);
+        };
+    }
+
+    public static LivingEntity opposingChicken(Spot currentSpot, Stadium stadium) {
+        return switch (currentSpot) {
+            case RED_1, RED_4 -> stadium.player2RedChicken();
+            case RED_A, RED_D -> stadium.player1RedChicken();
+            case BLUE_2, BLUE_5 -> stadium.player2BlueChicken();
+            case BLUE_B, BLUE_E -> stadium.player1BlueChicken();
+            case GREEN_3, GREEN_6 -> stadium.player2GreenChicken();
+            case GREEN_C, GREEN_F -> stadium.player1GreenChicken();
+            default ->
+                    throw new IllegalArgumentException("You cannot try to get the opposingChicken from " + currentSpot);
         };
     }
 

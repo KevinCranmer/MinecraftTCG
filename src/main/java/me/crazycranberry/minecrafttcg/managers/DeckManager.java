@@ -1,6 +1,6 @@
 package me.crazycranberry.minecrafttcg.managers;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardType;
+import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
 import org.bukkit.Bukkit;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardType.SEWER_ZOMBIE;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.SEWER_ZOMBIE;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.DARK_PURPLE;
@@ -34,19 +34,19 @@ public class DeckManager implements Listener {
         event.getPlayer().openInventory(deck);
     }
 
-    private ItemStack createCard(CardType cardType) {
+    private ItemStack createCard(CardEnum cardEnum) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
         bookMeta.setAuthor("CrazyCranberry Mods");
-        bookMeta.setTitle(cardType.card().cardName());
+        bookMeta.setTitle(cardEnum.card().cardName());
         String page = "";
-        if (cardType.card() instanceof MinionCardDefinition minionCardDefinition) {
+        if (cardEnum.card() instanceof MinionCardDefinition minionCardDefinition) {
             page = minionCardDescription(minionCardDefinition);
         }
         bookMeta.addPage(page);
         bookMeta.setLore(List.of(String.format("%sType \"/tcg\" to learn more!%s", GOLD, RESET)));
         bookMeta.getPersistentDataContainer().set(IS_CARD_KEY, PersistentDataType.BOOLEAN, true);
-        bookMeta.getPersistentDataContainer().set(CARD_NAME_KEY, PersistentDataType.STRING, cardType.name());
+        bookMeta.getPersistentDataContainer().set(CARD_NAME_KEY, PersistentDataType.STRING, cardEnum.name());
         book.setItemMeta(bookMeta);
         return book;
     }

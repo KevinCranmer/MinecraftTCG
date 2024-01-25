@@ -1,21 +1,25 @@
 package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.Card;
-import me.crazycranberry.minecrafttcg.carddefinitions.CardType;
+import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.CantripCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
+import me.crazycranberry.minecrafttcg.events.CastCardEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPostCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.TurnEndEvent;
 import me.crazycranberry.minecrafttcg.model.Stadium;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
-import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Content;
+import net.md_5.bungee.api.chat.hover.content.Text;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,13 +30,10 @@ import org.bukkit.persistence.PersistentDataType;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
-import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
-import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_POSTCOMBAT_PHASE;
-import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
-import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
-import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_POSTCOMBAT_PHASE;
-import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_PRECOMBAT_PHASE;
+import static org.bukkit.ChatColor.DARK_GREEN;
+import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.ITALIC;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
@@ -42,35 +43,87 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public class DuelActionsManager implements Listener {
     @EventHandler
-    private void onCardCast(PlayerInteractEvent event) {
-        Stadium stadium = StadiumManager.stadium(event.getPlayer().getWorld());
+    private void onAction(PlayerInteractEvent event) {
+        Player p = event.getPlayer();
+        Stadium stadium = StadiumManager.stadium(p.getWorld());
         if (isValidCastAttempt(event, stadium)) {
             BookMeta bookMeta = (BookMeta) event.getItem().getItemMeta();
-            CardType cardType = CardType.valueOf(bookMeta.getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING));
-            Card card = cardType.card();
-            // TODO: CHECK MANA COST
-            Boolean successfullyCast = false;
-            if (card instanceof MinionCardDefinition minionCardDefinition) {
-                successfullyCast = summonMinion(event.getPlayer(), stadium, minionCardDefinition);
-            }
-
-            if (successfullyCast) {
-                // TODO: LOWER MANA
-                event.getPlayer().getInventory().remove(event.getItem());
+            CardEnum cardEnum = CardEnum.valueOf(bookMeta.getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING));
+            Card card = cardEnum.card();
+            if (castable(p, stadium, card)) {
+                Bukkit.getPluginManager().callEvent(new CastCardEvent(card, stadium, p, event.getItem()));
             }
         } else if (isValidDescCheck(event, stadium)) {
-            stadium.displayDescription(event.getPlayer());
+            stadium.displayDescription(p);
         } else if (isNextPhaseRequested(event, stadium)) {
-            requestNextPhase(stadium, event.getPlayer());
+            requestNextPhase(stadium, p);
         }
     }
 
-    private Boolean summonMinion(Player caster, Stadium stadium, MinionCardDefinition minionCardDefinition) {
-        if (summonable(caster, stadium)) {
-            stadium.minionSummoned(caster, minionCardDefinition);
-            return true;
+    private void sendCastMessage(Player p, Stadium stadium, Card card) {
+        ChatColor color = p.equals(stadium.player1()) ? GREEN : GOLD;
+        TextComponent castText = new TextComponent(String.format("%s%s%s has cast %s[%s]%s", color, p.getName(), RESET, color, card.cardName(), RESET));
+        String description = "";
+        if (card instanceof MinionCardDefinition minionCard) {
+            description += String.format("%s🗡%s:%s %s❤%s:%s/%s\n",
+                    DARK_GREEN, RESET, minionCard.strength(), RED, RESET, minionCard.maxHealth(), minionCard.maxHealth());
         }
-        return false;
+        description += card.cardDescription();
+        castText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(description)));
+        stadium.player1().spigot().sendMessage(castText);
+        stadium.player2().spigot().sendMessage(castText);
+    }
+
+    @EventHandler
+    private void onCardCast(CastCardEvent event) {
+        cast(event.caster(), event.stadium(), event.card());
+        event.caster().getInventory().remove(event.cardItem());
+        sendCastMessage(event.caster(), event.stadium(), event.card());
+        event.stadium().reduceMana(event.caster(), event.card().cost());
+    }
+
+    private void cast(Player player, Stadium stadium, Card card) {
+        if (card instanceof MinionCardDefinition minionCardDefinition) {
+            castMinion(player, stadium, minionCardDefinition);
+        } else if (card instanceof CantripCardDefinition cantripCardDefinition) {
+            castCantrip(player, stadium, cantripCardDefinition);
+        } else if (card instanceof SpellCardDefinition spellCardDefinition) {
+            castSpell(player, stadium, spellCardDefinition);
+        }
+    }
+
+    private void castMinion(Player player, Stadium stadium, MinionCardDefinition minionCard) {
+        minionCard.onCast(stadium, player);
+    }
+
+    private void castCantrip(Player player, Stadium stadium, CantripCardDefinition cantripCard) {
+        cantripCard.onCast(stadium, player);
+    }
+
+    private void castSpell(Player player, Stadium stadium, SpellCardDefinition spellCard) {
+        spellCard.onCast(stadium, player);
+    }
+
+    private boolean castable(Player p, Stadium stadium, Card card) {
+        if (card.cost() > stadium.playerMana(p)) {
+            p.sendMessage(String.format("%s%sYou do not have enough mana to cast this card.%s", GRAY, ITALIC, RESET));
+            return false;
+        } else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
+            p.sendMessage(String.format("%s%sYou cannot cast this card while it's not your turn.%s", GRAY, ITALIC, RESET));
+            return false;
+        } else if (card instanceof MinionCardDefinition) {
+            if (!stadium.isPlayerTargetingSummonableSpot(p)) {
+                p.sendMessage(String.format("%s%sYou cannot summon a minion on that spot.%s", GRAY, ITALIC, RESET));
+                return false;
+            } else if (!stadium.isPlayerTargetingTheirOwnSpots(p)) {
+                p.sendMessage(String.format("%s%sYou cannot summon a minion on your opponents side of the field.%s", GRAY, ITALIC, RESET));
+                return false;
+            } else if (!stadium.isPlayersTargetAvailable(p)) {
+                p.sendMessage(String.format("%s%sYou cannot summon a minion because a minion already exists there.%s", GRAY, ITALIC, RESET));
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean summonable(Player caster, Stadium stadium) {
@@ -115,7 +168,7 @@ public class DuelActionsManager implements Listener {
     }
 
     public void requestNextPhase(Stadium stadium, Player player) {
-        if (player.equals(stadium.player1()) && stadium.turn() % 2 == 1) {
+        if ((player.equals(stadium.player1()) && stadium.turn() % 2 == 1) || (player.equals(stadium.player2()) && stadium.turn() % 2 == 0)) {
             switch (stadium.phase()) {
                 case FIRST_PRECOMBAT_PHASE:
                     Bukkit.getPluginManager().callEvent(new SecondPreCombatPhaseStartedEvent(stadium));

@@ -21,6 +21,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftZombie;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
@@ -117,6 +118,8 @@ public class TestCommands {
     }
 
     private static void setup(Player p) {
+        Player me = Bukkit.getOnlinePlayers().stream().filter(player -> player.getName().equals("Crazy_Cranberry")).findFirst().get();
+        me.getNearbyEntities(40, 40, 40).stream().filter(e -> !e.getType().equals(EntityType.PLAYER)).forEach(Entity::remove);
         buildStadium(p, "Crazy_Cranberry", "GoofyCranberry", new Location(p.getWorld(), 22.5, 96, -39.5));
         trackVision(p);
         trackDuel(p);

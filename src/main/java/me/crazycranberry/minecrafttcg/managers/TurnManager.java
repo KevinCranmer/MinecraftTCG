@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg.managers;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartAttackingEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
@@ -9,6 +10,7 @@ import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPostCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.TurnEndEvent;
+import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -23,10 +25,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.Consumer;
+
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_POSTCOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
+import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_POSTCOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_PRECOMBAT_PHASE;
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -53,7 +60,8 @@ public class TurnManager implements Listener {
         System.out.println("onFirstPreCombatPhaseStarted");
         event.getStadium().updatePhase(FIRST_PRECOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        String title = turn % 2 != 0 ? String.format("%sPlayer 1's Pre-Combat Phase", GREEN) : String.format("%sPlayer 2's Pre-Combat Phase", GOLD);
+        executeForAllMinions(event.getStadium(), Minion::onTurnStart);
+        String title = turn % 2 != 0 ? String.format("%s%s's Pre-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Pre-Combat Phase", GOLD, event.getStadium().player2().getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
     }
 
@@ -62,7 +70,7 @@ public class TurnManager implements Listener {
         System.out.println("onSecondPreCombatPhaseStarted");
         event.getStadium().updatePhase(SECOND_PRECOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        String title = turn % 2 != 1 ? String.format("%sPlayer 1's Pre-Combat Phase", GREEN) : String.format("%sPlayer 2's Pre-Combat Phase", GOLD);
+        String title = turn % 2 != 1 ? String.format("%s%s's Pre-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Pre-Combat Phase", GOLD, event.getStadium().player2().getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
     }
 
@@ -71,7 +79,7 @@ public class TurnManager implements Listener {
         System.out.println("onCombatStart");
         event.getStadium().updatePhase(COMBAT_PHASE);
         sendTitles(String.format("%sCombat Phase", RED), event.getStadium());
-        //TODO: Trigger onCombatStart's
+        executeForAllMinions(event.getStadium(), Minion::onCombatStart);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new CombatStartAttackingEvent(event.getStadium())), TITLE_DURATION);
     }
 
@@ -79,12 +87,15 @@ public class TurnManager implements Listener {
     private void onCombatStartAttacking(CombatStartAttackingEvent event) {
         System.out.println("onCombatStartAttacking");
         //TODO: Start attacking mofos
+        executeForAllMinions(event.getStadium(), Minion::attackInFront);
     }
 
     @EventHandler
     private void onCombatEnd(CombatEndEvent event) {
         System.out.println("onCombatStartAttacking");
+        event.getStadium().updatePhase(POST_COMBAT_CLEANUP);
         //TODO: Kill any minions with 0 health and trigger their onDeaths
+        executeForAllMinions(event.getStadium(), Minion::onCombatEnd);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstPostCombatPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
     }
 
@@ -93,7 +104,7 @@ public class TurnManager implements Listener {
         System.out.println("onFirstPostCombatPhaseStarted");
         event.getStadium().updatePhase(FIRST_POSTCOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        String title = turn % 2 != 1 ? String.format("%sPlayer 1's Post-Combat Phase", GREEN) : String.format("%sPlayer 2's Post-Combat Phase", GOLD);
+        String title = turn % 2 != 1 ? String.format("%s%s's Post-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Post-Combat Phase", GOLD, event.getStadium().player2().getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
     }
 
@@ -102,7 +113,7 @@ public class TurnManager implements Listener {
         System.out.println("onSecondPostCombatPhaseStarted");
         event.getStadium().updatePhase(SECOND_POSTCOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        String title = turn % 2 != 0 ? String.format("%sPlayer 1's Post-Combat Phase", GREEN) : String.format("%sPlayer 2's Post-Combat Phase", GOLD);
+        String title = turn % 2 != 0 ? String.format("%s%s's Post-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Post-Combat Phase", GOLD, event.getStadium().player2().getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
     }
 
@@ -110,8 +121,17 @@ public class TurnManager implements Listener {
     private void onTurnEnd(TurnEndEvent event) {
         System.out.println("onTurnEnd");
         sendTitles(String.format("%sEnd of Turn %s", AQUA, event.getStadium().turn()), event.getStadium());
-        //TODO: Trigger onEndOfTurn triggers
+        executeForAllMinions(event.getStadium(), Minion::onTurnEnd);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstPreCombatPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
+    }
+
+    private void executeForAllMinions(Stadium stadium, Consumer<? super Minion> trigger) {
+        Arrays.stream(Spot.values())
+                .map(Spot::minionRef)
+                .filter(Objects::nonNull)
+                .map(mr -> mr.apply(stadium))
+                .filter(Objects::nonNull)
+                .forEach(trigger);
     }
 
     private void sendTitles(String title, Stadium stadium) {
@@ -128,9 +148,7 @@ public class TurnManager implements Listener {
         ServerPlayer serverPlayer1 = craftPlayer1.getHandle();
         ServerGamePacketListenerImpl playerConnection1 = serverPlayer1.connection;
         playerConnection1.send(new ClientboundSetTitleTextPacket(Component.literal(title1)));
-        if (!isBlank(title1Line2)) {
-            playerConnection1.send(new ClientboundSetSubtitleTextPacket(Component.literal(title1Line2)));
-        }
+        playerConnection1.send(new ClientboundSetSubtitleTextPacket(Component.literal(title1Line2)));
         playerConnection1.send(new ClientboundSetTitlesAnimationPacket(10, TITLE_DURATION - 30, 20));
 
         Player player2 = stadium.player2();
@@ -138,9 +156,7 @@ public class TurnManager implements Listener {
         ServerPlayer serverPlayer2 = craftPlayer2.getHandle();
         ServerGamePacketListenerImpl playerConnection2 = serverPlayer2.connection;
         playerConnection2.send(new ClientboundSetTitleTextPacket(Component.literal(title2)));
-        if (!isBlank(title2Line2)) {
-            playerConnection2.send(new ClientboundSetSubtitleTextPacket(Component.literal(title2Line2)));
-        }
+        playerConnection2.send(new ClientboundSetSubtitleTextPacket(Component.literal(title2Line2)));
         playerConnection2.send(new ClientboundSetTitlesAnimationPacket(10, TITLE_DURATION - 30, 20));
     }
 }
