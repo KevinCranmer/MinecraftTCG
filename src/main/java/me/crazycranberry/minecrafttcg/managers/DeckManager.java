@@ -16,9 +16,11 @@ import java.util.List;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.DINGY_SKELETON;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.SEWER_ZOMBIE;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.BLUE;
+import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.DARK_PURPLE;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
@@ -31,6 +33,7 @@ public class DeckManager implements Listener {
     private void onDeckViewRequest(DeckViewRequestEvent event) {
         Inventory deck = Bukkit.createInventory(null, 27, "My Deck");
         deck.addItem(createCard(SEWER_ZOMBIE));
+        deck.addItem(createCard(DINGY_SKELETON));
         event.getPlayer().openInventory(deck);
     }
 
@@ -57,6 +60,7 @@ public class DeckManager implements Listener {
             %sCard Type:%s Minion
             %sMinion Type:%s %s
             %sCard Cost:%s %s
+            %sIs Ranged:%s %s
             %sStrength:%s %s
             %sMax health:%s %s
             %sDescription:%s %s
@@ -65,9 +69,10 @@ public class DeckManager implements Listener {
             AQUA, RESET,
             DARK_PURPLE, RESET, card.minionType(),
             LIGHT_PURPLE, RESET, card.cost(),
-            RED, RESET, card.strength(),
-            BLUE, RESET, card.maxHealth(),
-            GREEN, RESET, card.cardDescription().replace("$", "")
+            DARK_GREEN, RESET, card.isRanged(),
+            GREEN, RESET, card.strength(),
+            RED, RESET, card.maxHealth(),
+            BLUE, RESET, card.cardDescription()
             );
     }
 }

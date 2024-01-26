@@ -13,7 +13,6 @@ import me.crazycranberry.minecrafttcg.events.TurnEndEvent;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
@@ -36,7 +35,6 @@ import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHA
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_POSTCOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_PRECOMBAT_PHASE;
-import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
@@ -47,7 +45,6 @@ public class TurnManager implements Listener {
 
     @EventHandler
     private void onDuelStart(DuelStartEvent event) {
-        System.out.println("onDuelStart");
         sendTitles(
                 String.format("%sDuel Started", AQUA), "You are Player 1",
                 String.format("%sDuel Started", AQUA), "You are Player 2",
@@ -80,16 +77,15 @@ public class TurnManager implements Listener {
         event.getStadium().updatePhase(COMBAT_PHASE);
         sendTitles(String.format("%sCombat Phase", RED), event.getStadium());
         executeForAllMinions(event.getStadium(), Minion::onCombatStart);
-        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new CombatStartAttackingEvent(event.getStadium())), TITLE_DURATION);
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new CombatStartAttackingEvent(event.getStadium())), 40);
     }
 
     @EventHandler
     private void onCombatStartAttacking(CombatStartAttackingEvent event) {
         System.out.println("onCombatStartAttacking");
         //TODO: Start attacking mofos
-        executeForAllMinions(event.getStadium(), Minion::attackInFront);
+        executeForMinionsThatCanAttack(event.getStadium(), Minion::attackInFront);
     }
-
     @EventHandler
     private void onCombatEnd(CombatEndEvent event) {
         System.out.println("onCombatStartAttacking");
@@ -133,6 +129,18 @@ public class TurnManager implements Listener {
                 .filter(Objects::nonNull)
                 .forEach(trigger);
     }
+
+    private void executeForMinionsThatCanAttack(Stadium stadium, Consumer<? super Minion> trigger) {
+        Arrays.stream(Spot.values())
+                .map(Spot::minionRef)
+                .filter(Objects::nonNull)
+                .map(mr -> mr.apply(stadium))
+                .filter(Objects::nonNull)
+                .filter(m -> m.attacksLeft() > 0)
+                .filter(m -> !(!m.cardDef().isRanged() && stadium.hasAllyMinionInFront(m.minionInfo().spot())))
+                .forEach(trigger);
+    }
+
 
     private void sendTitles(String title, Stadium stadium) {
         sendTitles(title, "", title, "", stadium);

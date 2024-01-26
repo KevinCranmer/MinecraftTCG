@@ -1,4 +1,4 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
@@ -6,49 +6,49 @@ import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-public class SewerZombieDef implements MinionCardDefinition {
+public class DingySkeletonDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 1;
-    }
-
-    @Override
-    public String cardName() {
-        return "Sewer Zombie";
-    }
-
-    @Override
-    public String cardDescription() {
-        return "Grrrrr\nImmaZombie!";
-    }
-
-    @Override
-    public String signDescription() {
-        return "Vanilla Ass$Zombie";
-    }
-
-    @Override
-    public Integer strength() {
-        return 1;
-    }
-
-    @Override
-    public Integer maxHealth() {
         return 2;
     }
 
     @Override
+    public String cardName() {
+        return "Dingy Skeleton";
+    }
+
+    @Override
+    public String cardDescription() {
+        return "";
+    }
+
+    @Override
+    public Integer strength() {
+        return 2;
+    }
+
+    @Override
+    public Integer maxHealth() {
+        return 1;
+    }
+
+    @Override
     public EntityType minionType() {
-        return EntityType.ZOMBIE;
+        return EntityType.SKELETON;
     }
 
     @Override
     public boolean isRanged() {
-        return false;
+        return true;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return SewerZombie.class;
+        return DingySkeleton.class;
+    }
+
+    @Override
+    public String signDescription() {
+        return "Shoots a weak bow";
     }
 }

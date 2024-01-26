@@ -17,17 +17,21 @@ import org.bukkit.util.Vector;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_1_SIGN_OFFSET;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_2_SIGN_OFFSET;
+import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_1_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_2_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.GREEN_1_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.GREEN_2_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.RED_1_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.RED_2_FRONT;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
-import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_POSTCOMBAT_PHASE;
+import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
@@ -45,6 +49,8 @@ public class Stadium {
     private final Player player2;
     private int player1Mana = 0;
     private int player2Mana = 0;
+    private int player1PendingDamage = 0;
+    private int player2PendingDamage = 0;
     private int turn = 0;
     private TurnPhase phase;
     private Minion redAMinion;
@@ -59,12 +65,12 @@ public class Stadium {
     private Minion greenFMinion;
     private Minion green3Minion;
     private Minion green6Minion;
-    private LivingEntity player1RedChicken;
-    private LivingEntity player1BlueChicken;
-    private LivingEntity player1GreenChicken;
-    private LivingEntity player2RedChicken;
-    private LivingEntity player2BlueChicken;
-    private LivingEntity player2GreenChicken;
+    private final LivingEntity player1RedChicken;
+    private final LivingEntity player1BlueChicken;
+    private final LivingEntity player1GreenChicken;
+    private final LivingEntity player2RedChicken;
+    private final LivingEntity player2BlueChicken;
+    private final LivingEntity player2GreenChicken;
     private Spot player1Target;
     private Spot player2Target;
 
@@ -94,6 +100,19 @@ public class Stadium {
         // In the event that nothing is on the board able to attack, we should just skip combat
         if (phase.equals(COMBAT_PHASE)) {
             doneAttacking();
+        } else if (phase.equals(POST_COMBAT_CLEANUP)) {
+            if (player1.getHealth() < player1PendingDamage && player2.getHealth() < player2PendingDamage) {
+                System.out.println("It's a tie!!");
+            } else {
+                if (player1PendingDamage > 0) {
+                    player1.damage(player1PendingDamage);
+                }
+                player1PendingDamage = 0;
+                if (player2PendingDamage > 0) {
+                    player2.damage(player2PendingDamage);
+                }
+                player2PendingDamage = 0;
+            }
         }
     }
 
@@ -125,13 +144,17 @@ public class Stadium {
         }
     }
 
-    private void showName(Spot spot) {
+    public void updateCustomName(Minion minion) {
+        minion.minionInfo().entity().setCustomName(String.format("%s%s %s%s%s:%s %s❤%s:%s/%s",
+            minion.minionInfo().spot().isPlayer1Spot() ? GREEN : GOLD, minion.cardDef().cardName(),
+            DARK_GREEN, minion.cardDef().isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()
+        ));
+    }
+
+    public void showName(Spot spot) {
         if (spot.minionRef() != null && spot.minionRef().apply(this) != null) {
             Minion minion = spot.minionRef().apply(this);
-            minion.minionInfo().entity().setCustomName(String.format("%s%s %s🗡%s:%s %s❤%s:%s/%s",
-                spot.isPlayer1Spot() ? GREEN : GOLD, minion.cardDef().cardName(),
-                DARK_GREEN, RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()
-                ));
+            updateCustomName(minion);
             minion.minionInfo().entity().setCustomNameVisible(true);
         }
     }
@@ -142,25 +165,11 @@ public class Stadium {
         }
     }
 
-    public void summonMinion(Player p, MinionCardDefinition minionDef) {
-        try {
-            Constructor<? extends Minion> c = minionDef.minionClass().getConstructor(MinionInfo.class);
-            c.setAccessible(true);
-            Minion minion;
-            if (p.equals(player1)) {
-                LivingEntity entity = (LivingEntity) p.getWorld().spawnEntity(playerTargetLoc(player1), minionDef.minionType(), false);
-                minion = c.newInstance(new MinionInfo(this, player1Target, entity, player1));
-                player1Target.minionSetRef().accept(this, minion);
-                showName(player1Target);
-            } else {
-                LivingEntity entity = (LivingEntity) p.getWorld().spawnEntity(playerTargetLoc(player2), minionDef.minionType(), false);
-                minion = c.newInstance(new MinionInfo(this, player2Target, entity, player2));
-                player2Target.minionSetRef().accept(this, minion);
-                showName(player2Target);
-            }
-            minion.onEnter();
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
-            logger().severe(String.format("Unable to create a %s\nException: %s\n%s", minionDef.minionClass(), ex.getClass().getSimpleName(), ex.getMessage()));
+    public void pendingDamageForPlayer(Player p, Integer damage) {
+        if (p.equals(player1)) {
+            player1PendingDamage += damage;
+        } else {
+            player2PendingDamage += damage;
         }
     }
 
@@ -204,6 +213,10 @@ public class Stadium {
         }
     }
 
+    public Spot playerTargetSpot(Player p) {
+        return p.equals(player1) ? player1Target : player2Target;
+    }
+
     public LivingEntity getTargetInFront(Minion minion) {
         Minion opposingMinion = Spot.opposingFrontRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
         if (opposingMinion == null) {
@@ -220,12 +233,19 @@ public class Stadium {
             if (spot.minionRef() != null) {
                 Minion minion = spot.minionRef().apply(this);
                 if (minion != null && entity.equals(minion.minionInfo().entity())) {
-                    System.out.println("Found the minion!");
                     return Optional.of(minion);
                 }
             }
         }
-        System.out.println("Could not find the minion");
+        return Optional.empty();
+    }
+
+    public Optional<Player> getPlayerFromChicken(LivingEntity entity) {
+        if (entity.equals(player1RedChicken) || entity.equals(player1BlueChicken) || entity.equals(player1GreenChicken)) {
+            return Optional.of(player1);
+        } else if (entity.equals(player2RedChicken) || entity.equals(player2BlueChicken) || entity.equals(player2GreenChicken)) {
+            return Optional.of(player2);
+        }
         return Optional.empty();
     }
 
@@ -238,13 +258,19 @@ public class Stadium {
         }
         ChatColor minionNameColor = targetedSpot.isPlayer1Spot() ? GREEN : GOLD;
         if (targetedSpot.minionRef() == null || targetedSpot.minionRef().apply(this) == null) {
+            if (targetedSpot.equals(Spot.PLAYER_1_OUTLOOK) || targetedSpot.equals(Spot.PLAYER_2_OUTLOOK)) {
+                Sign sign = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
+                Player targetedPlayer = player.equals(player1) ? player2 : player1;
+                sign.getSide(Side.FRONT).setLine(0, targetedPlayer.getName());
+                sign.getSide(Side.FRONT).setLine(1, "❤: " + targetedPlayer.getHealth());
+            }
             return;
         }
         Minion minion = targetedSpot.minionRef().apply(this);
         Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
         Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
         sign1.getSide(Side.FRONT).setLine(0, String.format("%s%s%s", minionNameColor, minion.cardDef().cardName(), RESET));
-        List<String> lines = List.of(minion.cardDef().cardDescription().replace("\n", "").split("\\$"));
+        List<String> lines = List.of(minion.cardDef().signDescription().split("\\$"));
         for (int i = 0; i < lines.size(); i++) {
             int lineIndex = i + 1;
             Sign sign = lineIndex > 3 ? sign2 : sign1;
@@ -262,7 +288,7 @@ public class Stadium {
         for (Spot spot : Spot.values()) {
             if (spot.isSummonableSpot()) {
                 Minion minion = spot.minionRef().apply(this);
-                if (minion != null && minion.attacksLeft() > 0) {
+                if (minion != null && minion.attacksLeft() > 0 && !(!minion.cardDef().isRanged() && hasAllyMinionInFront(spot))) {
                     everyoneDone = false;
                 }
             }
@@ -270,6 +296,22 @@ public class Stadium {
         if (everyoneDone) {
             Bukkit.getPluginManager().callEvent(new CombatEndEvent(this));
         }
+    }
+
+    public boolean hasAllyMinionInFront(Spot spot) {
+        return switch (spot) {
+            case RED_2_BACK -> RED_2_FRONT.minionRef().apply(this) != null;
+            case RED_1_BACK -> RED_1_FRONT.minionRef().apply(this) != null;
+            case BLUE_2_BACK -> BLUE_2_FRONT.minionRef().apply(this) != null;
+            case BLUE_1_BACK -> BLUE_1_FRONT.minionRef().apply(this) != null;
+            case GREEN_2_BACK -> GREEN_2_FRONT.minionRef().apply(this) != null;
+            case GREEN_1_BACK -> GREEN_1_FRONT.minionRef().apply(this) != null;
+            default -> false;
+        };
+    }
+
+    public void minionDied(Spot spot) {
+        spot.minionSetRef().accept(this, null);
     }
 
     public int turn() {

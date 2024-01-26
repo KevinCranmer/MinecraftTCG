@@ -34,7 +34,7 @@ public class WalkToLocationGoal extends Goal {
 
     @Override
     public void tick() {
-        Path path = this.mob.getNavigation().createPath(BlockPos.containing(x, y, z), 0);
+        Path path = this.mob.getNavigation().createPath(x, y, z, 0);
         this.mob.getNavigation().moveTo(path, 1);
     }
 

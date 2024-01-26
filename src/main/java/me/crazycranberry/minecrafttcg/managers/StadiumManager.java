@@ -15,6 +15,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Cow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -53,6 +55,7 @@ public class StadiumManager implements Listener {
     public static final Vector PLAYER_1_MANA_OFFSET = new Vector(3, 13, 0);
     public static final Vector PLAYER_2_SIGN_OFFSET = new Vector(23, 10, 6);
     public static final Vector PLAYER_2_MANA_OFFSET = new Vector(23, 13, 10);
+    public static final EntityType PLAYER_PROXY_ENTITY_TYPE = EntityType.COW;
     private static final Material FILL_BLOCK = Material.WHITE_TERRACOTTA;
     private static final Map<World, Stadium> stadiums = new HashMap<>();
 
@@ -137,7 +140,7 @@ public class StadiumManager implements Listener {
     }
 
     private LivingEntity summonChicken(Spot spot, Location startingCorner) {
-        return (LivingEntity) startingCorner.getWorld().spawnEntity(startingCorner.clone().add(spot.offset()), EntityType.CHICKEN);
+        return (LivingEntity) startingCorner.getWorld().spawnEntity(startingCorner.clone().add(spot.offset()), PLAYER_PROXY_ENTITY_TYPE);
     }
 
     private void buildStadium(Location location) {
@@ -189,6 +192,9 @@ public class StadiumManager implements Listener {
                 startingCornerBlock.getRelative(25, j, 0 + zOffset).setType(Material.BARRIER);
                 startingCornerBlock.getRelative(25, j, 1 + zOffset).setType(Material.BARRIER);
                 startingCornerBlock.getRelative(25, j, 2 + zOffset).setType(Material.BARRIER);
+                startingCornerBlock.getRelative(1, j, 0 + zOffset).setType(Material.BARRIER);
+                startingCornerBlock.getRelative(1, j, 1 + zOffset).setType(Material.BARRIER);
+                startingCornerBlock.getRelative(1, j, 2 + zOffset).setType(Material.BARRIER);
             }
         }
     }
@@ -301,7 +307,7 @@ public class StadiumManager implements Listener {
         directional.setFacing(blockFace);
         signState.setBlockData(directional);
         if (addDescText) {
-            signState.getSide(Side.FRONT).setLine(0, "Left Click a Minion");
+            signState.getSide(Side.FRONT).setLine(0, "Left Click an Entity");
             signState.getSide(Side.FRONT).setLine(1, "for a description");
             signState.getSide(Side.FRONT).setLine(2, "|");
             signState.getSide(Side.FRONT).setLine(3, "V");

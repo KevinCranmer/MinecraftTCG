@@ -65,8 +65,8 @@ public class DuelActionsManager implements Listener {
         TextComponent castText = new TextComponent(String.format("%s%s%s has cast %s[%s]%s", color, p.getName(), RESET, color, card.cardName(), RESET));
         String description = "";
         if (card instanceof MinionCardDefinition minionCard) {
-            description += String.format("%s🗡%s:%s %s❤%s:%s/%s\n",
-                    DARK_GREEN, RESET, minionCard.strength(), RED, RESET, minionCard.maxHealth(), minionCard.maxHealth());
+            description += String.format("%s%s%s:%s %s❤%s:%s/%s\n",
+                    DARK_GREEN, minionCard.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minionCard.strength(), RED, RESET, minionCard.maxHealth(), minionCard.maxHealth());
         }
         description += card.cardDescription();
         castText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(description)));

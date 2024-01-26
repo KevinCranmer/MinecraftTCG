@@ -2,11 +2,18 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.goals.LookForwardGoal;
+import me.crazycranberry.minecrafttcg.goals.ShootParticlesGoal;
 import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
 import me.crazycranberry.minecrafttcg.model.Spot;
+import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.monster.Skeleton;
+import org.bukkit.Color;
+import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftSkeleton;
@@ -56,13 +63,20 @@ public abstract class Minion {
         return attacksLeft;
     }
 
+    public void attacksLeft(Integer attacksLeft) {
+        this.attacksLeft = attacksLeft;
+    }
+
     public void onEnter() {
         removeGoals();
         setGoalOfStayingOnSpot();
         setGoalOfLookingForward();
     }
 
-    public abstract void onDeath();
+    public void onDeath() {
+        minionInfo.entity().setHealth(0);
+        minionInfo.stadium().minionDied(minionInfo.spot());
+    }
 
     public void onTurnStart() {
         attacksLeft = 1;
@@ -74,26 +88,42 @@ public abstract class Minion {
     public void onDamageDealt(LivingEntity target, Integer damageDealt) {
         attacksLeft--;
         if (attacksLeft <= 0) {
-            nmsMob.goalSelector.getRunningGoals().filter(g -> g.getGoal() instanceof MeleeAttackGoal).forEach(g -> System.out.println("Removing " + g.getGoal() + " goal"));
-            nmsMob.goalSelector.getRunningGoals().filter(g -> g.getGoal() instanceof MeleeAttackGoal).forEach(WrappedGoal::stop);
-            nmsMob.removeAllGoals(g -> g instanceof MeleeAttackGoal);
+            nmsMob.goalSelector.getRunningGoals().filter(g -> g.getGoal() instanceof MeleeAttackGoal || g.getGoal() instanceof ShootParticlesGoal).forEach(WrappedGoal::stop);
+            nmsMob.removeAllGoals(g -> g instanceof MeleeAttackGoal || g instanceof ShootParticlesGoal);
             minionInfo.stadium().doneAttacking();
         }
     }
 
     /** Can't let source be of type Minion because it might be the Opposing Player. */
-    public abstract void onDamageReceived(LivingEntity source, Integer damageReceived);
+    public void onDamageReceived(LivingEntity source, Integer damageReceived) {
+        health = health - damageReceived;
+        minionInfo.stadium().updateCustomName(this);
+        if (!minionInfo.stadium().phase().equals(TurnPhase.COMBAT_PHASE)) { // Minions don't die during combat until they get their hits off
+            shouldIBeDead();
+        }
+    }
 
-    public abstract void onCombatEnd();
+    public void onCombatEnd() {
+        shouldIBeDead();
+    }
+
+    private void shouldIBeDead() {
+        if (health <= 0) {
+            this.onDeath();
+        }
+    }
 
     public abstract void onTurnEnd();
 
     public void attackInFront() {
-        System.out.println("Making dudes attack");
         LivingEntity target = minionInfo.stadium().getTargetInFront(this);
         nmsMob.setTarget(((CraftLivingEntity) target).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
-        System.out.println("Targeting " + target.getType());
-        nmsMob.goalSelector.addGoal(1, new MeleeAttackGoal(nmsMob, 1, true));
+        if (cardDef().isRanged()) {
+            DustOptions dustOptions = new DustOptions(minionInfo().master().equals(minionInfo().stadium().player1()) ? Color.GREEN : Color.ORANGE, 1);
+            nmsMob.goalSelector.addGoal(1, new ShootParticlesGoal<>(minionInfo().entity(), target, Particle.REDSTONE, strength(), dustOptions));
+        } else {
+            nmsMob.goalSelector.addGoal(1, new MeleeAttackGoal(nmsMob, 1, true));
+        }
     }
 
     private void removeGoals() {
