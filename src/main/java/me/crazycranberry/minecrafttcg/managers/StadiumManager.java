@@ -307,7 +307,7 @@ public class StadiumManager implements Listener {
         directional.setFacing(blockFace);
         signState.setBlockData(directional);
         if (addDescText) {
-            signState.getSide(Side.FRONT).setLine(0, "Left Click an Entity");
+            signState.getSide(Side.FRONT).setLine(0, "Left click anything");
             signState.getSide(Side.FRONT).setLine(1, "for a description");
             signState.getSide(Side.FRONT).setLine(2, "|");
             signState.getSide(Side.FRONT).setLine(3, "V");

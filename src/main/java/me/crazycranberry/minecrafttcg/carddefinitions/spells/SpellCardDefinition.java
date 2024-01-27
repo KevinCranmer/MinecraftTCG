@@ -1,6 +1,6 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.spells;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.Card;
+import me.crazycranberry.minecrafttcg.carddefinitions.SpellOrCantripCardDefinition;
 
-public interface SpellCardDefinition extends Card {
+public interface SpellCardDefinition extends SpellOrCantripCardDefinition {
 }

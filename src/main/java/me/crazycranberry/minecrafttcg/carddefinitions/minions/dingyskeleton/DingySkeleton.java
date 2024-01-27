@@ -11,7 +11,7 @@ public class DingySkeleton extends Minion {
     @Override
     public void onTurnStart() {
         super.onTurnStart();
-        attacksLeft(2);
+        attacksLeft(1);
     }
     @Override
     public void onCombatStart() {

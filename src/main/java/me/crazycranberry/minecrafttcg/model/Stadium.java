@@ -23,11 +23,19 @@ import java.util.Optional;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_1_SIGN_OFFSET;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_2_SIGN_OFFSET;
+import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_1_BACK;
 import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_1_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_2_BACK;
 import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_2_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.GREEN_1_BACK;
 import static me.crazycranberry.minecrafttcg.model.Spot.GREEN_1_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.GREEN_2_BACK;
 import static me.crazycranberry.minecrafttcg.model.Spot.GREEN_2_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_OUTLOOK;
+import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_OUTLOOK;
+import static me.crazycranberry.minecrafttcg.model.Spot.RED_1_BACK;
 import static me.crazycranberry.minecrafttcg.model.Spot.RED_1_FRONT;
+import static me.crazycranberry.minecrafttcg.model.Spot.RED_2_BACK;
 import static me.crazycranberry.minecrafttcg.model.Spot.RED_2_FRONT;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
@@ -185,6 +193,26 @@ public class Stadium {
         }
     }
 
+    public Minion targetedMinion(Player p) {
+        if (p.equals(player1)) {
+            return player1Target.equals(PLAYER_2_OUTLOOK) ? null : player1Target.minionRef().apply(this);
+        }
+        else {
+            return player2Target.equals(PLAYER_1_OUTLOOK) ? null : player2Target.minionRef().apply(this);
+        }
+    }
+
+    public List<Spot> targetedRow(Player p) {
+        Spot target = p.equals(player1) ? player1Target : player2Target;
+        return switch (target) {
+            case RED_1_FRONT, BLUE_1_FRONT, GREEN_1_FRONT -> List.of(RED_1_FRONT, BLUE_1_FRONT, GREEN_1_FRONT);
+            case RED_1_BACK, BLUE_1_BACK, GREEN_1_BACK -> List.of(RED_1_BACK, BLUE_1_BACK, GREEN_1_BACK);
+            case RED_2_FRONT, BLUE_2_FRONT, GREEN_2_FRONT -> List.of(RED_2_FRONT, BLUE_2_FRONT, GREEN_2_FRONT);
+            case RED_2_BACK, BLUE_2_BACK, GREEN_2_BACK -> List.of(RED_2_BACK, BLUE_2_BACK, GREEN_2_BACK);
+            default -> null;
+        };
+    }
+
     public boolean isPlayerParticipating(Player p) {
         return p.equals(player1) || p.equals(player2);
     }
@@ -258,11 +286,14 @@ public class Stadium {
         }
         ChatColor minionNameColor = targetedSpot.isPlayer1Spot() ? GREEN : GOLD;
         if (targetedSpot.minionRef() == null || targetedSpot.minionRef().apply(this) == null) {
-            if (targetedSpot.equals(Spot.PLAYER_1_OUTLOOK) || targetedSpot.equals(Spot.PLAYER_2_OUTLOOK)) {
+            if (targetedSpot.equals(PLAYER_1_OUTLOOK) || targetedSpot.equals(Spot.PLAYER_2_OUTLOOK)) {
                 Sign sign = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
                 Player targetedPlayer = player.equals(player1) ? player2 : player1;
                 sign.getSide(Side.FRONT).setLine(0, targetedPlayer.getName());
                 sign.getSide(Side.FRONT).setLine(1, "❤: " + targetedPlayer.getHealth());
+                sign.getSide(Side.FRONT).setLine(2, "");
+                sign.getSide(Side.FRONT).setLine(3, "");
+                sign.update();
             }
             return;
         }
@@ -270,11 +301,16 @@ public class Stadium {
         Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
         Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
         sign1.getSide(Side.FRONT).setLine(0, String.format("%s%s%s", minionNameColor, minion.cardDef().cardName(), RESET));
-        List<String> lines = List.of(minion.cardDef().signDescription().split("\\$"));
-        for (int i = 0; i < lines.size(); i++) {
-            int lineIndex = i + 1;
+        sign1.getSide(Side.FRONT).setLine(1, String.format("%s%s%s:%s %s❤%s:%s/%s\n", DARK_GREEN, minion.cardDef().isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.cardDef().strength(), RED, RESET, minion.cardDef().maxHealth(), minion.cardDef().maxHealth()));
+        List<String> lines = List.of(minion.cardDef().signDescription().split("\n"));
+        for (int i = 0; i < 6; i++) {
+            int lineIndex = i + 2;
             Sign sign = lineIndex > 3 ? sign2 : sign1;
-            sign.getSide(Side.FRONT).setLine(lineIndex % 4, lines.get(i));
+            if (i > lines.size()) {
+                sign.getSide(Side.FRONT).setLine(lineIndex % 4, "");
+            } else {
+                sign.getSide(Side.FRONT).setLine(lineIndex % 4, lines.get(i));
+            }
         }
         sign1.update();
         sign2.update();

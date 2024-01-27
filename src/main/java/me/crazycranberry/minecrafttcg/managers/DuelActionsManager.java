@@ -2,7 +2,9 @@ package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
+import me.crazycranberry.minecrafttcg.carddefinitions.SpellOrCantripCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.CantripCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
 import me.crazycranberry.minecrafttcg.events.CastCardEvent;
@@ -10,6 +12,7 @@ import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPostCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.TurnEndEvent;
+import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -62,7 +65,7 @@ public class DuelActionsManager implements Listener {
 
     private void sendCastMessage(Player p, Stadium stadium, Card card) {
         ChatColor color = p.equals(stadium.player1()) ? GREEN : GOLD;
-        TextComponent castText = new TextComponent(String.format("%s%s%s has cast %s[%s]%s", color, p.getName(), RESET, color, card.cardName(), RESET));
+        TextComponent castText = new TextComponent(String.format("%s%s%s has cast %s[%s]%s", color, p.getName(), RESET, card.rarity().color(), card.cardName(), RESET));
         String description = "";
         if (card instanceof MinionCardDefinition minionCard) {
             description += String.format("%s%s%s:%s %s❤%s:%s/%s\n",
@@ -111,31 +114,36 @@ public class DuelActionsManager implements Listener {
         } else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
             p.sendMessage(String.format("%s%sYou cannot cast this card while it's not your turn.%s", GRAY, ITALIC, RESET));
             return false;
-        } else if (card instanceof MinionCardDefinition) {
-            if (!stadium.isPlayerTargetingSummonableSpot(p)) {
-                p.sendMessage(String.format("%s%sYou cannot summon a minion on that spot.%s", GRAY, ITALIC, RESET));
-                return false;
-            } else if (!stadium.isPlayerTargetingTheirOwnSpots(p)) {
-                p.sendMessage(String.format("%s%sYou cannot summon a minion on your opponents side of the field.%s", GRAY, ITALIC, RESET));
-                return false;
-            } else if (!stadium.isPlayersTargetAvailable(p)) {
-                p.sendMessage(String.format("%s%sYou cannot summon a minion because a minion already exists there.%s", GRAY, ITALIC, RESET));
+        } else if (card instanceof SpellOrCantripCardDefinition spellOrCantripCardDef) {
+            if (!validTarget(p, stadium, spellOrCantripCardDef)) {
+                p.sendMessage(String.format("%s%sThat is not a valid target for this spell.%s", GRAY, ITALIC, RESET));
                 return false;
             }
+        } else if (card instanceof MinionCardDefinition) {
+            return summonable(p, stadium);
         }
         return true;
     }
 
-    private boolean summonable(Player caster, Stadium stadium) {
-        // TODO: MAKE SURE IT's THEIR TURN
-        if (!stadium.isPlayerTargetingSummonableSpot(caster)) {
-            caster.sendMessage(String.format("%s%sYou cannot summon a minion on that spot.%s", GRAY, ITALIC, RESET));
+    private boolean validTarget(Player p, Stadium stadium, SpellOrCantripCardDefinition spellOrCantripCardDef) {
+        Minion targetedMinion = stadium.targetedMinion(p);
+        return switch (stadium.playerTargetSpot(p)) {
+            case RED_1_BACK, RED_2_BACK, RED_1_FRONT, RED_2_FRONT, BLUE_1_BACK, BLUE_2_BACK, BLUE_1_FRONT, BLUE_2_FRONT, GREEN_1_BACK, GREEN_2_BACK, GREEN_1_FRONT, GREEN_2_FRONT ->
+                    (spellOrCantripCardDef.targetsMinion() && targetedMinion != null) || (spellOrCantripCardDef.targetsEmptySpots() && targetedMinion == null);
+            case PLAYER_1_OUTLOOK, PLAYER_2_OUTLOOK -> spellOrCantripCardDef.targetsPlayer();
+            default -> false;
+        };
+    }
+
+    private boolean summonable(Player p, Stadium stadium) {
+        if (!stadium.isPlayerTargetingSummonableSpot(p)) {
+            p.sendMessage(String.format("%s%sYou cannot summon a minion on that spot.%s", GRAY, ITALIC, RESET));
             return false;
-        } else if (!stadium.isPlayerTargetingTheirOwnSpots(caster)) {
-            caster.sendMessage(String.format("%s%sYou cannot summon a minion on your opponents side of the field.%s", GRAY, ITALIC, RESET));
+        } else if (!stadium.isPlayerTargetingTheirOwnSpots(p)) {
+            p.sendMessage(String.format("%s%sYou cannot summon a minion on your opponents side of the field.%s", GRAY, ITALIC, RESET));
             return false;
-        } else if (!stadium.isPlayersTargetAvailable(caster)) {
-            caster.sendMessage(String.format("%s%sYou cannot summon a minion because a minion already exists there.%s", GRAY, ITALIC, RESET));
+        } else if (!stadium.isPlayersTargetAvailable(p)) {
+            p.sendMessage(String.format("%s%sYou cannot summon a minion because a minion already exists there.%s", GRAY, ITALIC, RESET));
             return false;
         }
         return true;

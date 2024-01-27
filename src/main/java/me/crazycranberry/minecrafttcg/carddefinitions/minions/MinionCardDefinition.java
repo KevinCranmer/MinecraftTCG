@@ -25,7 +25,7 @@ public interface MinionCardDefinition extends Card {
     public boolean isRanged();
     public Class<? extends Minion> minionClass();
     /**
-     *  Use '$' for where a line break in the Signs should be, only 6 $'s allowed.
+     *  Use '\n' for where a line break in the Signs should be, only 5 \n's allowed.
      *  \n can be used as many times as you want, as it'll only be utilized in the cards book.
      */
     public String signDescription();

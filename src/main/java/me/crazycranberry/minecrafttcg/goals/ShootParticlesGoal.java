@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg.goals;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.PathfinderMob;
@@ -12,15 +13,17 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 public class ShootParticlesGoal <T> extends Goal {
-    private final LivingEntity shooter;
+    private final Minion shooter;
+    private final LivingEntity shooterEntity;
     private final LivingEntity target;
     private final Particle particleType;
     private final int damage;
     private final T data;
     private Location currentParticleStreamLocation;
 
-    public ShootParticlesGoal(LivingEntity shooter, LivingEntity target, Particle particleType, int damage, T data) {
+    public ShootParticlesGoal(Minion shooter, LivingEntity target, Particle particleType, int damage, T data) {
         this.shooter = shooter;
+        this.shooterEntity = shooter.minionInfo().entity();
         this.target = target;
         this.particleType = particleType;
         this.damage = damage;
@@ -34,21 +37,21 @@ public class ShootParticlesGoal <T> extends Goal {
 
     @Override
     public boolean canUse() {
-        return !shooter.isDead();
+        return !shooterEntity.isDead() && shooter.attacksLeft() > 0;
     }
 
     @Override
     public void tick() {
         if (currentParticleStreamLocation == null) {
-            currentParticleStreamLocation = shooter.getEyeLocation().clone();
+            currentParticleStreamLocation = shooterEntity.getEyeLocation().clone();
         }
         double blocksTraveledPerTick = 0.75;
         int particlesPerTick = 3;
         Vector direction = target.getEyeLocation().toVector().subtract(currentParticleStreamLocation.toVector()).normalize().multiply(blocksTraveledPerTick / (double) particlesPerTick);
         for (int i = 0; i < particlesPerTick; i++) {
-            shooter.getWorld().spawnParticle(particleType, currentParticleStreamLocation, 5, data);
+            shooterEntity.getWorld().spawnParticle(particleType, currentParticleStreamLocation, 5, data);
             if (currentParticleStreamLocation.distanceSquared(target.getEyeLocation()) < 0.5) {
-                target.damage(damage, shooter);
+                target.damage(damage, shooterEntity);
                 currentParticleStreamLocation = null;
                 break;
             }

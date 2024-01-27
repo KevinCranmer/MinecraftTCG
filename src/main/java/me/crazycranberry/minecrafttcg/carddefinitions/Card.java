@@ -12,5 +12,6 @@ public interface Card {
     public Integer cost();
     public String cardName();
     public String cardDescription();
+    public CardRarity rarity();
     public void onCast(Stadium stadium, Player caster);
 }

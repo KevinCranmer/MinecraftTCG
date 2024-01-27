@@ -57,15 +57,19 @@ public class MinionManager implements Listener {
         if (stadium == null || !(event.getDamager() instanceof LivingEntity)) {
             return;
         }
-        event.setDamage(0);
         Optional<Minion> maybeMinion = stadium.minionFromEntity((LivingEntity) event.getDamager());
-        if (maybeMinion.isEmpty()) {
-            return;
-        }
-        if (event.getEntity().getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
+        Optional<Minion> maybeTarget = stadium.minionFromEntity((LivingEntity) event.getEntity());
+        if (maybeMinion.isPresent() && event.getEntity().getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
             handleChickenAttacked(stadium, maybeMinion.get(), (LivingEntity) event.getEntity());
-        } else {
-            handleMinionAttacked(maybeMinion.get(), stadium.minionFromEntity((LivingEntity) event.getEntity()));
+            event.setDamage(0);
+        } else if (maybeMinion.isPresent() && maybeTarget.isPresent()){
+            event.setDamage(0);
+            handleMinionAttacked(maybeMinion.get(), maybeTarget.get());
+            event.setCancelled(maybeTarget.get().turnsProtected() > 0);
+        } else if (maybeTarget.isPresent()) {
+            handleMinionAttackedByPlayer((LivingEntity) event.getDamager(), maybeTarget.get(), (int) event.getDamage());
+            event.setDamage(0);
+            event.setCancelled(maybeTarget.get().turnsProtected() > 0);
         }
     }
 
@@ -79,12 +83,13 @@ public class MinionManager implements Listener {
         event.getDrops().removeAll(event.getDrops());
     }
 
-    private void handleMinionAttacked(Minion damager, Optional<Minion> damagee) {
-        if (damagee.isEmpty()) {
-            return;
-        }
-        damagee.get().onDamageReceived(damager.minionInfo().entity(), damager.strength());
-        damager.onDamageDealt(damagee.get().minionInfo().entity(), damager.strength());
+    private void handleMinionAttackedByPlayer(LivingEntity p, Minion damagee, int damage) {
+        damagee.onDamageReceived(p, damage, damagee.turnsProtected() > 0);
+    }
+
+    private void handleMinionAttacked(Minion damager, Minion damagee) {
+        damagee.onDamageReceived(damager.minionInfo().entity(), damager.strength(), damagee.turnsProtected() > 0);
+        damager.onDamageDealt(damagee.minionInfo().entity(), damager.strength(), damagee.turnsProtected() > 0);
     }
 
     private void handleChickenAttacked(Stadium stadium, Minion damager, LivingEntity chicken) {
@@ -93,6 +98,6 @@ public class MinionManager implements Listener {
             return;
         }
         stadium.pendingDamageForPlayer(targetPlayer.get(), damager.strength());
-        damager.onDamageDealt(targetPlayer.get(), damager.strength());
+        damager.onDamageDealt(targetPlayer.get(), damager.strength(), false);
     }
 }

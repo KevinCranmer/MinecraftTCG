@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.model.Stadium;
@@ -15,6 +16,11 @@ public class DingySkeletonDef implements MinionCardDefinition {
     @Override
     public String cardName() {
         return "Dingy Skeleton";
+    }
+
+    @Override
+    public CardRarity rarity() {
+        return CardRarity.COMMON;
     }
 
     @Override

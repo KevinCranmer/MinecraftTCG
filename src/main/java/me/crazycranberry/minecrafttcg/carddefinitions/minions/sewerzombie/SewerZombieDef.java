@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.model.Stadium;
@@ -23,8 +24,13 @@ public class SewerZombieDef implements MinionCardDefinition {
     }
 
     @Override
+    public CardRarity rarity() {
+        return CardRarity.COMMON;
+    }
+
+    @Override
     public String signDescription() {
-        return "Vanilla Ass$Zombie";
+        return "Vanilla Ass\nZombie";
     }
 
     @Override
