@@ -3,7 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.goals.LookForwardGoal;
 import me.crazycranberry.minecrafttcg.goals.ShootParticlesGoal;
-import me.crazycranberry.minecrafttcg.goals.ShowProtectionParticlesGoal;
+import me.crazycranberry.minecrafttcg.goals.ShowTemporaryEffectParticlesGoal;
 import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.TurnPhase;
@@ -13,6 +13,7 @@ import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
@@ -22,11 +23,13 @@ public abstract class Minion {
     private Integer strength;
     private Integer health;
     private Integer maxHealth;
-    private Integer attacksLeft = 1;
+    private Integer attacksPerTurn = 1;
+    private Integer attacksLeft = attacksPerTurn;
     private final MinionCardDefinition cardDef;
     private final MinionInfo minionInfo;
     private final PathfinderMob nmsMob;
     private Integer numTurnsProtected = 0;
+    private Integer temporaryBonusStrength = 0;
 
     public Minion(CardEnum cardEnum, MinionInfo minionInfo) {
         this.cardDef = (MinionCardDefinition) cardEnum.card();
@@ -39,7 +42,7 @@ public abstract class Minion {
     }
 
     public Integer strength() {
-        return strength;
+        return strength + temporaryBonusStrength;
     }
 
     public Integer health() {
@@ -56,6 +59,11 @@ public abstract class Minion {
 
     public MinionInfo minionInfo() {
         return minionInfo;
+    }
+
+    public void setAttacksPerTurn(Integer attacksPerTurn) {
+        this.attacksPerTurn = attacksPerTurn;
+        this.attacksLeft = attacksPerTurn;
     }
 
     public Integer attacksLeft() {
@@ -79,8 +87,9 @@ public abstract class Minion {
     }
 
     public void onTurnStart() {
-        attacksLeft = 1;
+        attacksLeft = attacksPerTurn;
         numTurnsProtected = Math.max(0, numTurnsProtected - 1);
+        temporaryBonusStrength = 0;
     }
 
     public abstract void onCombatStart();
@@ -107,12 +116,30 @@ public abstract class Minion {
         }
     }
 
+    public void onHeal(Integer healFor) {
+        health = Math.min(maxHealth, health + healFor);
+        minionInfo.entity().getWorld().spawnParticle(Particle.HEART, minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5);
+        minionInfo.stadium().updateCustomName(this);
+        minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 2, 1);
+    }
+
+    public void giveTemporaryStrength(Integer bonusStrength) {
+        temporaryBonusStrength += bonusStrength;
+        minionInfo.stadium().updateCustomName(this);
+        minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.BLOCK_ANVIL_USE, 2, 1);
+    }
+
     public void setProtected(int numTurns) {
         numTurnsProtected = numTurns;
+        minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.ITEM_SHIELD_BLOCK, 2, 1);
     }
 
     public Integer turnsProtected() {
         return numTurnsProtected;
+    }
+
+    public boolean hasBonusStrength() {
+        return temporaryBonusStrength > 0;
     }
 
     public void onCombatEnd() {
@@ -152,6 +179,6 @@ public abstract class Minion {
     }
 
     private void setProtectionParticlesGoal() {
-        nmsMob.goalSelector.addGoal(7, new ShowProtectionParticlesGoal<>(this));
+        nmsMob.goalSelector.addGoal(7, new ShowTemporaryEffectParticlesGoal<>(this));
     }
 }

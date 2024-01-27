@@ -1,0 +1,47 @@
+package me.crazycranberry.minecrafttcg.carddefinitions.spells;
+
+import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
+import me.crazycranberry.minecrafttcg.model.Stadium;
+import org.bukkit.entity.Player;
+
+public class DigDeeper implements SpellCardDefinition {
+    @Override
+    public Integer cost() {
+        return 4;
+    }
+
+    @Override
+    public String cardName() {
+        return "Dig Deeper";
+    }
+
+    @Override
+    public String cardDescription() {
+        return "Draw 2 cards";
+    }
+
+    @Override
+    public CardRarity rarity() {
+        return CardRarity.COMMON;
+    }
+
+    @Override
+    public void onCast(Stadium stadium, Player caster) {
+        //TODO: TRIGGER DRAWS
+    }
+
+    @Override
+    public boolean targetsMinion() {
+        return false;
+    }
+
+    @Override
+    public boolean targetsPlayer() {
+        return false;
+    }
+
+    @Override
+    public boolean targetsEmptySpots() {
+        return false;
+    }
+}

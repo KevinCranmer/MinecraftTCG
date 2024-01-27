@@ -1,56 +1,54 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
-import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
-public class DingySkeletonDef implements MinionCardDefinition {
+public class UnstablePyroDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 2;
+        return 4;
     }
 
     @Override
     public String cardName() {
-        return "Dingy Skeleton";
-    }
-
-    @Override
-    public CardRarity rarity() {
-        return CardRarity.COMMON;
+        return "Unstable Pyro";
     }
 
     @Override
     public String cardDescription() {
-        return "";
+        return "When this minion spawns and dies, it deals 1 damage to a random enemy.";
+    }
+
+    @Override
+    public CardRarity rarity() {
+        return CardRarity.UNCOMMON;
     }
 
     @Override
     public Integer strength() {
-        return 2;
+        return 3;
     }
 
     @Override
     public Integer maxHealth() {
-        return 1;
+        return 3;
     }
 
     @Override
     public EntityType minionType() {
-        return EntityType.SKELETON;
+        return EntityType.ZOMBIE;
     }
 
     @Override
     public boolean isRanged() {
-        return true;
+        return false;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return DingySkeleton.class;
+        return null;
     }
 
     @Override

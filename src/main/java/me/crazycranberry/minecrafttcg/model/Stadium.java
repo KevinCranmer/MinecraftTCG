@@ -59,7 +59,7 @@ public class Stadium {
     private int player2Mana = 0;
     private int player1PendingDamage = 0;
     private int player2PendingDamage = 0;
-    private int turn = 0;
+    public int turn = 0; //TODO: MAKE NOT PUBLIC
     private TurnPhase phase;
     private Minion redAMinion;
     private Minion redDMinion;
@@ -213,6 +213,10 @@ public class Stadium {
         };
     }
 
+    public List<Spot> allyMinionSpots(Player p) {
+        return p.equals(player1) ? List.of(RED_1_FRONT, RED_1_BACK, BLUE_1_FRONT, BLUE_1_BACK, GREEN_1_FRONT, GREEN_1_BACK) : List.of(RED_2_FRONT, RED_2_BACK, BLUE_2_FRONT, BLUE_2_BACK, GREEN_2_FRONT, GREEN_2_BACK);
+    }
+
     public boolean isPlayerParticipating(Player p) {
         return p.equals(player1) || p.equals(player2);
     }
@@ -301,12 +305,12 @@ public class Stadium {
         Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
         Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
         sign1.getSide(Side.FRONT).setLine(0, String.format("%s%s%s", minionNameColor, minion.cardDef().cardName(), RESET));
-        sign1.getSide(Side.FRONT).setLine(1, String.format("%s%s%s:%s %s❤%s:%s/%s\n", DARK_GREEN, minion.cardDef().isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.cardDef().strength(), RED, RESET, minion.cardDef().maxHealth(), minion.cardDef().maxHealth()));
+        sign1.getSide(Side.FRONT).setLine(1, String.format("%s%s%s:%s %s❤%s:%s/%s\n", DARK_GREEN, minion.cardDef().isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()));
         List<String> lines = List.of(minion.cardDef().signDescription().split("\n"));
         for (int i = 0; i < 6; i++) {
             int lineIndex = i + 2;
             Sign sign = lineIndex > 3 ? sign2 : sign1;
-            if (i > lines.size()) {
+            if (i >= lines.size()) {
                 sign.getSide(Side.FRONT).setLine(lineIndex % 4, "");
             } else {
                 sign.getSide(Side.FRONT).setLine(lineIndex % 4, lines.get(i));

@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftZombie;
 import org.bukkit.entity.Entity;
@@ -59,6 +60,9 @@ public class TestCommands {
             case "walk":
                 walk(p);
                 break;
+            case "turn":
+                turn(p, Integer.parseInt(command[1]));
+                break;
             case "move":
                 move(p, Double.parseDouble(command[1]), Double.parseDouble(command[2]), Double.parseDouble(command[3]));
                 break;
@@ -74,14 +78,17 @@ public class TestCommands {
             case "aioff":
                 aioff(p);
                 break;
-            case "particle":
-                spawnParticle(p);
-                break;
             case "buildStadium":
                 buildStadium(p, command[1], command[2], p.getLocation());
                 break;
             case "setup":
                 setup(p);
+                break;
+            case "sound":
+                sound(p, command[1]);
+                break;
+            case "particle":
+                particle(p, command[1]);
                 break;
             case "trackVision":
                 trackVision(p);
@@ -109,6 +116,18 @@ public class TestCommands {
         }
     }
 
+    private static void sound(Player p, String s) {
+        p.getWorld().playSound(p, Sound.valueOf(s), 1,1);
+    }
+
+    private static void particle(Player p, String s) {
+        p.getWorld().spawnParticle(Particle.valueOf(s), p.getEyeLocation().add(1, 0, 0), 5, 0.2,0.2, 0.2);
+    }
+
+    private static void turn(Player p, int i) {
+        StadiumManager.stadium(p.getWorld()).turn = i;
+    }
+
     private static void endCombat(Player p) {
         Bukkit.getPluginManager().callEvent(new CombatEndEvent(StadiumManager.stadium(p.getWorld())));
     }
@@ -125,6 +144,7 @@ public class TestCommands {
         trackDuel(p);
         Bukkit.getServer().getPluginManager().registerEvents(new TurnManager(), getPlugin());
         Bukkit.getPluginManager().callEvent(new DuelStartEvent(StadiumManager.stadium(p.getWorld())));
+        StadiumManager.stadium(p.getWorld()).turn = 10;
     }
 
     private static void trackDuel(Player p) {

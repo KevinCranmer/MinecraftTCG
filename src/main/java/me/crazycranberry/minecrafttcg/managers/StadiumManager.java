@@ -111,7 +111,7 @@ public class StadiumManager implements Listener {
         Block startingCorner = stadium.startingCorner().getBlock();
         Vector offset = isPlayer1 ? PLAYER_1_MANA_OFFSET : PLAYER_2_MANA_OFFSET;
         int x = (int) offset.getX(), y = (int) offset.getY(), z = (int) offset.getZ();
-        for (int i = 0; i < turn; i++) {
+        for (int i = 0; i < Math.min(10, turn); i++) {
             int passedHalfway = i / 5;
             int direction = isPlayer1 ? 1 : -1;
             int increment = (i + passedHalfway) * direction;
@@ -307,7 +307,7 @@ public class StadiumManager implements Listener {
         directional.setFacing(blockFace);
         signState.setBlockData(directional);
         if (addDescText) {
-            signState.getSide(Side.FRONT).setLine(0, "Left click anything");
+            signState.getSide(Side.FRONT).setLine(0, "Left click things");
             signState.getSide(Side.FRONT).setLine(1, "for a description");
             signState.getSide(Side.FRONT).setLine(2, "|");
             signState.getSide(Side.FRONT).setLine(3, "V");

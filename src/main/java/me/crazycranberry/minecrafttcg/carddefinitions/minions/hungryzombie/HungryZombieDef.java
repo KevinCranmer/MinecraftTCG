@@ -1,26 +1,19 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
-import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
-public class DingySkeletonDef implements MinionCardDefinition {
+public class HungryZombieDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 2;
+        return 4;
     }
 
     @Override
     public String cardName() {
-        return "Dingy Skeleton";
-    }
-
-    @Override
-    public CardRarity rarity() {
-        return CardRarity.COMMON;
+        return "Hungry Zombie";
     }
 
     @Override
@@ -29,28 +22,33 @@ public class DingySkeletonDef implements MinionCardDefinition {
     }
 
     @Override
+    public CardRarity rarity() {
+        return CardRarity.COMMON;
+    }
+
+    @Override
     public Integer strength() {
-        return 2;
+        return 3;
     }
 
     @Override
     public Integer maxHealth() {
-        return 1;
+        return 4;
     }
 
     @Override
     public EntityType minionType() {
-        return EntityType.SKELETON;
+        return EntityType.ZOMBIE;
     }
 
     @Override
     public boolean isRanged() {
-        return true;
+        return false;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return DingySkeleton.class;
+        return HungryZombie.class;
     }
 
     @Override

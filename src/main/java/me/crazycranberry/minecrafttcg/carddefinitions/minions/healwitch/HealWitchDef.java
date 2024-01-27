@@ -1,21 +1,24 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
-import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
-public class DingySkeletonDef implements MinionCardDefinition {
+public class HealWitchDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 2;
+        return 3;
     }
 
     @Override
     public String cardName() {
-        return "Dingy Skeleton";
+        return "Heal Witch";
+    }
+
+    @Override
+    public String cardDescription() {
+        return "At the end of each turn, heal a random Minion 1 health";
     }
 
     @Override
@@ -24,13 +27,8 @@ public class DingySkeletonDef implements MinionCardDefinition {
     }
 
     @Override
-    public String cardDescription() {
-        return "";
-    }
-
-    @Override
     public Integer strength() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -40,21 +38,21 @@ public class DingySkeletonDef implements MinionCardDefinition {
 
     @Override
     public EntityType minionType() {
-        return EntityType.SKELETON;
+        return EntityType.WITCH;
     }
 
     @Override
     public boolean isRanged() {
-        return true;
+        return false;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return DingySkeleton.class;
+        return HealthWitch.class;
     }
 
     @Override
     public String signDescription() {
-        return "";
+        return "Randomly\nheals 1\nally minion";
     }
 }

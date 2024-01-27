@@ -20,7 +20,7 @@ public class SewerZombieDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return "Grrrrr\nImmaZombie!";
+        return "";
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SewerZombieDef implements MinionCardDefinition {
 
     @Override
     public String signDescription() {
-        return "Vanilla Ass\nZombie";
+        return "";
     }
 
     @Override
@@ -40,7 +40,7 @@ public class SewerZombieDef implements MinionCardDefinition {
 
     @Override
     public Integer maxHealth() {
-        return 2;
+        return 3;
     }
 
     @Override

@@ -9,6 +9,7 @@ import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 public interface Card {
     public static final NamespacedKey IS_CARD_KEY = new NamespacedKey(getPlugin(), "card");
     public static final NamespacedKey CARD_NAME_KEY = new NamespacedKey(getPlugin(), "cardName");
+    public static final NamespacedKey RANDOM_UUID_KEY = new NamespacedKey(getPlugin(), "random"); //Makes the books not stackable
     public Integer cost();
     public String cardName();
     public String cardDescription();

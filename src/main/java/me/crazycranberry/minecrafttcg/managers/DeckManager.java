@@ -17,10 +17,17 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
+import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.ADRENALINE;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.AGGRESSIVE_BANDIT;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.DINGY_SKELETON;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.HEAL;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.HEAL_WITCH;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.HUNGRY_ZOMBIE;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.PROTECT;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.SEWER_ZOMBIE;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.TOXIC_SPIKES;
@@ -43,6 +50,11 @@ public class DeckManager implements Listener {
         deck.addItem(createCard(DINGY_SKELETON));
         deck.addItem(createCard(PROTECT));
         deck.addItem(createCard(TOXIC_SPIKES));
+        deck.addItem(createCard(HEAL));
+        deck.addItem(createCard(ADRENALINE));
+        deck.addItem(createCard(AGGRESSIVE_BANDIT));
+        deck.addItem(createCard(HUNGRY_ZOMBIE));
+        deck.addItem(createCard(HEAL_WITCH));
         event.getPlayer().openInventory(deck);
     }
 
@@ -57,17 +69,18 @@ public class DeckManager implements Listener {
         if (cardDef instanceof MinionCardDefinition minionCardDefinition) {
             page = minionCardDescription(minionCardDefinition);
         } else if (cardDef instanceof SpellOrCantripCardDefinition spellOrCantripCardDef) {
-            page = spellOrCantripCardDescriptoin(spellOrCantripCardDef);
+            page = spellOrCantripCardDescription(spellOrCantripCardDef);
         }
         bookMeta.addPage(page);
         bookMeta.setLore(List.of(String.format("%sType \"/tcg\" to learn more!%s", GOLD, RESET)));
         bookMeta.getPersistentDataContainer().set(IS_CARD_KEY, PersistentDataType.BOOLEAN, true);
         bookMeta.getPersistentDataContainer().set(CARD_NAME_KEY, PersistentDataType.STRING, cardEnum.name());
+        bookMeta.getPersistentDataContainer().set(RANDOM_UUID_KEY, PersistentDataType.STRING, UUID.randomUUID().toString());
         book.setItemMeta(bookMeta);
         return book;
     }
 
-    private String spellOrCantripCardDescriptoin(SpellOrCantripCardDefinition card) {
+    private String spellOrCantripCardDescription(SpellOrCantripCardDefinition card) {
         List<String> targets = new ArrayList<>();
         if (card.targetsMinion()) {
             targets.add("Minions");

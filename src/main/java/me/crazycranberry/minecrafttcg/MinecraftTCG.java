@@ -4,6 +4,7 @@ import me.crazycranberry.minecrafttcg.commands.TestCommand;
 import me.crazycranberry.minecrafttcg.managers.DeckManager;
 import me.crazycranberry.minecrafttcg.managers.MinionManager;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
+import org.bukkit.Particle;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +22,8 @@ public final class MinecraftTCG extends JavaPlugin {
         logger = this.getLogger();
         registerManagers();
         registerCommands();
+
+        System.out.println("CRIT class: " + Particle.CRIT.getDataType());
     }
 
     private void registerManagers() {

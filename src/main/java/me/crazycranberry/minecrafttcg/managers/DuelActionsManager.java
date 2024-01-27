@@ -126,6 +126,9 @@ public class DuelActionsManager implements Listener {
     }
 
     private boolean validTarget(Player p, Stadium stadium, SpellOrCantripCardDefinition spellOrCantripCardDef) {
+        if (!spellOrCantripCardDef.targetsEmptySpots() && !spellOrCantripCardDef.targetsMinion() && !spellOrCantripCardDef.targetsPlayer()) {
+            return true;
+        }
         Minion targetedMinion = stadium.targetedMinion(p);
         return switch (stadium.playerTargetSpot(p)) {
             case RED_1_BACK, RED_2_BACK, RED_1_FRONT, RED_2_FRONT, BLUE_1_BACK, BLUE_2_BACK, BLUE_1_FRONT, BLUE_2_FRONT, GREEN_1_BACK, GREEN_2_BACK, GREEN_1_FRONT, GREEN_2_FRONT ->
