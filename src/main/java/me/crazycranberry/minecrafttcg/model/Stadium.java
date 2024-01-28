@@ -283,8 +283,10 @@ public class Stadium {
 
     public LivingEntity getTargetInFront(Minion minion) {
         Minion opposingMinion = Spot.opposingFrontRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
+        System.out.println(minion.cardDef().cardName() + " is targeting " + (opposingMinion == null ? "null" : opposingMinion.cardDef().cardName()) + " who's in front");
         if (opposingMinion == null) {
             opposingMinion = Spot.opposingBackRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
+            System.out.println(minion.cardDef().cardName() + " is targeting " + (opposingMinion == null ? "null" : opposingMinion.cardDef().cardName()) + " who's in back");
             if (opposingMinion == null) {
                 return Spot.opposingChicken(minion.minionInfo().spot(), this);
             }
@@ -326,10 +328,11 @@ public class Stadium {
                 Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
                 Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
                 Player targetedPlayer = player.equals(player1) ? player2 : player1;
+                System.out.println("Players health " + targetedPlayer.getName() + targetedPlayer.getHealth());
                 sign1.getSide(Side.FRONT).setLine(0, targetedPlayer.getName());
                 sign1.getSide(Side.FRONT).setLine(1, String.format("%s❤%s: %s", RED, RESET, targetedPlayer.getHealth()));
                 sign1.getSide(Side.FRONT).setLine(2, String.format("Cards in Hand: %s", numCardsInHand(targetedPlayer)));
-                sign1.getSide(Side.FRONT).setLine(3, "");
+                sign1.getSide(Side.FRONT).setLine(3, String.format("%s❤%s: 19.0", RED, RESET));
                 sign2.getSide(Side.FRONT).setLine(0, "");
                 sign2.getSide(Side.FRONT).setLine(1, "");
                 sign2.getSide(Side.FRONT).setLine(2, "");
@@ -367,6 +370,7 @@ public class Stadium {
             if (spot.isSummonableSpot()) {
                 Minion minion = spot.minionRef().apply(this);
                 if (minion != null && minion.attacksLeft() > 0 && !(!minion.cardDef().isRanged() && hasAllyMinionInFront(spot))) {
+                    System.out.println(minion.cardDef().cardName() + " still has this many attacks left: " + minion.attacksLeft());
                     everyoneDone = false;
                 }
             }

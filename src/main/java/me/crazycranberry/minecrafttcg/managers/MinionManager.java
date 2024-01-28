@@ -21,6 +21,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 
 import java.util.Optional;
 
@@ -30,6 +32,13 @@ public class MinionManager implements Listener {
     @EventHandler
     private void onBurn(EntityCombustEvent event) {
         if (StadiumManager.stadium(event.getEntity().getWorld()) != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onTarget(EntityTargetLivingEntityEvent event) {
+        if (StadiumManager.stadium(event.getEntity().getWorld()) != null && !event.getReason().equals(EntityTargetEvent.TargetReason.CUSTOM)) {
             event.setCancelled(true);
         }
     }

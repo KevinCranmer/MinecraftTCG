@@ -147,7 +147,14 @@ public class TestCommands {
 
     private static void setup(Player p) {
         Player me = Bukkit.getOnlinePlayers().stream().filter(player -> player.getName().equals("Crazy_Cranberry")).findFirst().get();
+        Player him = Bukkit.getOnlinePlayers().stream().filter(player -> player.getName().equals("GoofyCranberry")).findFirst().get();
         me.getNearbyEntities(40, 40, 40).stream().filter(e -> !e.getType().equals(EntityType.PLAYER)).forEach(Entity::remove);
+        me.setHealth(20);
+        him.setHealth(20);
+        me.setFoodLevel(10);
+        him.setFoodLevel(10);
+        me.getInventory().clear();
+        him.getInventory().clear();
         buildStadium(p, "Crazy_Cranberry", "GoofyCranberry", new Location(p.getWorld(), 22.5, 96, -39.5));
         trackVision(p);
         trackDuel(p);

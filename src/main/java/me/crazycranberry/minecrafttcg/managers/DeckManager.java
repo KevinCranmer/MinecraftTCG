@@ -51,7 +51,7 @@ public class DeckManager implements Listener {
     @EventHandler
     private void onDeckOrCollectionSave(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        if ((!playersLookingAtDecks.containsKey(p) && !playersLookingAtCollection.contains(p)) || StadiumManager.stadium(p.getWorld()).isPlayerParticipating(p)) {
+        if ((!playersLookingAtDecks.containsKey(p) && !playersLookingAtCollection.contains(p)) || (StadiumManager.stadium(p.getWorld()) != null && StadiumManager.stadium(p.getWorld()).isPlayerParticipating(p))) {
             return;
         }
         if (playersLookingAtDecks.containsKey(p)) {
@@ -123,7 +123,7 @@ public class DeckManager implements Listener {
             Integer numCopies = cardCounts.get(card);
             numCopies = numCopies == null ? 0 : numCopies;
             if (numCopies + 1 > card.card().rarity().numAllowedPerDeck()) {
-                p.sendMessage(String.format("%sCould not save deck. %s%s can only have %s copies because it's %s.%s", GRAY, item.getItemMeta().getDisplayName(), RESET, card.card().rarity().numAllowedPerDeck(), card.card().rarity().toString(), RESET));
+                p.sendMessage(String.format("%sCould not save deck. %s%s can only have %s copies because it's %s.%s", GRAY, item.getItemMeta().getDisplayName(), GRAY, card.card().rarity().numAllowedPerDeck(), card.card().rarity().toString(), RESET));
                 weCanSaveTheDeck = false;
                 break;
             }

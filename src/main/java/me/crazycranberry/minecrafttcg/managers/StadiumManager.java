@@ -32,7 +32,9 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_BLUE_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_GREEN_CHICKEN;
@@ -89,6 +91,10 @@ public class StadiumManager implements Listener {
         if (stadiums.containsKey(block.getWorld()) && block.getType().equals(REDSTONE_LAMP)) {
             event.setNewCurrent(1);
         }
+    }
+
+    public static Set<World> getWorlds() {
+        return stadiums.keySet();
     }
 
     public static void updateManaForANewTurn(Stadium stadium, int turn) {
