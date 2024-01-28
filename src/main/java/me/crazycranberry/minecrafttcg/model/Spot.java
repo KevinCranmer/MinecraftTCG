@@ -14,18 +14,18 @@ import static me.crazycranberry.minecrafttcg.model.Stadium.GREEN_MATERIAL;
 import static me.crazycranberry.minecrafttcg.model.Stadium.RED_MATERIAL;
 
 public enum Spot {
-    RED_2_BACK(new Vector(20, 2, 1), RED_MATERIAL, false, true, true, Spot::redAMinionStatic, Spot::setRedAMinionStatic),
-    RED_2_FRONT(new Vector(17, 1, 1), RED_MATERIAL, false, true, true, Spot::redDMinionStatic, Spot::setRedDMinionStatic),
-    RED_1_FRONT(new Vector(9, 1, 1), RED_MATERIAL, true, true, true, Spot::red1MinionStatic, Spot::setRed1MinionStatic),
-    RED_1_BACK(new Vector(6, 2 ,1), RED_MATERIAL, true, true, true, Spot::red4MinionStatic, Spot::setRed4MinionStatic),
-    BLUE_2_BACK(new Vector(20, 2, 5), BLUE_MATERIAL, false, true, true, Spot::blueBMinionStatic, Spot::setBlueBMinionStatic),
-    BLUE_2_FRONT(new Vector(17, 1, 5), BLUE_MATERIAL, false, true, true, Spot::blueEMinionStatic, Spot::setBlueEMinionStatic),
-    BLUE_1_FRONT(new Vector(9, 1, 5), BLUE_MATERIAL, true, true, true, Spot::blue2MinionStatic, Spot::setBlue2MinionStatic),
-    BLUE_1_BACK(new Vector(6, 2,5), BLUE_MATERIAL, true, true, true, Spot::blue5MinionStatic, Spot::setBlue5MinionStatic),
-    GREEN_2_BACK(new Vector(20, 2, 9), GREEN_MATERIAL, false, true, true, Spot::greenCMinionStatic, Spot::setGreenCMinionStatic),
-    GREEN_2_FRONT(new Vector(17, 1, 9), GREEN_MATERIAL, false, true, true, Spot::greenFMinionStatic, Spot::setGreenFMinionStatic),
-    GREEN_1_FRONT(new Vector(9, 1, 9), GREEN_MATERIAL, true, true, true, Spot::green3MinionStatic, Spot::setGreen3MinionStatic),
-    GREEN_1_BACK(new Vector(6, 2, 9), GREEN_MATERIAL, true, true, true, Spot::green6MinionStatic, Spot::setGreen6MinionStatic),
+    RED_2_BACK(new Vector(20, 2, 1), RED_MATERIAL, false, true, true, Spot::red2BackMinionStatic, Spot::setRed2BackMinionStatic),
+    RED_2_FRONT(new Vector(17, 1, 1), RED_MATERIAL, false, true, true, Spot::red2FrontMinionStatic, Spot::setRed2FrontMinionStatic),
+    RED_1_FRONT(new Vector(9, 1, 1), RED_MATERIAL, true, true, true, Spot::red1FrontMinionStatic, Spot::setRed1FrontMinionStatic),
+    RED_1_BACK(new Vector(6, 2 ,1), RED_MATERIAL, true, true, true, Spot::red1BackMinionStatic, Spot::setRed1BackMinionStatic),
+    BLUE_2_BACK(new Vector(20, 2, 5), BLUE_MATERIAL, false, true, true, Spot::blue2BackMinionStatic, Spot::setBlue2BackMinionStatic),
+    BLUE_2_FRONT(new Vector(17, 1, 5), BLUE_MATERIAL, false, true, true, Spot::blue2FrontMinionStatic, Spot::setBlue2FrontMinionStatic),
+    BLUE_1_FRONT(new Vector(9, 1, 5), BLUE_MATERIAL, true, true, true, Spot::blue1FrontMinionStatic, Spot::setBlue1FrontMinionStatic),
+    BLUE_1_BACK(new Vector(6, 2,5), BLUE_MATERIAL, true, true, true, Spot::blue1BackMinionStatic, Spot::setBlue1BackMinionStatic),
+    GREEN_2_BACK(new Vector(20, 2, 9), GREEN_MATERIAL, false, true, true, Spot::green2BackMinionStatic, Spot::setGreen2BackMinionStatic),
+    GREEN_2_FRONT(new Vector(17, 1, 9), GREEN_MATERIAL, false, true, true, Spot::green2FrontMinionStatic, Spot::setGreen2FrontMinionStatic),
+    GREEN_1_FRONT(new Vector(9, 1, 9), GREEN_MATERIAL, true, true, true, Spot::green1FrontMinionStatic, Spot::setGreen1FrontMinionStatic),
+    GREEN_1_BACK(new Vector(6, 2, 9), GREEN_MATERIAL, true, true, true, Spot::green1BackMinionStatic, Spot::setGreen1BackMinionStatic),
     PLAYER_1_OUTLOOK(new Vector(2, 8, 5), Material.BIRCH_PLANKS, true, false, true, null, null),
     PLAYER_2_OUTLOOK(new Vector(24, 8, 5), Material.COBBLESTONE, false, false, true, null, null),
     PLAYER_1_RED_CHICKEN(new Vector(3, 2, 1), RED_MATERIAL, true, false, false, null, null),
@@ -84,11 +84,11 @@ public enum Spot {
     public static Spot opposingBackRankSpot(Spot currentSpot) {
         return switch (currentSpot) {
             case RED_1_FRONT, RED_1_BACK -> RED_2_BACK;
-            case RED_2_BACK, RED_2_FRONT -> RED_1_FRONT;
+            case RED_2_BACK, RED_2_FRONT -> RED_1_BACK;
             case BLUE_1_FRONT, BLUE_1_BACK -> BLUE_2_BACK;
-            case BLUE_2_BACK, BLUE_2_FRONT -> BLUE_1_FRONT;
+            case BLUE_2_BACK, BLUE_2_FRONT -> BLUE_1_BACK;
             case GREEN_1_FRONT, GREEN_1_BACK -> GREEN_2_BACK;
-            case GREEN_2_BACK, GREEN_2_FRONT -> GREEN_1_FRONT;
+            case GREEN_2_BACK, GREEN_2_FRONT -> GREEN_1_BACK;
             default ->
                     throw new IllegalArgumentException("You cannot try to get the opposingBackRankSpot from " + currentSpot);
         };
@@ -97,11 +97,11 @@ public enum Spot {
     public static Spot opposingFrontRankSpot(Spot currentSpot) {
         return switch (currentSpot) {
             case RED_1_FRONT, RED_1_BACK -> RED_2_FRONT;
-            case RED_2_BACK, RED_2_FRONT -> RED_1_BACK;
+            case RED_2_BACK, RED_2_FRONT -> RED_1_FRONT;
             case BLUE_1_FRONT, BLUE_1_BACK -> BLUE_2_FRONT;
-            case BLUE_2_BACK, BLUE_2_FRONT -> BLUE_1_BACK;
+            case BLUE_2_BACK, BLUE_2_FRONT -> BLUE_1_FRONT;
             case GREEN_1_FRONT, GREEN_1_BACK -> GREEN_2_FRONT;
-            case GREEN_2_BACK, GREEN_2_FRONT -> GREEN_1_BACK;
+            case GREEN_2_BACK, GREEN_2_FRONT -> GREEN_1_FRONT;
             default ->
                     throw new IllegalArgumentException("You cannot try to get the opposingFrontRankSpot from " + currentSpot);
         };
@@ -120,52 +120,52 @@ public enum Spot {
         };
     }
 
-    public static Minion redAMinionStatic(Stadium stadium) {
-        return stadium.redAMinion();
+    public static Minion red2BackMinionStatic(Stadium stadium) {
+        return stadium.red2BackMinion();
     }
 
-    public static Minion redDMinionStatic(Stadium stadium) {
-        return stadium.redDMinion();
+    public static Minion red2FrontMinionStatic(Stadium stadium) {
+        return stadium.red2FrontMinion();
     }
 
-    public static Minion red1MinionStatic(Stadium stadium) {
-        return stadium.red1Minion();
+    public static Minion red1FrontMinionStatic(Stadium stadium) {
+        return stadium.red1FrontMinion();
     }
 
-    public static Minion red4MinionStatic(Stadium stadium) {
-        return stadium.red4Minion();
+    public static Minion red1BackMinionStatic(Stadium stadium) {
+        return stadium.red1BackMinion();
     }
 
-    public static Minion blueBMinionStatic(Stadium stadium) {
-        return stadium.blueBMinion();
+    public static Minion blue2BackMinionStatic(Stadium stadium) {
+        return stadium.blue2BackMinion();
     }
 
-    public static Minion blueEMinionStatic(Stadium stadium) {
-        return stadium.blueEMinion();
+    public static Minion blue2FrontMinionStatic(Stadium stadium) {
+        return stadium.blue2FrontMinion();
     }
 
-    public static Minion blue2MinionStatic(Stadium stadium) {
-        return stadium.blue2Minion();
+    public static Minion blue1FrontMinionStatic(Stadium stadium) {
+        return stadium.blue1FrontMinion();
     }
 
-    public static Minion blue5MinionStatic(Stadium stadium) {
-        return stadium.blue5Minion();
+    public static Minion blue1BackMinionStatic(Stadium stadium) {
+        return stadium.blue1BackMinion();
     }
 
-    public static Minion greenCMinionStatic(Stadium stadium) {
-        return stadium.greenCMinion();
+    public static Minion green2BackMinionStatic(Stadium stadium) {
+        return stadium.green2BackMinion();
     }
 
-    public static Minion greenFMinionStatic(Stadium stadium) {
-        return stadium.greenFMinion();
+    public static Minion green2FrontMinionStatic(Stadium stadium) {
+        return stadium.green2FrontMinion();
     }
 
-    public static Minion green3MinionStatic(Stadium stadium) {
-        return stadium.green3Minion();
+    public static Minion green1FrontMinionStatic(Stadium stadium) {
+        return stadium.green1FrontMinion();
     }
 
-    public static Minion green6MinionStatic(Stadium stadium) {
-        return stadium.green6Minion();
+    public static Minion green1BackMinionStatic(Stadium stadium) {
+        return stadium.green1BackMinion();
     }
 
     public static Player player1Static(Stadium stadium) {
@@ -176,51 +176,51 @@ public enum Spot {
         return stadium.player2();
     }
 
-    public static void setRedAMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setRedAMinion(minion);
+    public static void setRed2BackMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setRed2BackMinion(minion);
     }
 
-    public static void setRedDMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setRedDMinion(minion);
+    public static void setRed2FrontMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setRed2FrontMinion(minion);
     }
 
-    public static void setRed1MinionStatic(Stadium stadium, Minion minion) {
-        stadium.setRed1Minion(minion);
+    public static void setRed1FrontMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setRed1FrontMinion(minion);
     }
 
-    public static void setRed4MinionStatic(Stadium stadium, Minion minion) {
-        stadium.setRed4Minion(minion);
+    public static void setRed1BackMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setRed1BackMinion(minion);
     }
 
-    public static void setBlueBMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setBlueBMinion(minion);
+    public static void setBlue2BackMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setBlue2BackMinion(minion);
     }
 
-    public static void setBlueEMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setBlueEMinion(minion);
+    public static void setBlue2FrontMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setBlue2FrontMinion(minion);
     }
 
-    public static void setBlue2MinionStatic(Stadium stadium, Minion minion) {
-        stadium.setBlue2Minion(minion);
+    public static void setBlue1FrontMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setBlue1FrontMinion(minion);
     }
 
-    public static void setBlue5MinionStatic(Stadium stadium, Minion minion) {
-        stadium.setBlue5Minion(minion);
+    public static void setBlue1BackMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setBlue1BackMinion(minion);
     }
 
-    public static void setGreenCMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setGreenCMinion(minion);
+    public static void setGreen2BackMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setGreen2BackMinion(minion);
     }
 
-    public static void setGreenFMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setGreenFMinion(minion);
+    public static void setGreen2FrontMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setGreen2FrontMinion(minion);
     }
 
-    public static void setGreen3MinionStatic(Stadium stadium, Minion minion) {
-        stadium.setGreen3Minion(minion);
+    public static void setGreen1FrontMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setGreen1FrontMinion(minion);
     }
 
-    public static void setGreen6MinionStatic(Stadium stadium, Minion minion) {
-        stadium.setGreen6Minion(minion);
+    public static void setGreen1BackMinionStatic(Stadium stadium, Minion minion) {
+        stadium.setGreen1BackMinion(minion);
     }
 }

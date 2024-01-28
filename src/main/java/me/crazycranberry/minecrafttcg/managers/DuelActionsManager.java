@@ -109,7 +109,7 @@ public class DuelActionsManager implements Listener {
 
     private boolean castable(Player p, Stadium stadium, Card card) {
         if (card.cost() > stadium.playerMana(p)) {
-            p.sendMessage(String.format("%s%sYou do not have enough mana to cast this card.%s", GRAY, ITALIC, RESET));
+            p.sendMessage(String.format("%s%sYou only have %s mana, this card costs %s.%s", GRAY, ITALIC, stadium.playerMana(p), card.cost(), RESET));
             return false;
         } else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
             p.sendMessage(String.format("%s%sYou cannot cast this card while it's not your turn.%s", GRAY, ITALIC, RESET));
@@ -179,6 +179,9 @@ public class DuelActionsManager implements Listener {
     }
 
     public void requestNextPhase(Stadium stadium, Player player) {
+        if (stadium.phase() == null) {
+            return;
+        }
         if ((player.equals(stadium.player1()) && stadium.turn() % 2 == 1) || (player.equals(stadium.player2()) && stadium.turn() % 2 == 0)) {
             switch (stadium.phase()) {
                 case FIRST_PRECOMBAT_PHASE:

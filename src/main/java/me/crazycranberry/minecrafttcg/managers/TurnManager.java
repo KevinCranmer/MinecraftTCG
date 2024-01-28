@@ -42,6 +42,7 @@ import static org.bukkit.ChatColor.RED;
 
 public class TurnManager implements Listener {
     public static final int TITLE_DURATION = 80; // In ticks
+    private static final int numCardsToStart = 2;
 
     @EventHandler
     private void onDuelStart(DuelStartEvent event) {
@@ -49,6 +50,10 @@ public class TurnManager implements Listener {
                 String.format("%sDuel Started", AQUA), "You are Player 1",
                 String.format("%sDuel Started", AQUA), "You are Player 2",
                 event.getStadium());
+        for (int i = 0; i < numCardsToStart; i++) {
+            event.getStadium().draw(event.getStadium().player1());
+            event.getStadium().draw(event.getStadium().player2());
+        }
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstPreCombatPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
     }
 
@@ -57,6 +62,8 @@ public class TurnManager implements Listener {
         System.out.println("onFirstPreCombatPhaseStarted");
         event.getStadium().updatePhase(FIRST_PRECOMBAT_PHASE);
         int turn = event.getStadium().turn();
+        event.getStadium().draw(event.getStadium().player1());
+        event.getStadium().draw(event.getStadium().player2());
         executeForAllMinions(event.getStadium(), Minion::onTurnStart);
         String title = turn % 2 != 0 ? String.format("%s%s's Pre-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Pre-Combat Phase", GOLD, event.getStadium().player2().getName());
         sendTitles(title, "Turn " + turn, event.getStadium());

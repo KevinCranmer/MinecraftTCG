@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.events.BuildStadiumEvent;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
@@ -33,6 +34,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.model.Collection.createCard;
 
 public class TestCommands {
     static Skeleton skeleton;
@@ -68,6 +70,9 @@ public class TestCommands {
                 break;
             case "removeGoals":
                 removeGoals(p);
+                break;
+            case "card":
+                card(p, command[1]);
                 break;
             case "spawnAndRemove":
                 spawnAndRemove(p);
@@ -116,6 +121,10 @@ public class TestCommands {
         }
     }
 
+    private static void card(Player p, String s) {
+        p.getInventory().addItem(createCard(CardEnum.fromString(s)));
+    }
+
     private static void sound(Player p, String s) {
         p.getWorld().playSound(p, Sound.valueOf(s), 1,1);
     }
@@ -144,7 +153,6 @@ public class TestCommands {
         trackDuel(p);
         Bukkit.getServer().getPluginManager().registerEvents(new TurnManager(), getPlugin());
         Bukkit.getPluginManager().callEvent(new DuelStartEvent(StadiumManager.stadium(p.getWorld())));
-        StadiumManager.stadium(p.getWorld()).turn = 10;
     }
 
     private static void trackDuel(Player p) {

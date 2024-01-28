@@ -27,7 +27,8 @@ public class DigDeeper implements SpellCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster) {
-        //TODO: TRIGGER DRAWS
+        stadium.draw(caster);
+        stadium.draw(caster);
     }
 
     @Override

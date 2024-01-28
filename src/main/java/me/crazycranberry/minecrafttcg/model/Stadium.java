@@ -1,8 +1,6 @@
 package me.crazycranberry.minecrafttcg.model;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import org.bukkit.Bukkit;
@@ -13,14 +11,15 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
-import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
+import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_1_SIGN_OFFSET;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_2_SIGN_OFFSET;
 import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_1_BACK;
@@ -52,6 +51,7 @@ public class Stadium {
     public static final Material GREEN_MATERIAL = Material.LIME_TERRACOTTA;
     private static final Material PLAYER_1_TARGET_MATERIAL = Material.LIME_CONCRETE;
     private static final Material PLAYER_2_TARGET_MATERIAL = Material.ORANGE_CONCRETE;
+    private static final int MAX_CARDS_IN_HAND = 9;
     private final Location startingCorner;
     private final Player player1;
     private final Player player2;
@@ -59,20 +59,24 @@ public class Stadium {
     private int player2Mana = 0;
     private int player1PendingDamage = 0;
     private int player2PendingDamage = 0;
+    private final Deck player1Deck;
+    private final Deck player2Deck;
+    private int player1MillDamage = 1;
+    private int player2MillDamage = 1;
     public int turn = 0; //TODO: MAKE NOT PUBLIC
     private TurnPhase phase;
-    private Minion redAMinion;
-    private Minion redDMinion;
-    private Minion red1Minion;
-    private Minion red4Minion;
-    private Minion blueBMinion;
-    private Minion blueEMinion;
-    private Minion blue2Minion;
-    private Minion blue5Minion;
-    private Minion greenCMinion;
-    private Minion greenFMinion;
-    private Minion green3Minion;
-    private Minion green6Minion;
+    private Minion red2BackMinion;
+    private Minion red2FrontMinion;
+    private Minion red1FrontMinion;
+    private Minion red1BackMinion;
+    private Minion blue2BackMinion;
+    private Minion blue2FrontMinion;
+    private Minion blue1FrontMinion;
+    private Minion blue1BackMinion;
+    private Minion green2BackMinion;
+    private Minion green2FrontMinion;
+    private Minion green1FrontMinion;
+    private Minion green1BackMinion;
     private final LivingEntity player1RedChicken;
     private final LivingEntity player1BlueChicken;
     private final LivingEntity player1GreenChicken;
@@ -82,10 +86,12 @@ public class Stadium {
     private Spot player1Target;
     private Spot player2Target;
 
-    public Stadium(Location startingCorner, Player player1, Player player2, LivingEntity player1RedChicken, LivingEntity player1BlueChicken, LivingEntity player1GreenChicken, LivingEntity player2RedChicken, LivingEntity player2BlueChicken, LivingEntity player2GreenChicken) {
+    public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck, LivingEntity player1RedChicken, LivingEntity player1BlueChicken, LivingEntity player1GreenChicken, LivingEntity player2RedChicken, LivingEntity player2BlueChicken, LivingEntity player2GreenChicken) {
         this.startingCorner = startingCorner;
         this.player1 = player1;
+        this.player1Deck = player1Deck;
         this.player2 = player2;
+        this.player2Deck = player2Deck;
         this.player1RedChicken = player1RedChicken;
         this.player1BlueChicken = player1BlueChicken;
         this.player1GreenChicken = player1GreenChicken;
@@ -120,6 +126,32 @@ public class Stadium {
                     player2.damage(player2PendingDamage);
                 }
                 player2PendingDamage = 0;
+            }
+        }
+    }
+
+    public void draw(Player p) {
+        if (p.equals(player1)) {
+            Optional<ItemStack> cardDrawn = player1Deck.draw();
+            if (cardDrawn.isEmpty()) {
+                sendMessageToBothPlayers(String.format("%s%s%s has attempted to draw from an empty deck. Taking %s%s%s damage.", GREEN, p.getName(), RESET, RED, player1MillDamage, RESET));
+                player1.damage(player1MillDamage);
+                player1MillDamage++;
+            } else if(numCardsInHand(player1) >= MAX_CARDS_IN_HAND) {
+                sendMessageToBothPlayers(String.format("%s%s%s has attempted to draw while already having %s cards. [%s%s] has been sent to the void.", GREEN, p.getName(), RESET, numCardsInHand(player1), cardDrawn.get().getItemMeta().getDisplayName(), RESET));
+            } else {
+                p.getInventory().addItem(cardDrawn.get());
+            }
+        } else {
+            Optional<ItemStack> cardDrawn = player2Deck.draw();
+            if (cardDrawn.isEmpty()) {
+                sendMessageToBothPlayers(String.format("%s%s%s has attempted to draw from an empty deck. Taking %s%s%s damage.", GOLD, p.getName(), RESET, RED, player2MillDamage, RESET));
+                player2.damage(player2MillDamage);
+                player2MillDamage++;
+            } else if(numCardsInHand(player2) >= MAX_CARDS_IN_HAND) {
+                sendMessageToBothPlayers(String.format("%s%s%s has attempted to draw while already having %s cards. [%s%s] has been sent to the void.", GOLD, p.getName(), RESET, numCardsInHand(player2), cardDrawn.get().getItemMeta().getDisplayName(), RESET));
+            } else {
+                p.getInventory().addItem(cardDrawn.get());
             }
         }
     }
@@ -195,10 +227,10 @@ public class Stadium {
 
     public Minion targetedMinion(Player p) {
         if (p.equals(player1)) {
-            return player1Target.equals(PLAYER_2_OUTLOOK) ? null : player1Target.minionRef().apply(this);
+            return player1Target.equals(PLAYER_2_OUTLOOK) || player1Target.equals(PLAYER_1_OUTLOOK) ? null : player1Target.minionRef().apply(this);
         }
         else {
-            return player2Target.equals(PLAYER_1_OUTLOOK) ? null : player2Target.minionRef().apply(this);
+            return player2Target.equals(PLAYER_1_OUTLOOK) || player2Target.equals(PLAYER_2_OUTLOOK) ? null : player2Target.minionRef().apply(this);
         }
     }
 
@@ -291,13 +323,19 @@ public class Stadium {
         ChatColor minionNameColor = targetedSpot.isPlayer1Spot() ? GREEN : GOLD;
         if (targetedSpot.minionRef() == null || targetedSpot.minionRef().apply(this) == null) {
             if (targetedSpot.equals(PLAYER_1_OUTLOOK) || targetedSpot.equals(Spot.PLAYER_2_OUTLOOK)) {
-                Sign sign = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
+                Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
+                Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
                 Player targetedPlayer = player.equals(player1) ? player2 : player1;
-                sign.getSide(Side.FRONT).setLine(0, targetedPlayer.getName());
-                sign.getSide(Side.FRONT).setLine(1, "❤: " + targetedPlayer.getHealth());
-                sign.getSide(Side.FRONT).setLine(2, "");
-                sign.getSide(Side.FRONT).setLine(3, "");
-                sign.update();
+                sign1.getSide(Side.FRONT).setLine(0, targetedPlayer.getName());
+                sign1.getSide(Side.FRONT).setLine(1, String.format("%s❤%s: %s", RED, RESET, targetedPlayer.getHealth()));
+                sign1.getSide(Side.FRONT).setLine(2, String.format("Cards in Hand: %s", numCardsInHand(targetedPlayer)));
+                sign1.getSide(Side.FRONT).setLine(3, "");
+                sign2.getSide(Side.FRONT).setLine(0, "");
+                sign2.getSide(Side.FRONT).setLine(1, "");
+                sign2.getSide(Side.FRONT).setLine(2, "");
+                sign2.getSide(Side.FRONT).setLine(3, "");
+                sign1.update();
+                sign2.update();
             }
             return;
         }
@@ -348,6 +386,21 @@ public class Stadium {
             case GREEN_1_BACK -> GREEN_1_FRONT.minionRef().apply(this) != null;
             default -> false;
         };
+    }
+
+    public Integer numCardsInHand(Player p) {
+        Inventory inv = p.equals(player1) ? player1.getInventory() : player2.getInventory();
+        int cardCount = 0;
+        for (ItemStack item : inv.getContents()) {
+            if (item != null && Boolean.TRUE.equals(item.getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN))) {
+                cardCount++;
+            }
+        }
+        return cardCount;
+    }
+
+    public Deck deck(Player p) {
+        return p.equals(player1) ? player1Deck : player2Deck;
     }
 
     public void minionDied(Spot spot) {
@@ -406,52 +459,57 @@ public class Stadium {
         }
     }
 
-    public Minion redAMinion() {
-        return redAMinion;
+    private void sendMessageToBothPlayers(String message) {
+        player1.sendMessage(message);
+        player2.sendMessage(message);
     }
 
-    public Minion redDMinion() {
-        return redDMinion;
+    public Minion red2BackMinion() {
+        return red2BackMinion;
     }
 
-    public Minion red1Minion() {
-        return red1Minion;
+    public Minion red2FrontMinion() {
+        return red2FrontMinion;
     }
 
-    public Minion red4Minion() {
-        return red4Minion;
+    public Minion red1FrontMinion() {
+        return red1FrontMinion;
     }
 
-    public Minion blueBMinion() {
-        return blueBMinion;
+    public Minion red1BackMinion() {
+        return red1BackMinion;
     }
 
-    public Minion blueEMinion() {
-        return blueEMinion;
+    public Minion blue2BackMinion() {
+        return blue2BackMinion;
     }
 
-    public Minion blue2Minion() {
-        return blue2Minion;
+    public Minion blue2FrontMinion() {
+        return blue2FrontMinion;
     }
 
-    public Minion blue5Minion() {
-        return blue5Minion;
+    public Minion blue1FrontMinion() {
+        return blue1FrontMinion;
     }
 
-    public Minion greenCMinion() {
-        return greenCMinion;
+    public Minion blue1BackMinion() {
+        return blue1BackMinion;
     }
 
-    public Minion greenFMinion() {
-        return greenFMinion;
+    public Minion green2BackMinion() {
+        return green2BackMinion;
     }
 
-    public Minion green3Minion() {
-        return green3Minion;
+    public Minion green2FrontMinion() {
+        return green2FrontMinion;
     }
 
-    public Minion green6Minion() {
-        return green6Minion;
+    public Minion green1FrontMinion() {
+        return green1FrontMinion;
+    }
+
+    public Minion green1BackMinion() {
+        return green1BackMinion;
     }
 
     public LivingEntity player1RedChicken() {
@@ -486,51 +544,51 @@ public class Stadium {
         return player2;
     }
 
-    public void setRedAMinion(Minion minion) {
-        redAMinion = minion;
+    public void setRed2BackMinion(Minion minion) {
+        red2BackMinion = minion;
     }
 
-    public void setRedDMinion(Minion minion) {
-        redDMinion = minion;
+    public void setRed2FrontMinion(Minion minion) {
+        red2FrontMinion = minion;
     }
 
-    public void setRed1Minion(Minion minion) {
-        red1Minion = minion;
+    public void setRed1FrontMinion(Minion minion) {
+        red1FrontMinion = minion;
     }
 
-    public void setRed4Minion(Minion minion) {
-        red4Minion = minion;
+    public void setRed1BackMinion(Minion minion) {
+        red1BackMinion = minion;
     }
 
-    public void setBlueBMinion(Minion minion) {
-        blueBMinion = minion;
+    public void setBlue2BackMinion(Minion minion) {
+        blue2BackMinion = minion;
     }
 
-    public void setBlueEMinion(Minion minion) {
-        blueEMinion = minion;
+    public void setBlue2FrontMinion(Minion minion) {
+        blue2FrontMinion = minion;
     }
 
-    public void setBlue2Minion(Minion minion) {
-        blue2Minion = minion;
+    public void setBlue1FrontMinion(Minion minion) {
+        blue1FrontMinion = minion;
     }
 
-    public void setBlue5Minion(Minion minion) {
-        blue5Minion = minion;
+    public void setBlue1BackMinion(Minion minion) {
+        blue1BackMinion = minion;
     }
 
-    public void setGreenCMinion(Minion minion) {
-        greenCMinion = minion;
+    public void setGreen2BackMinion(Minion minion) {
+        green2BackMinion = minion;
     }
 
-    public void setGreenFMinion(Minion minion) {
-        greenFMinion = minion;
+    public void setGreen2FrontMinion(Minion minion) {
+        green2FrontMinion = minion;
     }
 
-    public void setGreen3Minion(Minion minion) {
-        green3Minion = minion;
+    public void setGreen1FrontMinion(Minion minion) {
+        green1FrontMinion = minion;
     }
 
-    public void setGreen6Minion(Minion minion) {
-        green6Minion = minion;
+    public void setGreen1BackMinion(Minion minion) {
+        green1BackMinion = minion;
     }
 }

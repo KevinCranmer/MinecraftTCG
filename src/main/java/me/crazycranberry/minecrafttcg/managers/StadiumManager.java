@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.events.BuildStadiumEvent;
+import me.crazycranberry.minecrafttcg.model.Deck;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
@@ -70,7 +71,9 @@ public class StadiumManager implements Listener {
         buildStadium(event.getStartingCorner());
         stadiums.put(event.getStartingCorner().getWorld(), new Stadium(event.getStartingCorner(),
                 event.player1(),
+                Deck.fromConfig(event.player1()),
                 event.player2(),
+                Deck.fromConfig(event.player2()),
                 summonChicken(PLAYER_1_RED_CHICKEN, event.getStartingCorner()),
                 summonChicken(PLAYER_1_BLUE_CHICKEN, event.getStartingCorner()),
                 summonChicken(PLAYER_1_GREEN_CHICKEN, event.getStartingCorner()),

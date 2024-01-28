@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg;
 
+import me.crazycranberry.minecrafttcg.commands.DeckCommand;
 import me.crazycranberry.minecrafttcg.commands.TestCommand;
 import me.crazycranberry.minecrafttcg.managers.DeckManager;
 import me.crazycranberry.minecrafttcg.managers.MinionManager;
@@ -22,8 +23,6 @@ public final class MinecraftTCG extends JavaPlugin {
         logger = this.getLogger();
         registerManagers();
         registerCommands();
-
-        System.out.println("CRIT class: " + Particle.CRIT.getDataType());
     }
 
     private void registerManagers() {
@@ -33,6 +32,7 @@ public final class MinecraftTCG extends JavaPlugin {
     }
 
     private void registerCommands() {
+        setCommandManager("deck", new DeckCommand());
         setCommandManager("tc", new TestCommand());
     }
 

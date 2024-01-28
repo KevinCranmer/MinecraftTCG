@@ -37,4 +37,13 @@ public enum CardEnum {
     public Card card(){
         return card;
     }
+
+    public static CardEnum fromString(String s) {
+        for (CardEnum cardEnum : CardEnum.values()) {
+            if (cardEnum.name().equals(s)) {
+                return cardEnum;
+            }
+        }
+        return null;
+    }
 }

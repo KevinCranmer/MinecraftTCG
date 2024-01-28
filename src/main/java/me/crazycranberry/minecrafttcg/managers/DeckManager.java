@@ -1,134 +1,139 @@
 package me.crazycranberry.minecrafttcg.managers;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
-import me.crazycranberry.minecrafttcg.carddefinitions.SpellOrCantripCardDefinition;
-import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.CantripCardDefinition;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.config.CollectionConfigs;
 import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import me.crazycranberry.minecrafttcg.model.Deck;
+import me.crazycranberry.minecrafttcg.model.Stadium;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
-import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.ADRENALINE;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.AGGRESSIVE_BANDIT;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.DINGY_SKELETON;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.HEAL;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.HEAL_WITCH;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.HUNGRY_ZOMBIE;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.PROTECT;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.SEWER_ZOMBIE;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.TOXIC_SPIKES;
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.BLUE;
-import static org.bukkit.ChatColor.DARK_GREEN;
-import static org.bukkit.ChatColor.DARK_PURPLE;
-import static org.bukkit.ChatColor.GOLD;
-import static org.bukkit.ChatColor.GREEN;
-import static org.bukkit.ChatColor.LIGHT_PURPLE;
-import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.RESET;
-import static org.bukkit.ChatColor.YELLOW;
 
 public class DeckManager implements Listener {
+    private static Map<Player, List<ItemStack>> playersLookingAtDecks = new HashMap<>();
+    private static Set<Player> playersLookingAtCollection = new HashSet<>();
+
     @EventHandler
     private void onDeckViewRequest(DeckViewRequestEvent event) {
-        Inventory deck = Bukkit.createInventory(null, 27, "My Deck");
-        deck.addItem(createCard(SEWER_ZOMBIE));
-        deck.addItem(createCard(DINGY_SKELETON));
-        deck.addItem(createCard(PROTECT));
-        deck.addItem(createCard(TOXIC_SPIKES));
-        deck.addItem(createCard(HEAL));
-        deck.addItem(createCard(ADRENALINE));
-        deck.addItem(createCard(AGGRESSIVE_BANDIT));
-        deck.addItem(createCard(HUNGRY_ZOMBIE));
-        deck.addItem(createCard(HEAL_WITCH));
-        event.getPlayer().openInventory(deck);
+        Stadium stadium = StadiumManager.stadium(event.getPlayer().getWorld());
+        Inventory deck;
+        if (stadium != null && stadium.isPlayerParticipating(event.getPlayer())) {
+            deck = stadium.deck(event.getPlayer()).deck();
+            event.getPlayer().openInventory(deck);
+        } else {
+            deck = Deck.fromConfig(event.getPlayer()).deck();
+            event.getPlayer().openInventory(deck);
+        }
+        playersLookingAtDecks.put(event.getPlayer(), List.copyOf(Arrays.asList(deck.getContents()).stream().filter(Objects::nonNull).toList()));
     }
 
-    private ItemStack createCard(CardEnum cardEnum) {
-        Card cardDef = cardEnum.card();
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        bookMeta.setDisplayName(String.format("%s%s%s", cardDef.rarity().color(), cardDef.cardName(), RESET));
-        bookMeta.setAuthor("CrazyCranberry Mods");
-        bookMeta.setTitle(cardDef.cardName());
-        String page = "";
-        if (cardDef instanceof MinionCardDefinition minionCardDefinition) {
-            page = minionCardDescription(minionCardDefinition);
-        } else if (cardDef instanceof SpellOrCantripCardDefinition spellOrCantripCardDef) {
-            page = spellOrCantripCardDescription(spellOrCantripCardDef);
+    @EventHandler
+    private void onDeckOrCollectionSave(InventoryCloseEvent event) {
+        Player p = (Player) event.getPlayer();
+        if ((!playersLookingAtDecks.containsKey(p) && !playersLookingAtCollection.contains(p)) || StadiumManager.stadium(p.getWorld()).isPlayerParticipating(p)) {
+            return;
         }
-        bookMeta.addPage(page);
-        bookMeta.setLore(List.of(String.format("%sType \"/tcg\" to learn more!%s", GOLD, RESET)));
-        bookMeta.getPersistentDataContainer().set(IS_CARD_KEY, PersistentDataType.BOOLEAN, true);
-        bookMeta.getPersistentDataContainer().set(CARD_NAME_KEY, PersistentDataType.STRING, cardEnum.name());
-        bookMeta.getPersistentDataContainer().set(RANDOM_UUID_KEY, PersistentDataType.STRING, UUID.randomUUID().toString());
-        book.setItemMeta(bookMeta);
-        return book;
+        if (playersLookingAtDecks.containsKey(p)) {
+            if (deckSaveable(event.getInventory().getContents(), (Player) event.getPlayer())) {
+                CollectionConfigs.saveDeck(p, event.getInventory());
+            } else {
+                recoverInventoryStateBeforeDeckEdit(p, event.getInventory());
+            }
+            playersLookingAtDecks.remove(p);
+        }
     }
 
-    private String spellOrCantripCardDescription(SpellOrCantripCardDefinition card) {
-        List<String> targets = new ArrayList<>();
-        if (card.targetsMinion()) {
-            targets.add("Minions");
+    @EventHandler
+    private void onTryingToDropFromDeckWithDrag(PlayerDropItemEvent event) {
+        if (playersLookingAtDecks.containsKey(event.getPlayer())) {
+            event.getPlayer().sendMessage(String.format("%sYou cannot drop items while viewing your deck.%s", GRAY, RESET));
+            event.setCancelled(true);
         }
-        if (card.targetsPlayer()) {
-            targets.add("Players");
-        }
-        if (card.targetsEmptySpots()) {
-            targets.add("Spots");
-        }
-        return String.format("""
-            %s%sName:%s %s
-            %sRarity:%s %s
-            %sCard Type:%s %s
-            %sTargets:%s %s
-            %sCard Cost:%s %s
-            %sDescription:%s %s
-            """,
-            RESET, GOLD, RESET, card.cardName(),
-            YELLOW, RESET, card.rarity().toString(),
-            AQUA, RESET, card instanceof CantripCardDefinition ? "Cantrip" : "Spell",
-            DARK_PURPLE, RESET, String.join(", ", targets),
-            LIGHT_PURPLE, RESET, card.cost(),
-            BLUE, RESET, card.cardDescription()
-        );
     }
 
-    private String minionCardDescription(MinionCardDefinition card) {
-        return String.format("""
-            %s%sName:%s %s
-            %sRarity:%s %s
-            %sCard Type:%s Minion
-            %sMinion Type:%s %s
-            %sCard Cost:%s %s
-            %sIs Ranged:%s %s
-            %sStrength:%s %s
-            %sMax health:%s %s
-            %sDescription:%s %s
-            """,
-            RESET, GOLD, RESET, card.cardName(),
-            YELLOW, RESET, card.rarity().toString(),
-            AQUA, RESET,
-            DARK_PURPLE, RESET, card.minionType(),
-            LIGHT_PURPLE, RESET, card.cost(),
-            DARK_GREEN, RESET, card.isRanged(),
-            GREEN, RESET, card.strength(),
-            RED, RESET, card.maxHealth(),
-            BLUE, RESET, card.cardDescription()
-            );
+    @EventHandler
+    private void onInventoryClick(InventoryClickEvent event) {
+        Player p = (Player) event.getWhoClicked();
+        Stadium stadium = StadiumManager.stadium(p.getWorld());
+        if (playersLookingAtDecks.containsKey((Player) event.getWhoClicked()) && stadium != null && stadium.isPlayerParticipating(p)) {
+            p.sendMessage(String.format("%sYou cannot edit your deck mid-duel.%s", GRAY, RESET));
+            event.setCancelled(true);
+        }
+        if (playersLookingAtDecks.containsKey((Player) event.getWhoClicked()) && event.getClick().equals(ClickType.DROP)) {
+            event.getWhoClicked().sendMessage(String.format("%sYou cannot drop items while viewing your deck.%s", GRAY, RESET));
+            event.setCancelled(true);
+        }
+    }
+
+    private void recoverInventoryStateBeforeDeckEdit(Player p, Inventory inventory) {
+        List<ItemStack> originalItems = playersLookingAtDecks.get(p);
+        for (ItemStack item : inventory.getContents()) {
+            if (item != null && !originalItems.contains(item)) {
+                p.getInventory().addItem(item);
+            }
+        }
+        for (ItemStack item : originalItems) {
+            if (item != null && !inventory.contains(item)) {
+                for (ItemStack itemInPlayerInv : p.getInventory()) {
+                    if (itemInPlayerInv != null &&
+                            Boolean.TRUE.equals(itemInPlayerInv.getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN)) &&
+                            itemInPlayerInv.getItemMeta().getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING).equals(item.getItemMeta().getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING))) {
+                        p.getInventory().remove(itemInPlayerInv);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean deckSaveable(ItemStack[] contents, Player p) {
+        boolean weCanSaveTheDeck = true;
+        Map<CardEnum, Integer> cardCounts = new HashMap<>();
+        for (ItemStack item : contents) {
+            if (item == null) {
+                continue; // This is not an okay thing to happen. But I'd rather count how many cards are there and then report it instead of just failing due to one missing card.
+            }
+            if (!Boolean.TRUE.equals(item.getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN))) {
+                p.sendMessage(String.format("%sCould not save deck. %s is not a valid card.%s", GRAY, item.getType(), RESET));
+                weCanSaveTheDeck = false;
+                break;
+            }
+            CardEnum card = CardEnum.fromString(item.getItemMeta().getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING));
+            Integer numCopies = cardCounts.get(card);
+            numCopies = numCopies == null ? 0 : numCopies;
+            if (numCopies + 1 > card.card().rarity().numAllowedPerDeck()) {
+                p.sendMessage(String.format("%sCould not save deck. %s%s can only have %s copies because it's %s.%s", GRAY, item.getItemMeta().getDisplayName(), RESET, card.card().rarity().numAllowedPerDeck(), card.card().rarity().toString(), RESET));
+                weCanSaveTheDeck = false;
+                break;
+            }
+            cardCounts.put(card, numCopies + 1);
+        }
+        int numCardsInDeck = cardCounts.values().stream().reduce(0, Integer::sum);
+        if (weCanSaveTheDeck && numCardsInDeck != 27) {
+            p.sendMessage(String.format("%sCould not save deck. Your deck needs 27 cards. Your had %s.%s", GRAY, numCardsInDeck, RESET));
+            weCanSaveTheDeck = false;
+        }
+        return weCanSaveTheDeck;
     }
 }

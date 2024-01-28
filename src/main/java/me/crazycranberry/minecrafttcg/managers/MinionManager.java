@@ -36,7 +36,7 @@ public class MinionManager implements Listener {
 
     @EventHandler
     private void onSpawn(CreatureSpawnEvent event) {
-        if (!event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)) {
+        if (StadiumManager.stadium(event.getEntity().getWorld()) != null && !event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)) {
             event.setCancelled(true);
             return;
         }
