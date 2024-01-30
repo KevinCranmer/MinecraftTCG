@@ -31,26 +31,29 @@ import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_PROX
 public class MinionManager implements Listener {
     @EventHandler
     private void onBurn(EntityCombustEvent event) {
-        if (StadiumManager.stadium(event.getEntity().getWorld()) != null) {
+        if (StadiumManager.stadium(event.getEntity().getLocation()) != null) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     private void onTarget(EntityTargetLivingEntityEvent event) {
-        if (StadiumManager.stadium(event.getEntity().getWorld()) != null && !event.getReason().equals(EntityTargetEvent.TargetReason.CUSTOM)) {
+        if (StadiumManager.stadium(event.getEntity().getLocation()) != null && !event.getReason().equals(EntityTargetEvent.TargetReason.CUSTOM)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     private void onSpawn(CreatureSpawnEvent event) {
-        if (StadiumManager.stadium(event.getEntity().getWorld()) != null && !event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)) {
+        System.out.println("Chicken check: " + (StadiumManager.stadium(event.getEntity().getLocation()) != null));
+        System.out.println("Chicken check: " + !event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM));
+        if (StadiumManager.stadium(event.getEntity().getLocation()) != null && !event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)) {
             event.setCancelled(true);
             return;
         }
         // A chicken spawned, let's make the chicken stay in its spot
         if (event.getEntity().getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
+            System.out.println("Trying to remove the cow goals");
             CraftAnimals proxy = (CraftAnimals) event.getEntity();
             proxy.setSilent(true);
             Animal nmsAnimal = proxy.getHandle();
@@ -62,7 +65,7 @@ public class MinionManager implements Listener {
 
     @EventHandler
     private void onDamage(EntityDamageByEntityEvent event) {
-        Stadium stadium = StadiumManager.stadium(event.getDamager().getWorld());
+        Stadium stadium = StadiumManager.stadium(event.getDamager().getLocation());
         if (stadium == null || !(event.getDamager() instanceof LivingEntity)) {
             return;
         }
@@ -84,7 +87,7 @@ public class MinionManager implements Listener {
 
     @EventHandler
     private void onDeath(EntityDeathEvent event) {
-        Stadium stadium = StadiumManager.stadium(event.getEntity().getWorld());
+        Stadium stadium = StadiumManager.stadium(event.getEntity().getLocation());
         if (stadium == null) {
             return;
         }

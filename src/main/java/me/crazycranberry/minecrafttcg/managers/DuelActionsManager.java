@@ -48,7 +48,7 @@ public class DuelActionsManager implements Listener {
     @EventHandler
     private void onAction(PlayerInteractEvent event) {
         Player p = event.getPlayer();
-        Stadium stadium = StadiumManager.stadium(p.getWorld());
+        Stadium stadium = StadiumManager.stadium(p.getLocation());
         if (isValidCastAttempt(event, stadium)) {
             BookMeta bookMeta = (BookMeta) event.getItem().getItemMeta();
             CardEnum cardEnum = CardEnum.valueOf(bookMeta.getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING));

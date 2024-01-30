@@ -36,7 +36,7 @@ public class DeckManager implements Listener {
 
     @EventHandler
     private void onDeckViewRequest(DeckViewRequestEvent event) {
-        Stadium stadium = StadiumManager.stadium(event.getPlayer().getWorld());
+        Stadium stadium = StadiumManager.stadium(event.getPlayer().getLocation());
         Inventory deck;
         if (stadium != null && stadium.isPlayerParticipating(event.getPlayer())) {
             deck = stadium.deck(event.getPlayer()).deck();
@@ -51,7 +51,7 @@ public class DeckManager implements Listener {
     @EventHandler
     private void onDeckOrCollectionSave(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        if ((!playersLookingAtDecks.containsKey(p) && !playersLookingAtCollection.contains(p)) || (StadiumManager.stadium(p.getWorld()) != null && StadiumManager.stadium(p.getWorld()).isPlayerParticipating(p))) {
+        if ((!playersLookingAtDecks.containsKey(p) && !playersLookingAtCollection.contains(p)) || (StadiumManager.stadium(p.getLocation()) != null && StadiumManager.stadium(p.getLocation()).isPlayerParticipating(p))) {
             return;
         }
         if (playersLookingAtDecks.containsKey(p)) {
@@ -75,7 +75,7 @@ public class DeckManager implements Listener {
     @EventHandler
     private void onInventoryClick(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
-        Stadium stadium = StadiumManager.stadium(p.getWorld());
+        Stadium stadium = StadiumManager.stadium(p.getLocation());
         if (playersLookingAtDecks.containsKey((Player) event.getWhoClicked()) && stadium != null && stadium.isPlayerParticipating(p)) {
             p.sendMessage(String.format("%sYou cannot edit your deck mid-duel.%s", GRAY, RESET));
             event.setCancelled(true);

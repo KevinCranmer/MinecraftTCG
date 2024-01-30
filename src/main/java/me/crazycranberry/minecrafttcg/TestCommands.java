@@ -134,15 +134,15 @@ public class TestCommands {
     }
 
     private static void turn(Player p, int i) {
-        StadiumManager.stadium(p.getWorld()).turn = i;
+        StadiumManager.stadium(p.getLocation()).turn = i;
     }
 
     private static void endCombat(Player p) {
-        Bukkit.getPluginManager().callEvent(new CombatEndEvent(StadiumManager.stadium(p.getWorld())));
+        Bukkit.getPluginManager().callEvent(new CombatEndEvent(StadiumManager.stadium(p.getLocation())));
     }
 
     private static void startCombat(Player p) {
-        Bukkit.getPluginManager().callEvent(new CombatStartEvent(StadiumManager.stadium(p.getWorld())));
+        Bukkit.getPluginManager().callEvent(new CombatStartEvent(StadiumManager.stadium(p.getLocation())));
     }
 
     private static void setup(Player p) {
@@ -159,7 +159,7 @@ public class TestCommands {
         trackVision(p);
         trackDuel(p);
         Bukkit.getServer().getPluginManager().registerEvents(new TurnManager(), getPlugin());
-        Bukkit.getPluginManager().callEvent(new DuelStartEvent(StadiumManager.stadium(p.getWorld())));
+        Bukkit.getPluginManager().callEvent(new DuelStartEvent(StadiumManager.stadium(p.getLocation())));
     }
 
     private static void trackDuel(Player p) {

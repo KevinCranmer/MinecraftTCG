@@ -77,21 +77,24 @@ public class Stadium {
     private Minion green2FrontMinion;
     private Minion green1FrontMinion;
     private Minion green1BackMinion;
-    private final LivingEntity player1RedChicken;
-    private final LivingEntity player1BlueChicken;
-    private final LivingEntity player1GreenChicken;
-    private final LivingEntity player2RedChicken;
-    private final LivingEntity player2BlueChicken;
-    private final LivingEntity player2GreenChicken;
+    private LivingEntity player1RedChicken;
+    private LivingEntity player1BlueChicken;
+    private LivingEntity player1GreenChicken;
+    private LivingEntity player2RedChicken;
+    private LivingEntity player2BlueChicken;
+    private LivingEntity player2GreenChicken;
     private Spot player1Target;
     private Spot player2Target;
 
-    public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck, LivingEntity player1RedChicken, LivingEntity player1BlueChicken, LivingEntity player1GreenChicken, LivingEntity player2RedChicken, LivingEntity player2BlueChicken, LivingEntity player2GreenChicken) {
+    public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck) {
         this.startingCorner = startingCorner;
         this.player1 = player1;
         this.player1Deck = player1Deck;
         this.player2 = player2;
         this.player2Deck = player2Deck;
+    }
+
+    public void setChickens(LivingEntity player1RedChicken, LivingEntity player1BlueChicken, LivingEntity player1GreenChicken, LivingEntity player2RedChicken, LivingEntity player2BlueChicken, LivingEntity player2GreenChicken) {
         this.player1RedChicken = player1RedChicken;
         this.player1BlueChicken = player1BlueChicken;
         this.player1GreenChicken = player1GreenChicken;

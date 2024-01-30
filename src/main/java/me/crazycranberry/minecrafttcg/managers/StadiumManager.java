@@ -1,6 +1,8 @@
 package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.events.BuildStadiumEvent;
+import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
+import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
 import me.crazycranberry.minecrafttcg.model.Deck;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
@@ -35,12 +37,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_BLUE_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_GREEN_CHICKEN;
+import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_OUTLOOK;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_RED_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_BLUE_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_GREEN_CHICKEN;
+import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_OUTLOOK;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_RED_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Stadium.BLUE_MATERIAL;
 import static me.crazycranberry.minecrafttcg.model.Stadium.GREEN_MATERIAL;
@@ -58,43 +63,34 @@ public class StadiumManager implements Listener {
     public static final Vector PLAYER_1_MANA_OFFSET = new Vector(3, 13, 0);
     public static final Vector PLAYER_2_SIGN_OFFSET = new Vector(23, 10, 6);
     public static final Vector PLAYER_2_MANA_OFFSET = new Vector(23, 13, 10);
+    public static final int DISTANCE_BETWEEN_STADIUMS_Z = 100;
     public static final EntityType PLAYER_PROXY_ENTITY_TYPE = EntityType.COW;
     private static final Material FILL_BLOCK = Material.WHITE_TERRACOTTA;
-    private static final Map<World, Stadium> stadiums = new HashMap<>();
+    private static final Map<Location, Stadium> stadiums = new HashMap<>();
 
     @EventHandler
     private void onBuildRequested(BuildStadiumEvent event) {
-        ScoreboardManager sm = Bukkit.getScoreboardManager();
-        Scoreboard s = sm.getNewScoreboard();
-        Objective h = s.registerNewObjective("showhealth", Criteria.HEALTH, ChatColor.RED + "❤");
-        h.setDisplaySlot(DisplaySlot.BELOW_NAME);
-        event.player1().setScoreboard(s);
-        event.player2().setScoreboard(s);
-        buildStadium(event.getStartingCorner());
-        stadiums.put(event.getStartingCorner().getWorld(), new Stadium(event.getStartingCorner(),
-                event.player1(),
-                Deck.fromConfig(event.player1()),
-                event.player2(),
-                Deck.fromConfig(event.player2()),
-                summonChicken(PLAYER_1_RED_CHICKEN, event.getStartingCorner()),
-                summonChicken(PLAYER_1_BLUE_CHICKEN, event.getStartingCorner()),
-                summonChicken(PLAYER_1_GREEN_CHICKEN, event.getStartingCorner()),
-                summonChicken(PLAYER_2_RED_CHICKEN, event.getStartingCorner()),
-                summonChicken(PLAYER_2_BLUE_CHICKEN, event.getStartingCorner()),
-                summonChicken(PLAYER_2_GREEN_CHICKEN, event.getStartingCorner()))
-            );
+        setupStadium(event.getStartingCorner(), event.player1(), event.player2());
+    }
+
+    private static void setupStadium(Location startingCorner, Player player1, Player player2) {
+        buildStadium(startingCorner);
+        Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2));
+        stadiums.put(startingCorner, newStadium);
+        newStadium.setChickens(summonChicken(PLAYER_1_RED_CHICKEN, startingCorner),
+                summonChicken(PLAYER_1_BLUE_CHICKEN, startingCorner),
+                summonChicken(PLAYER_1_GREEN_CHICKEN, startingCorner),
+                summonChicken(PLAYER_2_RED_CHICKEN, startingCorner),
+                summonChicken(PLAYER_2_BLUE_CHICKEN, startingCorner),
+                summonChicken(PLAYER_2_GREEN_CHICKEN, startingCorner));
     }
 
     @EventHandler
     private void onLampTryingToTurnOff(BlockRedstoneEvent event) {
         Block block = event.getBlock();
-        if (stadiums.containsKey(block.getWorld()) && block.getType().equals(REDSTONE_LAMP)) {
+        if (!stadiums.isEmpty() && stadiums.keySet().stream().findFirst().get().getWorld().equals(block.getWorld()) && block.getType().equals(REDSTONE_LAMP)) {
             event.setNewCurrent(1);
         }
-    }
-
-    public static Set<World> getWorlds() {
-        return stadiums.keySet();
     }
 
     public static void updateManaForANewTurn(Stadium stadium, int turn) {
@@ -133,26 +129,68 @@ public class StadiumManager implements Listener {
     }
 
     public static void playerLookingAt(Player p, Spot spot) {
-        Stadium stadium = stadium(p.getWorld());
+        Stadium stadium = stadium(p.getLocation());
         if (stadium != null) {
             stadium.playerTargeting(p, spot);
         }
     }
 
-    public static Location locOfSpot(World w, Spot spot) {
-        Stadium stadium = stadium(w);
+    public static Location locOfSpot(Location playerLoc, Spot spot) {
+        Stadium stadium = stadium(playerLoc);
         return stadium == null ? null : stadium.locOfSpot(spot);
     }
 
-    public static Stadium stadium(World w) {
-        return stadiums.get(w);
+    /** This will find the stadium that's closest to the location provided. */
+    public static Stadium stadium(Location locOfEntityInTheStadium) {
+        if (stadiums.isEmpty() || !stadiums.keySet().stream().allMatch(k -> k.getWorld().equals(locOfEntityInTheStadium.getWorld()))) {
+            return null;
+        }
+        return stadiums.entrySet().stream()
+                .min((e1, e2) -> (int) (e1.getKey().distanceSquared(locOfEntityInTheStadium) - e2.getKey().distanceSquared(locOfEntityInTheStadium)))
+                .map(Map.Entry::getValue)
+                .orElse(null);
     }
 
-    private LivingEntity summonChicken(Spot spot, Location startingCorner) {
+    public static Location getNextAvailableStartingCorner(World w) {
+        if (stadiums.isEmpty()) {
+            return new Location(w, 0.5, 100, 0.5);
+        }
+        Location prevLoc = null;
+        for (Location l : stadiums.keySet().stream().sorted((k1, k2) -> (int) (k1.getZ() - k2.getZ())).toList()) {
+            if (prevLoc == null && l.getZ() != 0) {
+                return new Location(w, 0.5, 100, 0.5);
+            }
+            if (prevLoc != null && l.getZ() > prevLoc.getZ() + DISTANCE_BETWEEN_STADIUMS_Z) {
+                return new Location(w, 0.5, 100, prevLoc.getZ() + DISTANCE_BETWEEN_STADIUMS_Z);
+            }
+            prevLoc = l;
+        }
+        return new Location(w, 0.5, 100, prevLoc.getZ() + DISTANCE_BETWEEN_STADIUMS_Z);
+    }
+
+    public static void sendPlayersToDuel(World w, Player requester, Player accepter) {
+        Bukkit.getPluginManager().callEvent(new RegisterListenersEvent());
+        Location nextStartingCorner = getNextAvailableStartingCorner(w);
+        if (Math.random() < 0.5) {
+            setupStadium(nextStartingCorner, requester, accepter);
+            Stadium stadium = stadiums.get(nextStartingCorner);
+            requester.teleport(stadium.locOfSpot(PLAYER_1_OUTLOOK));
+            accepter.teleport(stadium.locOfSpot(PLAYER_2_OUTLOOK));
+            Bukkit.getPluginManager().callEvent(new DuelStartEvent(stadium));
+        } else {
+            setupStadium(nextStartingCorner, accepter, requester);
+            Stadium stadium = stadiums.get(nextStartingCorner);
+            accepter.teleport(stadium.locOfSpot(PLAYER_1_OUTLOOK));
+            requester.teleport(stadium.locOfSpot(PLAYER_2_OUTLOOK));
+            Bukkit.getPluginManager().callEvent(new DuelStartEvent(stadium));
+        }
+    }
+
+    private static LivingEntity summonChicken(Spot spot, Location startingCorner) {
         return (LivingEntity) startingCorner.getWorld().spawnEntity(startingCorner.clone().add(spot.offset()), PLAYER_PROXY_ENTITY_TYPE);
     }
 
-    private void buildStadium(Location location) {
+    private static void buildStadium(Location location) {
         buildRow(location.getBlock(), 0, Material.PURPLE_TERRACOTTA, RED_MATERIAL, Material.PINK_TERRACOTTA);
         buildRow(location.getBlock(), 4, Material.BLUE_TERRACOTTA, BLUE_MATERIAL, Material.CYAN_TERRACOTTA);
         buildRow(location.getBlock(), 8, Material.YELLOW_TERRACOTTA, GREEN_MATERIAL, Material.GREEN_TERRACOTTA);
@@ -161,7 +199,7 @@ public class StadiumManager implements Listener {
         buildPlayer2Tower(location.getBlock());
     }
 
-    private void buildBarriers(Block startingCornerBlock) {
+    private static void buildBarriers(Block startingCornerBlock) {
         // Player towers
         for (int i = 0; i <= 22; i = i + 22) {
             for (int j = 0; j < 2; j++) {
@@ -208,7 +246,7 @@ public class StadiumManager implements Listener {
         }
     }
 
-    private void buildPlayer1Tower(Block startingCornerBlock) {
+    private static void buildPlayer1Tower(Block startingCornerBlock) {
         // Sign posts:
         int signX = (int) PLAYER_1_SIGN_OFFSET.getX();
         int signY = (int) PLAYER_1_SIGN_OFFSET.getY();
@@ -253,7 +291,7 @@ public class StadiumManager implements Listener {
         startingCornerBlock.getRelative(manaX, manaY, manaZ + 10).setType(Material.BEDROCK);
     }
 
-    private void buildPlayer2Tower(Block startingCornerBlock) {
+    private static void buildPlayer2Tower(Block startingCornerBlock) {
         // Sign posts:
         int signX = (int) PLAYER_2_SIGN_OFFSET.getX();
         int signY = (int) PLAYER_2_SIGN_OFFSET.getY();
@@ -298,7 +336,7 @@ public class StadiumManager implements Listener {
         startingCornerBlock.getRelative(manaX, manaY, manaZ - 10).setType(Material.BEDROCK);
     }
 
-    private void makeButton(Block startingCornerBlock, int x, int y, int z, BlockFace direction, Material material) {
+    private static void makeButton(Block startingCornerBlock, int x, int y, int z, BlockFace direction, Material material) {
         Block buttonBlock = startingCornerBlock.getRelative(x, y, z);
         buttonBlock.setType(material);
         BlockState state = buttonBlock.getState();
@@ -308,7 +346,7 @@ public class StadiumManager implements Listener {
         state.update();
     }
 
-    private void makeSign(Block startingCornerBlock, int x, int y, int z, Material material, BlockFace blockFace, boolean addDescText, boolean addPhaseText) {
+    private static void makeSign(Block startingCornerBlock, int x, int y, int z, Material material, BlockFace blockFace, boolean addDescText, boolean addPhaseText) {
         Block signBlock = startingCornerBlock.getRelative(x, y, z);
         signBlock.setType(material);
         Sign signState = (Sign) signBlock.getState();
@@ -334,7 +372,7 @@ public class StadiumManager implements Listener {
         signState.update();
     }
 
-    private void buildRow(Block startingCornerBlock, int zOffset, Material light, Material medium, Material dark) {
+    private static void buildRow(Block startingCornerBlock, int zOffset, Material light, Material medium, Material dark) {
         startingCornerBlock.getRelative(2, 0, zOffset).setType(dark);
         startingCornerBlock.getRelative(2, 0, zOffset+1).setType(dark);
         startingCornerBlock.getRelative(2, 0, zOffset+2).setType(dark);
