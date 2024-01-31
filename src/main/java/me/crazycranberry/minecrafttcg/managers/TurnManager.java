@@ -4,6 +4,8 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartAttackingEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
+import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
+import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPostCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
@@ -39,6 +41,7 @@ import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.RESET;
 
 public class TurnManager implements Listener {
     public static final int TITLE_DURATION = 80; // In ticks
@@ -60,6 +63,9 @@ public class TurnManager implements Listener {
     @EventHandler
     private void onFirstPreCombatPhaseStarted(FirstPreCombatPhaseStartedEvent event) {
         System.out.println("onFirstPreCombatPhaseStarted");
+        if (event.getStadium().isDuelDone()) {
+            return;
+        }
         event.getStadium().updatePhase(FIRST_PRECOMBAT_PHASE);
         int turn = event.getStadium().turn();
         event.getStadium().draw(event.getStadium().player1());
@@ -72,6 +78,9 @@ public class TurnManager implements Listener {
     @EventHandler
     private void onSecondPreCombatPhaseStarted(SecondPreCombatPhaseStartedEvent event) {
         System.out.println("onSecondPreCombatPhaseStarted");
+        if (event.getStadium().isDuelDone()) {
+            return;
+        }
         event.getStadium().updatePhase(SECOND_PRECOMBAT_PHASE);
         int turn = event.getStadium().turn();
         String title = turn % 2 != 1 ? String.format("%s%s's Pre-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Pre-Combat Phase", GOLD, event.getStadium().player2().getName());
@@ -81,6 +90,9 @@ public class TurnManager implements Listener {
     @EventHandler
     private void onCombatStart(CombatStartEvent event) {
         System.out.println("onCombatStart");
+        if (event.getStadium().isDuelDone()) {
+            return;
+        }
         event.getStadium().updatePhase(COMBAT_PHASE);
         sendTitles(String.format("%sCombat Phase", RED), event.getStadium());
         executeForAllMinions(event.getStadium(), Minion::onCombatStart);
@@ -90,12 +102,17 @@ public class TurnManager implements Listener {
     @EventHandler
     private void onCombatStartAttacking(CombatStartAttackingEvent event) {
         System.out.println("onCombatStartAttacking");
-        //TODO: Start attacking mofos
+        if (event.getStadium().isDuelDone()) {
+            return;
+        }
         executeForMinionsThatCanAttack(event.getStadium(), Minion::attackInFront);
     }
     @EventHandler
     private void onCombatEnd(CombatEndEvent event) {
         System.out.println("onCombatStartAttacking");
+        if (event.getStadium().isDuelDone()) {
+            return;
+        }
         event.getStadium().updatePhase(POST_COMBAT_CLEANUP);
         //TODO: Kill any minions with 0 health and trigger their onDeaths
         executeForAllMinions(event.getStadium(), Minion::onCombatEnd);
@@ -105,6 +122,9 @@ public class TurnManager implements Listener {
     @EventHandler
     private void onFirstPostCombatPhaseStarted(FirstPostCombatPhaseStartedEvent event) {
         System.out.println("onFirstPostCombatPhaseStarted");
+        if (event.getStadium().isDuelDone()) {
+            return;
+        }
         event.getStadium().updatePhase(FIRST_POSTCOMBAT_PHASE);
         int turn = event.getStadium().turn();
         String title = turn % 2 != 1 ? String.format("%s%s's Post-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Post-Combat Phase", GOLD, event.getStadium().player2().getName());
@@ -114,6 +134,9 @@ public class TurnManager implements Listener {
     @EventHandler
     private void onSecondPostCombatPhaseStarted(SecondPostCombatPhaseStartedEvent event) {
         System.out.println("onSecondPostCombatPhaseStarted");
+        if (event.getStadium().isDuelDone()) {
+            return;
+        }
         event.getStadium().updatePhase(SECOND_POSTCOMBAT_PHASE);
         int turn = event.getStadium().turn();
         String title = turn % 2 != 0 ? String.format("%s%s's Post-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Post-Combat Phase", GOLD, event.getStadium().player2().getName());
@@ -123,9 +146,21 @@ public class TurnManager implements Listener {
     @EventHandler
     private void onTurnEnd(TurnEndEvent event) {
         System.out.println("onTurnEnd");
+        if (event.getStadium().isDuelDone()) {
+            return;
+        }
         sendTitles(String.format("%sEnd of Turn %s", AQUA, event.getStadium().turn()), event.getStadium());
         executeForAllMinions(event.getStadium(), Minion::onTurnEnd);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstPreCombatPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
+    }
+
+    @EventHandler
+    private void onDuelEnd(DuelEndEvent event) {
+        // TODO: ADD RANKING CHANGES HERE
+        System.out.println("onDuelEnd");
+        sendTitles(String.format("%s%s is the winner!%s", event.winner().equals(event.stadium().player1()) ? GREEN : GOLD, event.winner().getName(), RESET), event.stadium());
+        event.stadium().summonWinnerFireworks(event.winner());
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new DuelCloseEvent(event.stadium())), event.stadium().fireworkDuration());
     }
 
     private void executeForAllMinions(Stadium stadium, Consumer<? super Minion> trigger) {

@@ -140,7 +140,6 @@ public class CollectionConfigs {
             numCopies = numCopies == null ? 0 : numCopies;
             cardConfigMap.put(cardEnum, numCopies + 1);
         }
-        System.out.println("The configMap: " + cardConfigMap);
         return cardConfigMap;
     }
 }

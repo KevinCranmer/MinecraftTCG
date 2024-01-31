@@ -1,8 +1,6 @@
 package me.crazycranberry.minecrafttcg.commands;
 
-import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
 import me.crazycranberry.minecrafttcg.events.DuelAcceptedEvent;
-import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

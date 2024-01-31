@@ -1,20 +1,23 @@
 package me.crazycranberry.minecrafttcg.events;
 
+import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class RegisterListenersEvent extends Event {
+public class DuelCloseEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Boolean shouldRegister;
-    public RegisterListenersEvent(boolean shouldRegister) {
-        this.shouldRegister = shouldRegister;
+
+    private final Stadium stadium;
+
+    public DuelCloseEvent(Stadium stadium) {
+        this.stadium = stadium;
     }
 
-    public Boolean shouldRegister() {
-        return shouldRegister;
+    public Stadium stadium() {
+        return stadium;
     }
 
     @Override

@@ -24,10 +24,8 @@ public class WorldManager implements Listener {
         File file = new File(Bukkit.getServer().getWorldContainer(), WORLD_NAME);
         WorldCreator God;
         if (file.exists()) {
-            System.out.println("World already exists, lets just load it");
             God = new WorldCreator(WORLD_NAME);
         } else {
-            System.out.println("Generating new world");
             God = new WorldCreator(WORLD_NAME).generator(new EmptyWorldGenerator());
         }
         tcgWorld = God.createWorld();

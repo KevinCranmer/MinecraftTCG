@@ -1,13 +1,17 @@
 package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.events.BuildStadiumEvent;
+import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
+import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
 import me.crazycranberry.minecrafttcg.model.Deck;
+import me.crazycranberry.minecrafttcg.model.Participant;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -20,6 +24,7 @@ import org.bukkit.block.data.Lightable;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Cow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -50,6 +55,8 @@ import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_RED_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Stadium.BLUE_MATERIAL;
 import static me.crazycranberry.minecrafttcg.model.Stadium.GREEN_MATERIAL;
 import static me.crazycranberry.minecrafttcg.model.Stadium.RED_MATERIAL;
+import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.restoreStartingWorldConfig;
+import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.saveStartingWorldConfig;
 import static org.bukkit.Material.BIRCH_BUTTON;
 import static org.bukkit.Material.BIRCH_WALL_SIGN;
 import static org.bukkit.Material.OAK_WALL_SIGN;
@@ -73,10 +80,27 @@ public class StadiumManager implements Listener {
         setupStadium(event.getStartingCorner(), event.player1(), event.player2());
     }
 
+    @EventHandler
+    private void onDuelClose(DuelCloseEvent event) {
+        if (event.stadium().player1().getWorld().equals(event.stadium().startingCorner().getWorld()) && !event.stadium().player1().isDead()) {
+            restoreStartingWorldConfig(event.stadium().player1());
+        }
+        if (event.stadium().player2().getWorld().equals(event.stadium().startingCorner().getWorld()) && !event.stadium().player2().isDead()) {
+            restoreStartingWorldConfig(event.stadium().player2());
+        }
+        stadiums.remove(event.stadium().startingCorner());
+        if (stadiums.isEmpty()) {
+            System.out.println("Stadiums is now empty... unregistering events");
+            Bukkit.getPluginManager().callEvent(new RegisterListenersEvent(false));
+        }
+    }
+
     private static void setupStadium(Location startingCorner, Player player1, Player player2) {
+        System.out.println("Setting up the stadium at " + startingCorner);
         buildStadium(startingCorner);
         Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2));
         stadiums.put(startingCorner, newStadium);
+        startingCorner.getWorld().getNearbyEntities(startingCorner, 40, 40, 40).stream().filter(e -> !e.getType().equals(EntityType.PLAYER)).forEach(Entity::remove);
         newStadium.setChickens(summonChicken(PLAYER_1_RED_CHICKEN, startingCorner),
                 summonChicken(PLAYER_1_BLUE_CHICKEN, startingCorner),
                 summonChicken(PLAYER_1_GREEN_CHICKEN, startingCorner),
@@ -169,8 +193,12 @@ public class StadiumManager implements Listener {
     }
 
     public static void sendPlayersToDuel(World w, Player requester, Player accepter) {
-        Bukkit.getPluginManager().callEvent(new RegisterListenersEvent());
+        Bukkit.getPluginManager().callEvent(new RegisterListenersEvent(true));
         Location nextStartingCorner = getNextAvailableStartingCorner(w);
+        saveStartingWorldConfig(new Participant(requester));
+        saveStartingWorldConfig(new Participant(accepter));
+        cleanUpPlayerBeforeDuel(requester);
+        cleanUpPlayerBeforeDuel(accepter);
         if (Math.random() < 0.5) {
             setupStadium(nextStartingCorner, requester, accepter);
             Stadium stadium = stadiums.get(nextStartingCorner);
@@ -184,6 +212,13 @@ public class StadiumManager implements Listener {
             requester.teleport(stadium.locOfSpot(PLAYER_2_OUTLOOK));
             Bukkit.getPluginManager().callEvent(new DuelStartEvent(stadium));
         }
+    }
+
+    private static void cleanUpPlayerBeforeDuel(Player p) {
+        p.setHealth(20);
+        p.setFoodLevel(10);
+        p.setGameMode(GameMode.ADVENTURE);
+        p.getInventory().clear();
     }
 
     private static LivingEntity summonChicken(Spot spot, Location startingCorner) {

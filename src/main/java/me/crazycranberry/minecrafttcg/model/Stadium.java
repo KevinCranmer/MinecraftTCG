@@ -3,22 +3,30 @@ package me.crazycranberry.minecrafttcg.model;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
+import me.crazycranberry.minecrafttcg.managers.TurnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Optional;
 
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_1_SIGN_OFFSET;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_2_SIGN_OFFSET;
@@ -39,6 +47,7 @@ import static me.crazycranberry.minecrafttcg.model.Spot.RED_2_FRONT;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
+import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
@@ -85,6 +94,11 @@ public class Stadium {
     private LivingEntity player2GreenChicken;
     private Spot player1Target;
     private Spot player2Target;
+    private int fireworksLeft = 10;
+    private int fireworkTaskId;
+    private int fireworkInterval = 10;
+    private int totalFireworkDuration = (fireworksLeft + 1) * fireworkInterval;
+    private boolean duelDone = false;
 
     public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck) {
         this.startingCorner = startingCorner;
@@ -307,6 +321,36 @@ public class Stadium {
             }
         }
         return Optional.empty();
+    }
+
+    public boolean isDuelDone() {
+        return duelDone;
+    }
+
+    public void summonWinnerFireworks(Player winner) {
+        duelDone = true;
+        fireworkTaskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
+            int numFireworksAtATime = (int) (Math.random() * 4);
+            for (int i = 0; i < numFireworksAtATime; i++) {
+                double xOffset = Math.random() * 26;
+                double yOffset = 8 + (Math.random() * 5);
+                double zOffset = Math.random() * 11;
+                Firework fw = (Firework) startingCorner.getWorld().spawnEntity(startingCorner.clone().add(new Vector(xOffset, yOffset, zOffset)), EntityType.FIREWORK);
+                FireworkMeta fwm = fw.getFireworkMeta();
+                fwm.setPower(1);
+                fwm.addEffect(FireworkEffect.builder().withColor(winner.equals(player1) ? Color.GREEN : Color.ORANGE).flicker(true).build());
+                fw.setFireworkMeta(fwm);
+                fw.setMaxLife(10);
+            }
+            fireworksLeft--;
+            if (fireworksLeft <= 0) {
+                Bukkit.getScheduler().cancelTask(fireworkTaskId);
+            }
+        }, 5 /*<-- the initial delay */, fireworkInterval /*<-- the interval */).getTaskId();
+    }
+
+    public int fireworkDuration() {
+        return totalFireworkDuration;
     }
 
     public Optional<Player> getPlayerFromChicken(LivingEntity entity) {

@@ -5,6 +5,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.SpellOrCantripCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.CantripCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -34,7 +35,13 @@ public class Collection {
         Card cardDef = cardEnum.card();
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        bookMeta.setDisplayName(String.format("%s%s%s", cardDef.rarity().color(), cardDef.cardName(), RESET));
+        String cardType = "MINION";
+        if (cardDef instanceof CantripCardDefinition) {
+            cardType = "CANTRIP";
+        } else if (cardDef instanceof SpellCardDefinition) {
+            cardType = "SPELL";
+        }
+        bookMeta.setDisplayName(String.format("%s%s [%s] Cost:%s%s", cardDef.rarity().color(), cardDef.cardName(), cardType, cardDef.cost(), RESET));
         bookMeta.setAuthor("CrazyCranberry Mods");
         bookMeta.setTitle(cardDef.cardName());
         String page = "";

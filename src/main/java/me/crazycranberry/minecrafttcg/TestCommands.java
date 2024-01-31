@@ -8,7 +8,7 @@ import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
 import me.crazycranberry.minecrafttcg.managers.DuelActionsManager;
-import me.crazycranberry.minecrafttcg.managers.LookAndHighlightManager;
+import me.crazycranberry.minecrafttcg.managers.PlayerManager;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import me.crazycranberry.minecrafttcg.managers.TurnManager;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,7 +40,7 @@ public class TestCommands {
     static Skeleton skeleton;
     static Zombie zombie;
 
-    static LookAndHighlightManager lookAndHighlightManager;
+    static PlayerManager playerManager;
     static DuelActionsManager duelActionsManager;
 
     static RangedBowAttackGoal<net.minecraft.world.entity.monster.Skeleton> shootingGoal;
@@ -177,17 +177,17 @@ public class TestCommands {
     }
 
     private static void trackVision(Player p) {
-        if (lookAndHighlightManager == null) {
-            lookAndHighlightManager = new LookAndHighlightManager();
+        if (playerManager == null) {
+            playerManager = new PlayerManager();
         }
-        Bukkit.getServer().getPluginManager().registerEvents(lookAndHighlightManager, getPlugin());
+        Bukkit.getServer().getPluginManager().registerEvents(playerManager, getPlugin());
     }
 
     private static void stopTrackingVision(Player p) {
-        if (lookAndHighlightManager == null) {
+        if (playerManager == null) {
             System.out.println("Not tracking anyway");
         }
-        HandlerList.unregisterAll(lookAndHighlightManager);
+        HandlerList.unregisterAll(playerManager);
     }
 
     private static void deck(Player p) {

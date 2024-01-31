@@ -16,7 +16,7 @@ public class Participant {
 
     public Participant(Player p) {
         this.player = p;
-        this.startingWorldConfig = new ParticipantStartingWorldConfig(p.getLocation(), p.getGameMode(), p.getHealth(), p.getHealthScale(), p.getAbsorptionAmount(), p.getRemainingAir(), p.getFoodLevel(), p.getSaturation(), p.getExhaustion(), p.getActivePotionEffects(), p.getCompassTarget(), p.getBedSpawnLocation(), p.getAllowFlight(), p.isInvulnerable(), p.getNoDamageTicks(), p.getLevel(), p.getExp(), p.getFireTicks(), p.getInventory(), p.getScoreboard());
+        this.startingWorldConfig = new ParticipantStartingWorldConfig(p.getLocation(), p.getGameMode(), p.getHealth(), p.getHealthScale(), p.getAbsorptionAmount(), p.getRemainingAir(), p.getFoodLevel(), p.getSaturation(), p.getExhaustion(), p.getActivePotionEffects(), p.getCompassTarget(), p.getBedSpawnLocation(), p.getAllowFlight(), p.isInvulnerable(), p.getNoDamageTicks(), p.getLevel(), p.getExp(), p.getFireTicks(), p.getInventory());
     }
 
     public Player getPlayer() {
@@ -47,9 +47,8 @@ public class Participant {
         private final float exp;
         private final int fireTicks;
         private final PlayerInventory inventory;
-        private final Scoreboard scoreboard;
 
-        public ParticipantStartingWorldConfig(Location location, GameMode gameMode, Double health, Double healthScale, Double absorptionAmount, int remainingAir, int foodLevel, float saturation, float exhaustion, Collection<PotionEffect> activePotionEffects, Location compassTarget, Location bedSpawnLocation, boolean allowFlight, boolean invulnerable, int noDamageTicks, int level, float exp, int fireTicks, PlayerInventory inventory, Scoreboard scoreboard) {
+        public ParticipantStartingWorldConfig(Location location, GameMode gameMode, Double health, Double healthScale, Double absorptionAmount, int remainingAir, int foodLevel, float saturation, float exhaustion, Collection<PotionEffect> activePotionEffects, Location compassTarget, Location bedSpawnLocation, boolean allowFlight, boolean invulnerable, int noDamageTicks, int level, float exp, int fireTicks, PlayerInventory inventory) {
             this.location = location;
             this.gameMode = gameMode;
             this.health = health;
@@ -69,7 +68,6 @@ public class Participant {
             this.exp = exp;
             this.fireTicks = fireTicks;
             this.inventory = inventory;
-            this.scoreboard = scoreboard;
         }
 
         public Location getLocation() {
@@ -146,10 +144,6 @@ public class Participant {
 
         public PlayerInventory getInventory() {
             return inventory;
-        }
-
-        public Scoreboard getScoreboard() {
-            return scoreboard;
         }
     }
 }

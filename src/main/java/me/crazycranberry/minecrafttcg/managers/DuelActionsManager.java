@@ -167,7 +167,8 @@ public class DuelActionsManager implements Listener {
         return EquipmentSlot.HAND.equals(event.getHand()) &&
                 (event.getAction().equals(LEFT_CLICK_BLOCK) || event.getAction().equals(LEFT_CLICK_AIR)) &&
                 stadium != null &&
-                stadium.isPlayerParticipating(event.getPlayer());
+                stadium.isPlayerParticipating(event.getPlayer()) &&
+                stadium.playerTargetSpot(event.getPlayer()) != null;
     }
 
     private boolean isNextPhaseRequested(PlayerInteractEvent event, Stadium stadium) {

@@ -45,15 +45,12 @@ public class MinionManager implements Listener {
 
     @EventHandler
     private void onSpawn(CreatureSpawnEvent event) {
-        System.out.println("Chicken check: " + (StadiumManager.stadium(event.getEntity().getLocation()) != null));
-        System.out.println("Chicken check: " + !event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM));
         if (StadiumManager.stadium(event.getEntity().getLocation()) != null && !event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)) {
             event.setCancelled(true);
             return;
         }
         // A chicken spawned, let's make the chicken stay in its spot
         if (event.getEntity().getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
-            System.out.println("Trying to remove the cow goals");
             CraftAnimals proxy = (CraftAnimals) event.getEntity();
             proxy.setSilent(true);
             Animal nmsAnimal = proxy.getHandle();
