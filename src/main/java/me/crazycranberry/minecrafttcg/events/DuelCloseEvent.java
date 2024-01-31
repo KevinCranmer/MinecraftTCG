@@ -14,6 +14,7 @@ public class DuelCloseEvent extends Event {
 
     public DuelCloseEvent(Stadium stadium) {
         this.stadium = stadium;
+        DuelEndEvent.duelClosed(stadium);
     }
 
     public Stadium stadium() {

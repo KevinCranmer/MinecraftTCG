@@ -90,13 +90,11 @@ public class StadiumManager implements Listener {
         }
         stadiums.remove(event.stadium().startingCorner());
         if (stadiums.isEmpty()) {
-            System.out.println("Stadiums is now empty... unregistering events");
             Bukkit.getPluginManager().callEvent(new RegisterListenersEvent(false));
         }
     }
 
     private static void setupStadium(Location startingCorner, Player player1, Player player2) {
-        System.out.println("Setting up the stadium at " + startingCorner);
         buildStadium(startingCorner);
         Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2));
         stadiums.put(startingCorner, newStadium);

@@ -2,11 +2,13 @@ package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.model.Spot;
+import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -29,6 +31,13 @@ public class PlayerManager implements Listener {
     }
 
     @EventHandler
+    private void onPlayerTakeDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player && StadiumManager.stadium(event.getEntity().getLocation()) != null && !event.getCause().equals(EntityDamageEvent.DamageCause.CUSTOM)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     private void onHungerDeplete(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player && StadiumManager.stadium(event.getEntity().getLocation()) != null) {
             event.setCancelled(true);
@@ -37,15 +46,17 @@ public class PlayerManager implements Listener {
 
     @EventHandler
     private void onPlayerDeath(PlayerDeathEvent event) {
-        if (StadiumManager.stadium(event.getEntity().getLocation()) != null) {
-            Bukkit.getPluginManager().callEvent(new DuelEndEvent(event.getEntity()));
+        Stadium stadium = StadiumManager.stadium(event.getEntity().getLocation());
+        if (stadium != null && DuelEndEvent.isEndable(stadium)) {
+            Bukkit.getPluginManager().callEvent(new DuelEndEvent(event.getEntity(), false));
         }
     }
 
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
-        if (StadiumManager.stadium(event.getPlayer().getLocation()) != null) {
-            Bukkit.getPluginManager().callEvent(new DuelEndEvent(event.getPlayer()));
+        Stadium stadium = StadiumManager.stadium(event.getPlayer().getLocation());
+        if (stadium != null && DuelEndEvent.isEndable(stadium)) {
+            Bukkit.getPluginManager().callEvent(new DuelEndEvent(event.getPlayer(), false));
         }
     }
 

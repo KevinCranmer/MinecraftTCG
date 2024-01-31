@@ -2,6 +2,8 @@ package me.crazycranberry.minecrafttcg.model;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
+import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
+import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import me.crazycranberry.minecrafttcg.managers.TurnManager;
 import org.bukkit.Bukkit;
@@ -53,6 +55,7 @@ import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
+import static org.bukkit.Color.BLACK;
 
 public class Stadium {
     public static final Material RED_MATERIAL = Material.RED_TERRACOTTA;
@@ -132,18 +135,18 @@ public class Stadium {
         if (phase.equals(COMBAT_PHASE)) {
             doneAttacking();
         } else if (phase.equals(POST_COMBAT_CLEANUP)) {
-            if (player1.getHealth() < player1PendingDamage && player2.getHealth() < player2PendingDamage) {
-                System.out.println("It's a tie!!");
-            } else {
-                if (player1PendingDamage > 0) {
-                    player1.damage(player1PendingDamage);
-                }
-                player1PendingDamage = 0;
-                if (player2PendingDamage > 0) {
-                    player2.damage(player2PendingDamage);
-                }
-                player2PendingDamage = 0;
+            // Is it a tie?
+            if (player1.getHealth() <= player1PendingDamage && player2.getHealth() <= player2PendingDamage) {
+                Bukkit.getPluginManager().callEvent(new DuelEndEvent(player1, true));
             }
+            if (player1PendingDamage > 0) {
+                player1.damage(player1PendingDamage);
+            }
+            player1PendingDamage = 0;
+            if (player2PendingDamage > 0) {
+                player2.damage(player2PendingDamage);
+            }
+            player2PendingDamage = 0;
         }
     }
 
@@ -300,10 +303,8 @@ public class Stadium {
 
     public LivingEntity getTargetInFront(Minion minion) {
         Minion opposingMinion = Spot.opposingFrontRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
-        System.out.println(minion.cardDef().cardName() + " is targeting " + (opposingMinion == null ? "null" : opposingMinion.cardDef().cardName()) + " who's in front");
         if (opposingMinion == null) {
             opposingMinion = Spot.opposingBackRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
-            System.out.println(minion.cardDef().cardName() + " is targeting " + (opposingMinion == null ? "null" : opposingMinion.cardDef().cardName()) + " who's in back");
             if (opposingMinion == null) {
                 return Spot.opposingChicken(minion.minionInfo().spot(), this);
             }
@@ -327,7 +328,7 @@ public class Stadium {
         return duelDone;
     }
 
-    public void summonWinnerFireworks(Player winner) {
+    public void summonWinnerFireworks(Player winner, Boolean isTie) {
         duelDone = true;
         fireworkTaskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             int numFireworksAtATime = (int) (Math.random() * 4);
@@ -338,7 +339,7 @@ public class Stadium {
                 Firework fw = (Firework) startingCorner.getWorld().spawnEntity(startingCorner.clone().add(new Vector(xOffset, yOffset, zOffset)), EntityType.FIREWORK);
                 FireworkMeta fwm = fw.getFireworkMeta();
                 fwm.setPower(1);
-                fwm.addEffect(FireworkEffect.builder().withColor(winner.equals(player1) ? Color.GREEN : Color.ORANGE).flicker(true).build());
+                fwm.addEffect(FireworkEffect.builder().withColor(isTie ? BLACK : (winner.equals(player1) ? Color.GREEN : Color.ORANGE)).flicker(true).build());
                 fw.setFireworkMeta(fwm);
                 fw.setMaxLife(10);
             }
@@ -379,7 +380,7 @@ public class Stadium {
                 sign1.getSide(Side.FRONT).setLine(0, targetedPlayer.getName());
                 sign1.getSide(Side.FRONT).setLine(1, String.format("%s❤%s: %s", RED, RESET, targetedPlayer.getHealth()));
                 sign1.getSide(Side.FRONT).setLine(2, String.format("Cards in Hand: %s", numCardsInHand(targetedPlayer)));
-                sign1.getSide(Side.FRONT).setLine(3, String.format("%s❤%s: 19.0", RED, RESET));
+                sign1.getSide(Side.FRONT).setLine(3, "");
                 sign2.getSide(Side.FRONT).setLine(0, "");
                 sign2.getSide(Side.FRONT).setLine(1, "");
                 sign2.getSide(Side.FRONT).setLine(2, "");

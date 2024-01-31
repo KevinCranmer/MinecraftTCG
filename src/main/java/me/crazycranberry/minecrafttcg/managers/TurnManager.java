@@ -38,6 +38,7 @@ import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_POSTCOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_PRECOMBAT_PHASE;
 import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.BLACK;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
@@ -158,8 +159,12 @@ public class TurnManager implements Listener {
     private void onDuelEnd(DuelEndEvent event) {
         // TODO: ADD RANKING CHANGES HERE
         System.out.println("onDuelEnd");
-        sendTitles(String.format("%s%s is the winner!%s", event.winner().equals(event.stadium().player1()) ? GREEN : GOLD, event.winner().getName(), RESET), event.stadium());
-        event.stadium().summonWinnerFireworks(event.winner());
+        if (event.isTie()) {
+            sendTitles(String.format("%sIt's a tie!%s", RED, RESET), event.stadium());
+        } else {
+            sendTitles(String.format("%s%s is the winner!%s", event.winner().equals(event.stadium().player1()) ? GREEN : GOLD, event.winner().getName(), RESET), event.stadium());
+        }
+        event.stadium().summonWinnerFireworks(event.winner(), event.isTie());
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new DuelCloseEvent(event.stadium())), event.stadium().fireworkDuration());
     }
 
