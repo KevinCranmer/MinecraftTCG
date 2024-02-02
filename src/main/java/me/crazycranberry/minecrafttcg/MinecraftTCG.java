@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg;
 
+import me.crazycranberry.minecrafttcg.commands.CollectionCommand;
 import me.crazycranberry.minecrafttcg.commands.DeckCommand;
 import me.crazycranberry.minecrafttcg.commands.DuelCommand;
 import me.crazycranberry.minecrafttcg.commands.ForfeitCommand;
@@ -57,6 +58,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
     }
 
     private void registerCommands() {
+        setCommandManager("collection", new CollectionCommand());
         setCommandManager("deck", new DeckCommand());
         setCommandManager("duel", new DuelCommand());
         setCommandManager("forfeit", new ForfeitCommand());

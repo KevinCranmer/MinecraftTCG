@@ -11,11 +11,13 @@ import org.bukkit.persistence.PersistentDataType;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
+import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 
 public class CollectionConfigs {
     public static final String COLLECTION_FOLDER = "collections";
@@ -129,6 +131,32 @@ public class CollectionConfigs {
             config.save(playersCollectionFile);
         } catch (IOException e) {
             logger().severe("Error saving collection file for " + p.getName() + "\n" + e.getMessage());
+        }
+    }
+
+    public static void saveCollection(Player p, List<List<ItemStack>> pages) {
+        File playersCollectionFile = collectionFile(p);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playersCollectionFile);
+        ConfigurationSection collectionCs = config.getConfigurationSection("collection");
+        clear(collectionCs);
+        for (List<ItemStack> page : pages) {
+            for (ItemStack item : page) {
+                if (item != null && item.getItemMeta() != null && Boolean.TRUE.equals(item.getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN))) {
+                    String cardEnum = item.getItemMeta().getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING);
+                    collectionCs.set(cardEnum, collectionCs.getInt(cardEnum, 0) + 1);
+                }
+            }
+        }
+        try {
+            config.save(playersCollectionFile);
+        } catch (IOException e) {
+            logger().severe("Error saving collection file for " + p.getName() + "\n" + e.getMessage());
+        }
+    }
+
+    private static void clear(ConfigurationSection cs) {
+        for (String key : cs.getKeys(false)) {
+            cs.set(key, null);
         }
     }
 

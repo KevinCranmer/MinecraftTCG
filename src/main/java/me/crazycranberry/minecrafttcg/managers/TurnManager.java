@@ -21,6 +21,7 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,7 +39,6 @@ import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_POSTCOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_PRECOMBAT_PHASE;
 import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.BLACK;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
@@ -69,6 +69,7 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(FIRST_PRECOMBAT_PHASE);
         int turn = event.getStadium().turn();
+        makeSoundForPlayerTurnStart(turn % 2 != 0 ? event.getStadium().player1() : event.getStadium().player2());
         event.getStadium().draw(event.getStadium().player1());
         event.getStadium().draw(event.getStadium().player2());
         executeForAllMinions(event.getStadium(), Minion::onTurnStart);
@@ -84,7 +85,8 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(SECOND_PRECOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        String title = turn % 2 != 1 ? String.format("%s%s's Pre-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Pre-Combat Phase", GOLD, event.getStadium().player2().getName());
+        makeSoundForPlayerTurnStart(turn % 2 == 0 ? event.getStadium().player1() : event.getStadium().player2());
+        String title = turn % 2 == 1 ? String.format("%s%s's Pre-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Pre-Combat Phase", GOLD, event.getStadium().player2().getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
     }
 
@@ -128,7 +130,8 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(FIRST_POSTCOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        String title = turn % 2 != 1 ? String.format("%s%s's Post-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Post-Combat Phase", GOLD, event.getStadium().player2().getName());
+        makeSoundForPlayerTurnStart(turn % 2 == 0 ? event.getStadium().player1() : event.getStadium().player2());
+        String title = turn % 2 == 0 ? String.format("%s%s's Post-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Post-Combat Phase", GOLD, event.getStadium().player2().getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
     }
 
@@ -140,6 +143,7 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(SECOND_POSTCOMBAT_PHASE);
         int turn = event.getStadium().turn();
+        makeSoundForPlayerTurnStart(turn % 2 != 0 ? event.getStadium().player1() : event.getStadium().player2());
         String title = turn % 2 != 0 ? String.format("%s%s's Post-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Post-Combat Phase", GOLD, event.getStadium().player2().getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
     }
@@ -166,6 +170,10 @@ public class TurnManager implements Listener {
         }
         event.stadium().summonWinnerFireworks(event.winner(), event.isTie());
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new DuelCloseEvent(event.stadium())), event.stadium().fireworkDuration());
+    }
+
+    private void makeSoundForPlayerTurnStart(Player player) {
+        player.playSound(player, Sound.BLOCK_BEACON_POWER_SELECT, 1, 1);
     }
 
     private void executeForAllMinions(Stadium stadium, Consumer<? super Minion> trigger) {

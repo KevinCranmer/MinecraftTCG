@@ -2,7 +2,9 @@ package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.config.CollectionConfigs;
+import me.crazycranberry.minecrafttcg.events.CollectionViewRequestEvent;
 import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
+import me.crazycranberry.minecrafttcg.model.Collection;
 import me.crazycranberry.minecrafttcg.model.Deck;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;
@@ -11,28 +13,29 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
+import static me.crazycranberry.minecrafttcg.model.Collection.NEXT_PAGE_KEY;
+import static me.crazycranberry.minecrafttcg.model.Collection.IS_PAGING_KEY;
 import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.RESET;
 
 public class DeckManager implements Listener {
     private static Map<Player, List<ItemStack>> playersLookingAtDecks = new HashMap<>();
-    private static Set<Player> playersLookingAtCollection = new HashSet<>();
+    private static Map<Player, Collection> playersLookingAtCollection = new HashMap<>();
 
     @EventHandler
     private void onDeckViewRequest(DeckViewRequestEvent event) {
@@ -49,9 +52,17 @@ public class DeckManager implements Listener {
     }
 
     @EventHandler
+    private void onCollectionViewRequest(CollectionViewRequestEvent event) {
+        Collection collection = Collection.fromConfig(event.getPlayer(), event.sortBy());
+        Inventory collectionInv = collection.collection();
+        event.getPlayer().openInventory(collectionInv);
+        playersLookingAtCollection.put(event.getPlayer(), collection);
+    }
+
+    @EventHandler
     private void onDeckOrCollectionSave(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        if ((!playersLookingAtDecks.containsKey(p) && !playersLookingAtCollection.contains(p)) || (StadiumManager.stadium(p.getLocation()) != null && StadiumManager.stadium(p.getLocation()).isPlayerParticipating(p))) {
+        if ((!playersLookingAtDecks.containsKey(p) && !playersLookingAtCollection.containsKey(p)) || (StadiumManager.stadium(p.getLocation()) != null && StadiumManager.stadium(p.getLocation()).isPlayerParticipating(p))) {
             return;
         }
         if (playersLookingAtDecks.containsKey(p)) {
@@ -61,6 +72,9 @@ public class DeckManager implements Listener {
                 recoverInventoryStateBeforeDeckEdit(p, event.getInventory());
             }
             playersLookingAtDecks.remove(p);
+        } else if (playersLookingAtCollection.containsKey(p)) {
+            playersLookingAtCollection.get(p).save(event.getInventory(), p);
+            playersLookingAtCollection.remove(p);
         }
     }
 
@@ -75,12 +89,47 @@ public class DeckManager implements Listener {
     @EventHandler
     private void onInventoryClick(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
+        if (p.getInventory().equals(event.getClickedInventory())) {
+            return;
+        }
         Stadium stadium = StadiumManager.stadium(p.getLocation());
-        if (playersLookingAtDecks.containsKey((Player) event.getWhoClicked()) && stadium != null && stadium.isPlayerParticipating(p)) {
-            p.sendMessage(String.format("%sYou cannot edit your deck mid-duel.%s", GRAY, RESET));
+        if (playersLookingAtDecks.containsKey(p)) {
+            handleDeckClick(p, stadium, event);
+        } else if (playersLookingAtCollection.containsKey(p)) {
+            handleCollectionClick(p, stadium, event);
+        }
+    }
+
+    private void handleCollectionClick(Player p, Stadium stadium, InventoryClickEvent event) {
+        Boolean isPagingItem = false;
+        ItemStack item = event.getCurrentItem();
+        ItemMeta meta;
+        PersistentDataContainer dataContainer = null;
+        if (item != null) {
+            meta = item.getItemMeta();
+            if (meta != null) {
+                dataContainer = meta.getPersistentDataContainer();
+                isPagingItem = dataContainer.get(IS_PAGING_KEY, PersistentDataType.BOOLEAN);
+                isPagingItem = isPagingItem != null && isPagingItem;
+            }
+        }
+        if (isPagingItem && event.getClick().equals(ClickType.DROP)) {
+            p.sendMessage(String.format("%sYou cannot drop the paging items.%s", GRAY, RESET));
+            event.setCancelled(true);
+        } else if (isPagingItem) {
+            playersLookingAtCollection.get(p).otherPage(event.getClickedInventory(), p, dataContainer.get(NEXT_PAGE_KEY, PersistentDataType.BOOLEAN));
+            event.setCancelled(true);
+        } else if (stadium != null && stadium.isPlayerParticipating(p)) {
+            p.sendMessage(String.format("%sYou cannot edit your collection mid-duel.%s", GRAY, RESET));
             event.setCancelled(true);
         }
-        if (playersLookingAtDecks.containsKey((Player) event.getWhoClicked()) && event.getClick().equals(ClickType.DROP)) {
+    }
+
+    private void handleDeckClick(Player p, Stadium stadium, InventoryClickEvent event) {
+        if (stadium != null && stadium.isPlayerParticipating(p)) {
+            p.sendMessage(String.format("%sYou cannot edit your deck mid-duel.%s", GRAY, RESET));
+            event.setCancelled(true);
+        } else if (event.getClick().equals(ClickType.DROP)) {
             event.getWhoClicked().sendMessage(String.format("%sYou cannot drop items while viewing your deck.%s", GRAY, RESET));
             event.setCancelled(true);
         }
