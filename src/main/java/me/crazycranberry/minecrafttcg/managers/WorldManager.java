@@ -3,12 +3,11 @@ package me.crazycranberry.minecrafttcg.managers;
 import me.crazycranberry.minecrafttcg.events.DuelAcceptedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.generator.ChunkGenerator;
 
 import java.io.File;
 
@@ -26,47 +25,21 @@ public class WorldManager implements Listener {
         if (file.exists()) {
             God = new WorldCreator(WORLD_NAME);
         } else {
-            God = new WorldCreator(WORLD_NAME).generator(new EmptyWorldGenerator());
+            God = new WorldCreator(WORLD_NAME).type(WorldType.FLAT).generatorSettings("""
+                    {
+                        "layers": [
+                            {
+                                "block": "air",
+                                "height": 4
+                            }
+                        ],
+                        "biome":"void"
+                    }
+                    """).generateStructures(false);
         }
         tcgWorld = God.createWorld();
         tcgWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        tcgWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
         StadiumManager.sendPlayersToDuel(tcgWorld, event.requester(), event.accepter());
-    }
-
-    public static class EmptyWorldGenerator extends ChunkGenerator {
-        @Override
-        public boolean shouldGenerateNoise() {
-            return false;
-        }
-
-        @Override
-        public boolean shouldGenerateSurface() {
-            return false;
-        }
-
-        @Override
-        public boolean shouldGenerateBedrock() {
-            return false;
-        }
-
-        @Override
-        public boolean shouldGenerateCaves() {
-            return false;
-        }
-
-        @Override
-        public boolean shouldGenerateDecorations() {
-            return false;
-        }
-
-        @Override
-        public boolean shouldGenerateMobs() {
-            return false;
-        }
-
-        @Override
-        public boolean shouldGenerateStructures() {
-            return false;
-        }
     }
 }

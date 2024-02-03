@@ -48,6 +48,7 @@ public class PlayerManager implements Listener {
     private void onPlayerDeath(PlayerDeathEvent event) {
         Stadium stadium = StadiumManager.stadium(event.getEntity().getLocation());
         if (stadium != null && DuelEndEvent.isEndable(stadium)) {
+            event.setDeathMessage(String.format("%s has died in a duel against %s.", event.getEntity().getName(), event.getEntity().equals(stadium.player1()) ? stadium.player2().getName() : stadium.player1().getName()));
             Bukkit.getPluginManager().callEvent(new DuelEndEvent(event.getEntity(), false));
         }
     }

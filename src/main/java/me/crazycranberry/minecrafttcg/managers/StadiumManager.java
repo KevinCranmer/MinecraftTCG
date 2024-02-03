@@ -57,6 +57,7 @@ import static me.crazycranberry.minecrafttcg.model.Stadium.GREEN_MATERIAL;
 import static me.crazycranberry.minecrafttcg.model.Stadium.RED_MATERIAL;
 import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.restoreStartingWorldConfig;
 import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.saveStartingWorldConfig;
+import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.BIRCH_BUTTON;
 import static org.bukkit.Material.BIRCH_WALL_SIGN;
 import static org.bukkit.Material.OAK_WALL_SIGN;
@@ -66,6 +67,9 @@ import static org.bukkit.block.BlockFace.NORTH;
 import static org.bukkit.block.BlockFace.SOUTH;
 
 public class StadiumManager implements Listener {
+    public static final int TOTAL_X = 26;
+    public static final int TOTAL_Y = 15;
+    public static final int TOTAL_Z = 13;
     public static final Vector PLAYER_1_SIGN_OFFSET = new Vector(3, 10, 4);
     public static final Vector PLAYER_1_MANA_OFFSET = new Vector(3, 13, 0);
     public static final Vector PLAYER_2_SIGN_OFFSET = new Vector(23, 10, 6);
@@ -95,6 +99,7 @@ public class StadiumManager implements Listener {
     }
 
     private static void setupStadium(Location startingCorner, Player player1, Player player2) {
+        clearStadiumArea(startingCorner);
         buildStadium(startingCorner);
         Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2));
         stadiums.put(startingCorner, newStadium);
@@ -179,7 +184,7 @@ public class StadiumManager implements Listener {
         }
         Location prevLoc = null;
         for (Location l : stadiums.keySet().stream().sorted((k1, k2) -> (int) (k1.getZ() - k2.getZ())).toList()) {
-            if (prevLoc == null && l.getZ() != 0) {
+            if (prevLoc == null && l.getZ() != 0.5) {
                 return new Location(w, 0.5, 100, 0.5);
             }
             if (prevLoc != null && l.getZ() > prevLoc.getZ() + DISTANCE_BETWEEN_STADIUMS_Z) {
@@ -230,6 +235,16 @@ public class StadiumManager implements Listener {
         buildBarriers(location.getBlock());
         buildPlayer1Tower(location.getBlock());
         buildPlayer2Tower(location.getBlock());
+    }
+
+    private static void clearStadiumArea(Location startingCorner) {
+        for (int x = 0; x < TOTAL_X; x++) {
+            for (int y = 0; y < TOTAL_Y; y++) {
+                for (int z = 0; z < TOTAL_Z; z++) {
+                    startingCorner.getBlock().getRelative(x, y, z).setType(AIR);
+                }
+            }
+        }
     }
 
     private static void buildBarriers(Block startingCornerBlock) {
