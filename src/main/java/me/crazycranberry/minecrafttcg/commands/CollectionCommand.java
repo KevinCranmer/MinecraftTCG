@@ -21,7 +21,7 @@ public class CollectionCommand implements CommandExecutor, TabCompleter {
         if (command.getName().equalsIgnoreCase("collection")) {
             Collection.SortBy sortBy = null;
             if (args.length > 0) {
-                sortBy = Collection.SortBy.fromString(args[0]);
+                sortBy = Collection.SortBy.fromString(args[0].replace("sortby=", ""));
             }
             if (sortBy == null) {
                 sortBy = Collection.SortBy.COST;
@@ -35,7 +35,10 @@ public class CollectionCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player && (command.getName().equalsIgnoreCase("collection") && args.length == 1)) {
-            return Arrays.stream(Collection.SortBy.values()).map(s -> s.name().toLowerCase()).filter(s -> s.startsWith(args[0].toLowerCase())).toList();
+            return Arrays.stream(Collection.SortBy.values()).map(s -> s.name().toLowerCase())
+                    .filter(s -> s.startsWith(args[0].toLowerCase()) || ("sortby=" + s).startsWith(args[0].toLowerCase()))
+                    .map(s -> "sortby=" + s)
+                    .toList();
         }
         return null;
     }

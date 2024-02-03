@@ -98,8 +98,7 @@ public abstract class Minion {
     public void onDamageDealt(LivingEntity target, Integer damageDealt, Boolean wasProtected) {
         attacksLeft--;
         if (attacksLeft <= 0) {
-            nmsMob.goalSelector.getRunningGoals().filter(g -> g.getGoal() instanceof MeleeAttackGoal || g.getGoal() instanceof ShootParticlesGoal).forEach(WrappedGoal::stop);
-            nmsMob.removeAllGoals(g -> g instanceof MeleeAttackGoal || g instanceof ShootParticlesGoal);
+            removeAttackGoals();
             minionInfo.stadium().doneAttacking();
         }
     }
@@ -121,6 +120,12 @@ public abstract class Minion {
         minionInfo.entity().getWorld().spawnParticle(Particle.HEART, minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5);
         minionInfo.stadium().updateCustomName(this);
         minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 2, 1);
+    }
+
+    public void unstuckify() {
+        if (attacksLeft > 0 && !minionInfo.stadium().isWalled(this) && nmsMob.getTarget() != null) {
+            minionInfo.entity().teleport(nmsMob.getTarget().getBukkitEntity());
+        }
     }
 
     public void giveTemporaryStrength(Integer bonusStrength) {
@@ -163,6 +168,11 @@ public abstract class Minion {
         } else {
             nmsMob.goalSelector.addGoal(1, new MeleeAttackGoal(nmsMob, 1, true));
         }
+    }
+
+    public void removeAttackGoals() {
+        nmsMob.goalSelector.getRunningGoals().filter(g -> g.getGoal() instanceof MeleeAttackGoal || g.getGoal() instanceof ShootParticlesGoal).forEach(WrappedGoal::stop);
+        nmsMob.removeAllGoals(g -> g instanceof MeleeAttackGoal || g instanceof ShootParticlesGoal);
     }
 
     private void removeGoals() {

@@ -290,7 +290,7 @@ public class Collection {
         }
 
         private static Comparator<CardEnum> compareRarity() {
-            return Comparator.comparing((CardEnum card) -> card.card().rarity());
+            return Comparator.comparing((CardEnum card) -> card.card().rarity()).reversed();
         }
 
         public static SortBy fromString(String s) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CommonFunctions {
+    public static final int TICKS_PER_SECOND = 20;
     public static <T> Optional<T> randomFromList(List<T> list) {
         if (list.isEmpty()) {
             return Optional.empty();

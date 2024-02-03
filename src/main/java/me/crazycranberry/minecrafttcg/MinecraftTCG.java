@@ -5,7 +5,7 @@ import me.crazycranberry.minecrafttcg.commands.DeckCommand;
 import me.crazycranberry.minecrafttcg.commands.DuelCommand;
 import me.crazycranberry.minecrafttcg.commands.ForfeitCommand;
 import me.crazycranberry.minecrafttcg.commands.TestCommand;
-import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
+import me.crazycranberry.minecrafttcg.config.MinecraftTcgConfig;
 import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
 import me.crazycranberry.minecrafttcg.managers.DeckManager;
 import me.crazycranberry.minecrafttcg.managers.DuelActionsManager;
@@ -27,6 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static me.crazycranberry.minecrafttcg.utils.FileUtils.loadConfig;
 import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.restoreStartingWorldConfig;
 import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.startingWorldConfigExists;
 
@@ -34,6 +35,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
     private static Logger logger;
     private static MinecraftTCG plugin;
     private static boolean managersRegistered = false;
+    private MinecraftTcgConfig config;
     private static final List<Listener> managers = List.of(
             new MinionManager(),
             new DuelActionsManager(),
@@ -45,6 +47,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
         // Plugin startup logic
         plugin = this;
         logger = this.getLogger();
+        refreshConfigs();
         registerManagers();
         registerCommands();
     }
@@ -116,5 +119,19 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
 
     public static MinecraftTCG getPlugin() {
         return plugin;
+    }
+
+    public MinecraftTcgConfig config() {
+        return config;
+    }
+
+    public String refreshConfigs() {
+        try {
+            config = new MinecraftTcgConfig(loadConfig("minecraft_tcg.yml"));
+            return "Successfully loaded configs.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
     }
 }

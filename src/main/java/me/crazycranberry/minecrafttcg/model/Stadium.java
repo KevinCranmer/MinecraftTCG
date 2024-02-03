@@ -440,6 +440,11 @@ public class Stadium {
         };
     }
 
+    public boolean isWalled(Minion minion) {
+        // TODO: IMPLEMENT
+        return false;
+    }
+
     public Integer numCardsInHand(Player p) {
         Inventory inv = p.equals(player1) ? player1.getInventory() : player2.getInventory();
         int cardCount = 0;
@@ -483,6 +488,15 @@ public class Stadium {
 
     public Location startingCorner() {
         return startingCorner;
+    }
+
+    public Player currentPlayersTurn() {
+        if (isPlayersTurn(player1)) {
+            return player1;
+        } else if (isPlayersTurn(player2)) {
+            return player2;
+        }
+        return null;
     }
 
     public boolean isPlayersTurn(Player p) {

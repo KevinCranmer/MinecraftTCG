@@ -8,22 +8,15 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
 import me.crazycranberry.minecrafttcg.events.CastCardEvent;
-import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
-import me.crazycranberry.minecrafttcg.events.SecondPostCombatPhaseStartedEvent;
-import me.crazycranberry.minecrafttcg.events.SecondPreCombatPhaseStartedEvent;
-import me.crazycranberry.minecrafttcg.events.TurnEndEvent;
-import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Text;
-import net.minecraft.network.chat.contents.PlainTextContents;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -31,6 +24,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static org.bukkit.ChatColor.DARK_GREEN;
@@ -183,40 +180,18 @@ public class DuelActionsManager implements Listener {
         if (stadium.phase() == null) {
             return;
         }
-        if ((player.equals(stadium.player1()) && stadium.turn() % 2 == 1) || (player.equals(stadium.player2()) && stadium.turn() % 2 == 0)) {
-            switch (stadium.phase()) {
-                case FIRST_PRECOMBAT_PHASE:
-                    Bukkit.getPluginManager().callEvent(new SecondPreCombatPhaseStartedEvent(stadium));
-                    break;
-                case FIRST_POSTCOMBAT_PHASE:
-                case SECOND_PRECOMBAT_PHASE:
-                    player.sendMessage(String.format("%sYou cannot change the turn phase, it's not your turn.%s", GRAY, RESET));
-                    break;
-                case SECOND_POSTCOMBAT_PHASE:
-                    Bukkit.getPluginManager().callEvent(new TurnEndEvent(stadium));
-                    break;
-                case POST_COMBAT_CLEANUP:
-                case COMBAT_PHASE:
-                    player.sendMessage(String.format("%sYou cannot change the turn phase during combat.%s", GRAY, RESET));
-                    break;
+        if (stadium.isPlayersTurn(player)) {
+            try {
+                Constructor<? extends Event> c = stadium.phase().nextPhaseRequestEventClass().getConstructor(Stadium.class);
+                c.setAccessible(true);
+                Event nextPhaseEvent = c.newInstance(stadium);
+                Bukkit.getPluginManager().callEvent(nextPhaseEvent);
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException e) {
+                logger().severe("Exception trying to create the next phases event: " + e.getMessage());
             }
         } else {
-            switch (stadium.phase()) {
-                case SECOND_PRECOMBAT_PHASE:
-                    Bukkit.getPluginManager().callEvent(new CombatStartEvent(stadium));
-                    break;
-                case SECOND_POSTCOMBAT_PHASE:
-                case FIRST_PRECOMBAT_PHASE:
-                    player.sendMessage(String.format("%sYou cannot change the turn phase, it's not your turn.%s", GRAY, RESET));
-                    break;
-                case FIRST_POSTCOMBAT_PHASE:
-                    Bukkit.getPluginManager().callEvent(new SecondPostCombatPhaseStartedEvent(stadium));
-                    break;
-                case POST_COMBAT_CLEANUP:
-                case COMBAT_PHASE:
-                    player.sendMessage(String.format("%sYou cannot change the turn phase during combat.%s", GRAY, RESET));
-                    break;
-            }
+            player.sendMessage(String.format("%sYou cannot change the turn phase, it's not your turn.%s", GRAY, RESET));
         }
     }
 }
