@@ -7,6 +7,7 @@ import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
 import me.crazycranberry.minecrafttcg.model.Collection;
 import me.crazycranberry.minecrafttcg.model.Deck;
 import me.crazycranberry.minecrafttcg.model.Stadium;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.model.Collection.NEXT_PAGE_KEY;
@@ -69,7 +71,8 @@ public class DeckManager implements Listener {
             if (deckSaveable(event.getInventory().getContents(), (Player) event.getPlayer())) {
                 CollectionConfigs.saveDeck(p, event.getInventory());
             } else {
-                recoverInventoryStateBeforeDeckEdit(p, event.getInventory());
+                List<ItemStack> originalItems = List.copyOf(playersLookingAtDecks.get(p));
+                Bukkit.getScheduler().runTaskLater(getPlugin(), () -> recoverInventoryStateBeforeDeckEdit(originalItems, p, event.getInventory()), 1);
             }
             playersLookingAtDecks.remove(p);
         } else if (playersLookingAtCollection.containsKey(p)) {
@@ -135,8 +138,7 @@ public class DeckManager implements Listener {
         }
     }
 
-    private void recoverInventoryStateBeforeDeckEdit(Player p, Inventory inventory) {
-        List<ItemStack> originalItems = playersLookingAtDecks.get(p);
+    private void recoverInventoryStateBeforeDeckEdit(List<ItemStack> originalItems, Player p, Inventory inventory) {
         for (ItemStack item : inventory.getContents()) {
             if (item != null && !originalItems.contains(item)) {
                 p.getInventory().addItem(item);
@@ -180,7 +182,7 @@ public class DeckManager implements Listener {
         }
         int numCardsInDeck = cardCounts.values().stream().reduce(0, Integer::sum);
         if (weCanSaveTheDeck && numCardsInDeck != 27) {
-            p.sendMessage(String.format("%sCould not save deck. Your deck needs 27 cards. Your had %s.%s", GRAY, numCardsInDeck, RESET));
+            p.sendMessage(String.format("%sCould not save deck. Your deck needs 27 cards. Yours had %s.%s", GRAY, numCardsInDeck, RESET));
             weCanSaveTheDeck = false;
         }
         return weCanSaveTheDeck;
