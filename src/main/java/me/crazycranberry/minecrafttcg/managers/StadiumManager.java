@@ -2,7 +2,6 @@ package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.events.BuildStadiumEvent;
 import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
-import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
 import me.crazycranberry.minecrafttcg.model.Deck;
@@ -10,7 +9,6 @@ import me.crazycranberry.minecrafttcg.model.Participant;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,8 +20,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.sign.Side;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Cow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -31,18 +27,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.scoreboard.Criteria;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_BLUE_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_GREEN_CHICKEN;
@@ -248,48 +236,37 @@ public class StadiumManager implements Listener {
     }
 
     private static void buildBarriers(Block startingCornerBlock) {
-        // Player towers
-        for (int i = 0; i <= 22; i = i + 22) {
-            for (int j = 0; j < 2; j++) {
-                startingCornerBlock.getRelative(i, j+8, 4).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i, j+8, 5).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i, j+8, 6).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i+1, j+8, 3).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i+1, j+8, 7).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i+2, j+8, 3).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i+2, j+8, 7).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i+3, j+8, 3).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i+3, j+8, 7).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i+4, j+8, 4).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i+4, j+8, 5).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i+4, j+8, 6).setType(Material.BARRIER);
+        // Walls
+        for (int y = 0; y < 12; y++) {
+            for (int x = 0; x <= 26; x++) {
+                startingCornerBlock.getRelative(x, y, -1).setType(Material.BARRIER);
+                startingCornerBlock.getRelative(x, y, 11).setType(Material.BARRIER);
+            }
+            for (int z = -1; z <= 11; z++) {
+                startingCornerBlock.getRelative(0, y, z).setType(Material.BARRIER);
+                startingCornerBlock.getRelative(26, y, z).setType(Material.BARRIER);
+            }
+        }
+        // Floor
+        for (int x = 0; x <= 26; x++) {
+            for (int z = -1; z <= 11; z++) {
+                startingCornerBlock.getRelative(x, 6, z).setType(Material.BARRIER);
             }
         }
         // Sides of rows
         for (int i = 2; i < 25; i++) {
-            startingCornerBlock.getRelative(i, 1, -1).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 1, 3).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 1, 7).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 1, 11).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 2, -1).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 2, 3).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 2, 7).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 2, 11).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 3, -1).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 3, 3).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 3, 7).setType(Material.BARRIER);
-            startingCornerBlock.getRelative(i, 3, 11).setType(Material.BARRIER);
+            for (int y = 0; y <= 6; y++) {
+                startingCornerBlock.getRelative(i, y, -1).setType(Material.BARRIER);
+                startingCornerBlock.getRelative(i, y, 3).setType(Material.BARRIER);
+                startingCornerBlock.getRelative(i, y, 7).setType(Material.BARRIER);
+                startingCornerBlock.getRelative(i, y, 11).setType(Material.BARRIER);
+            }
         }
         // Ends of rows
-        for (int i = 0; i < 3; i++) {
-            for (int j = 1; j < 4; j++) {
-                int zOffset = i * 4;
-                startingCornerBlock.getRelative(25, j, 0 + zOffset).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(25, j, 1 + zOffset).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(25, j, 2 + zOffset).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(1, j, 0 + zOffset).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(1, j, 1 + zOffset).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(1, j, 2 + zOffset).setType(Material.BARRIER);
+        for (int z = 0; z <= 11; z++) {
+            for (int y = 0; y <= 6; y++) {
+                startingCornerBlock.getRelative(25, y, z).setType(Material.BARRIER);
+                startingCornerBlock.getRelative(1, y, z).setType(Material.BARRIER);
             }
         }
     }
