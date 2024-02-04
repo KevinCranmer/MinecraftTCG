@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -33,6 +34,13 @@ public class PlayerManager implements Listener {
     @EventHandler
     private void onPlayerTakeDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player && StadiumManager.stadium(event.getEntity().getLocation()) != null && !event.getCause().equals(EntityDamageEvent.DamageCause.CUSTOM)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onPlayerPlaceBlock(BlockPlaceEvent event) {
+        if (StadiumManager.stadium(event.getPlayer().getLocation()) != null) {
             event.setCancelled(true);
         }
     }
