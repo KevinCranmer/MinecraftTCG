@@ -98,7 +98,7 @@ public class MinionManager implements Listener {
 
     private void handleMinionAttacked(Minion damager, Minion damagee) {
         damagee.onDamageReceived(damager.minionInfo().entity(), damager.strength(), damagee.turnsProtected() > 0);
-        damager.onDamageDealt(damagee.minionInfo().entity(), damager.strength(), damagee.turnsProtected() > 0);
+        damager.onDamageDealt(damagee.minionInfo().entity(), damager.strength(), true, damagee.turnsProtected() > 0);
     }
 
     private void handleChickenAttacked(Stadium stadium, Minion damager, LivingEntity chicken) {
@@ -107,6 +107,6 @@ public class MinionManager implements Listener {
             return;
         }
         stadium.pendingDamageForPlayer(targetPlayer.get(), damager.strength());
-        damager.onDamageDealt(targetPlayer.get(), damager.strength(), false);
+        damager.onDamageDealt(targetPlayer.get(), damager.strength(), true, false);
     }
 }

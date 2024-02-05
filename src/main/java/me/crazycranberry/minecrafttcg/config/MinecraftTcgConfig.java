@@ -11,10 +11,14 @@ import static me.crazycranberry.minecrafttcg.utils.FileUtils.loadOriginalConfig;
 
 public class MinecraftTcgConfig {
     private final YamlConfiguration originalConfig;
+    private YamlConfiguration dropOddsConfig;
+    private YamlConfiguration cardDropRulesConfig;
     private int duelSecondsPerRound;
 
-    public MinecraftTcgConfig(YamlConfiguration config) {
-        originalConfig = loadOriginalConfig("minecraft_tcg.yml");
+    public MinecraftTcgConfig(YamlConfiguration config, YamlConfiguration dropOddsConfig, YamlConfiguration cardDropRulesConfig) {
+        this.originalConfig = loadOriginalConfig("minecraft_tcg.yml");
+        this.dropOddsConfig = dropOddsConfig;
+        this.cardDropRulesConfig = cardDropRulesConfig;
         updateOutOfDateConfig(config);
         loadConfig(config);
     }
@@ -44,5 +48,13 @@ public class MinecraftTcgConfig {
 
     public int duelSecondsPerRound() {
         return duelSecondsPerRound;
+    }
+
+    public YamlConfiguration dropOddsConfig() {
+        return dropOddsConfig;
+    }
+
+    public YamlConfiguration cardDropRulesConfig() {
+        return cardDropRulesConfig;
     }
 }

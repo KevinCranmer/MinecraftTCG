@@ -1,0 +1,10 @@
+# If a card is listed here, then it will only be dropped
+# by the events below it.
+only_dropped_by:
+  TOXIC_SPIKES:
+  - fishing.default
+# If an event is listed here, then it will only drop cards listed
+# below it. This setting takes priority over only_dropped_by
+event_exclusively_drops:
+  kill_mob.blaze:
+    - UNSTABLE_PYRO

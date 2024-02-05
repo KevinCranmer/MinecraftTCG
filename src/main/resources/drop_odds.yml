@@ -1,0 +1,194 @@
+uncommon: 0.5
+rare: 0.35
+legendary: 0.15
+# Following are chance percent settings for different minecraft actions
+# 0.001 = 1/10 of 1 percent, 0.01 = 1 percent, 1.00 = 100 percent
+block_place:
+  default: 0.005
+  melon_stem: 0.01
+craft_item:
+  default: 0.01
+  diamond_pickaxe: 0.05
+smelt_item:
+  default: 0.0075
+  netherite_scrap: 0.15
+enchant_item:
+  default: 0.05
+  level_30: 0.075
+# If broken with a silk touch pick, it uses default odds, so I'd only specify blocks like Diamond Ore or something
+block_break:
+  default: 0.002
+  copper_ore: 0.003
+  deepslate_copper_ore: 0.003
+  iron_ore: 0.004
+  deepslate_iron_ore: 0.004
+  redstone_ore: 0.004
+  deepslate_redstone_ore: 0.004
+  diamond_ore: 0.04
+  deepslate_diamond_ore: 0.04
+  emerald_ore: 0.1
+  deepslate_emerald_ore: 0.1
+  nether_quartz_ore: 0.004
+  nether_gold_ore: 0.004
+  spawner: 0.75
+fishing:
+  default: 0.02
+mob_kill:
+  default: 0.01
+  allay: 0.05
+  axolotl:
+    lucy: 0.02
+    wild: 0.02
+    gold: 0.02
+    cyan: 0.02
+    blue: 0.02
+  bat: 0.1
+  bee: 0.015
+  blaze: 0.015
+  camel: 0.05
+  cat:
+    all_black: 0.05
+    black: 0.05
+    british_shorthair: 0.05
+    calico: 0.05
+    jellie: 0.05
+    persian: 0.05
+    ragdoll: 0.05
+    red: 0.05
+    siamese: 0.05
+    tabby: 0.05
+    white: 0.05
+  cave_spider: 0.02
+  chicken: 0.02
+  cod: 0.03
+  cow: 0.02
+  creeper: 0.05
+  creeper_charged: 0.2
+  dolphin: 0.05
+  donkey: 0.03
+  drowned: 0.01
+  elder_guardian: 0.25
+  ender_dragon: 1.00
+  enderman: 0.02
+  endermite: 0.1
+  evoker: 0.1
+  fox:
+    red: 0.01
+    snow: 0.01
+  frog:
+    temperate: 0.01
+    cold: 0.01
+    warm: 0.01
+  ghast: 0.075
+  giant: 0.025
+  glow_squid: 0.01
+  goat: 0.02
+  guardian: 0.04
+  hoglin: 0.02
+  horse:
+    black: 0.01
+    brown: 0.01
+    chestnut: 0.01
+    creamy: 0.01
+    dark_brown: 0.01
+    gray: 0.01
+    white: 0.01
+  husk: 0.01
+  illusioner: 0.25
+  iron_golem: 0.03
+  llama:
+    brown: 0.01
+    creamy: 0.01
+    gray: 0.01
+    white: 0.01
+  magma_cube: 0.02
+  mule: 0.01
+  mushroom_cow:
+    red: 0.01
+    brown: 0.01
+  ocelot: 0.05
+  panda:
+    aggressive: 0.01
+    brown: 0.01
+    lazy: 0.01
+    normal: 0.01
+    playful: 0.01
+    weak: 0.01
+    worried: 0.01
+  parrot:
+    blue: 0.05
+    cyan: 0.05
+    gray: 0.05
+    green: 0.05
+    red: 0.05
+  phantom: 0.05
+  pig: 0.01
+  piglin: 0.02
+  piglin_brute: 0.05
+  pig_zombie: 0.02
+  pillager: 0.02
+  polar_bear: 0.05
+  pufferfish: 0.05
+  rabbit:
+    black: 0.01
+    black_and_white: 0.01
+    brown: 0.01
+    gold: 0.01
+    salt_and_pepper: 0.01
+    the_killer_bunny: 1.00
+    toast: 0.01
+    white: 0.01
+  ravager: 0.75
+  salmon: 0.03
+  sheep:
+    black: 0.01
+    blue: 0.01
+    brown: 0.01
+    cyan: 0.01
+    gray: 0.01
+    green: 0.01
+    light_blue: 0.01
+    light_gray: 0.01
+    lime: 0.01
+    magenta: 0.01
+    orange: 0.01
+    pink: 0.01
+    purple: 0.01
+    red: 0.01
+    white: 0.01
+    yellow: 0.01
+  shulker: 0.05
+  silverfish: 0.04
+  skeleton: 0.01
+  skeleton_horse: 1.0
+  slime: 0.01
+  sniffer: 0.02
+  snowman: 0.01
+  spider: 0.015
+  squid: 0.03
+  stray: 0.01
+  strider: 0.01
+  tadpole: 0.01
+  trader_llama:
+    brown: 0.05
+    creamy: 0.05
+    gray: 0.05
+    white: 0.05
+  # ########################################
+  tropical_fish: 0.01
+  turtle: 0.02
+  vex: 0.075
+  villager: 0.02
+  vindicator: 0.05
+  wandering_trader: 0.1
+  warden: 0.5
+  witch: 0.025
+  wither: 1.0
+  wither_skeleton: 0.05
+  wolf: 0.01
+  zoglin: 0.01
+  zombie: 0.01
+  zombie_horse: 1.00
+  zombie_pigman: 0.01
+  zombified_piglin: 0.01
+  zombie_villager: 0.01

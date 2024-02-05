@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.BookMeta;
@@ -26,10 +27,16 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
+import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
@@ -39,14 +46,23 @@ import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
 import static org.bukkit.event.block.Action.LEFT_CLICK_AIR;
 import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
 import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public class DuelActionsManager implements Listener {
+    Set<String> cardsBeingDescriptionChecked = new HashSet<>();
+
     @EventHandler
     private void onAction(PlayerInteractEvent event) {
         Player p = event.getPlayer();
         Stadium stadium = StadiumManager.stadium(p.getLocation());
-        if (isValidCastAttempt(event, stadium)) {
+        if (readingBookDetails(event, stadium)) {
+            // It appears there's a bug in Spigot/Minecraft. When you right click in minecraft, a RIGHT_CLICK_ACTION is sent and then a LEFT_CLICK_ACTION is also sent.
+            // I'm going to manually track when that happens to make it so players can read the description of their cards without casting them.
+            String UUID = event.getItem().getItemMeta().getPersistentDataContainer().get(RANDOM_UUID_KEY, PersistentDataType.STRING);
+            cardsBeingDescriptionChecked.add(UUID);
+            Bukkit.getScheduler().runTaskLater(getPlugin(), () -> cardsBeingDescriptionChecked.remove(UUID), 1);
+        } else if (isValidCastAttempt(event, stadium)) {
             BookMeta bookMeta = (BookMeta) event.getItem().getItemMeta();
             CardEnum cardEnum = CardEnum.valueOf(bookMeta.getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING));
             Card card = cardEnum.card();
@@ -57,6 +73,12 @@ public class DuelActionsManager implements Listener {
             stadium.displayDescription(p);
         } else if (isNextPhaseRequested(event, stadium)) {
             requestNextPhase(stadium, p);
+            if (event.getItem() != null && event.getItem().getItemMeta() != null && Boolean.TRUE.equals(event.getItem().getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN))) {
+                // The bug can happen here too...
+                String UUID = event.getItem().getItemMeta().getPersistentDataContainer().get(RANDOM_UUID_KEY, PersistentDataType.STRING);
+                cardsBeingDescriptionChecked.add(UUID);
+                Bukkit.getScheduler().runTaskLater(getPlugin(), () -> cardsBeingDescriptionChecked.remove(UUID), 1);
+            }
         }
     }
 
@@ -149,12 +171,25 @@ public class DuelActionsManager implements Listener {
         return true;
     }
 
+    private boolean readingBookDetails(PlayerInteractEvent event, Stadium stadium) {
+        return EquipmentSlot.HAND.equals(event.getHand()) &&
+            event.getItem() != null &&
+            event.getItem().getType().equals(Material.WRITTEN_BOOK) &&
+            event.getItem().getItemMeta() != null &&
+            Boolean.TRUE.equals(event.getItem().getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN)) &&
+            (event.getAction().equals(RIGHT_CLICK_BLOCK) || event.getAction().equals(RIGHT_CLICK_AIR)) &&
+            !event.getClickedBlock().getType().name().endsWith("_BUTTON") &&
+            stadium != null &&
+            stadium.isPlayerParticipating(event.getPlayer());
+    }
+
     private boolean isValidCastAttempt(PlayerInteractEvent event, Stadium stadium) {
         return EquipmentSlot.HAND.equals(event.getHand()) &&
                 event.getItem() != null &&
                 event.getItem().getType().equals(Material.WRITTEN_BOOK) &&
                 event.getItem().getItemMeta() != null &&
                 Boolean.TRUE.equals(event.getItem().getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN)) &&
+                !cardsBeingDescriptionChecked.contains(event.getItem().getItemMeta().getPersistentDataContainer().get(RANDOM_UUID_KEY, PersistentDataType.STRING)) &&
                 (event.getAction().equals(LEFT_CLICK_BLOCK) || event.getAction().equals(LEFT_CLICK_AIR)) &&
                 stadium != null &&
                 stadium.isPlayerParticipating(event.getPlayer());

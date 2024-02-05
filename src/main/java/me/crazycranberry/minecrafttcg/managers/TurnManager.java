@@ -76,11 +76,12 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(FIRST_PRECOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        makeSoundForPlayerTurnStart(turn % 2 != 0 ? event.getStadium().player1() : event.getStadium().player2());
+        Player p = event.getStadium().currentPlayersTurn();
+        makeSoundForPlayerTurnStart(p);
         event.getStadium().draw(event.getStadium().player1());
         event.getStadium().draw(event.getStadium().player2());
         executeForAllMinions(event.getStadium(), Minion::onTurnStart);
-        String title = turn % 2 != 0 ? String.format("%s%s's Pre-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Pre-Combat Phase", GOLD, event.getStadium().player2().getName());
+        String title = String.format("%s%s's Pre-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
         startTurnPhaseTimers(turn, FIRST_PRECOMBAT_PHASE, event.getStadium());
     }
@@ -93,8 +94,9 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(SECOND_PRECOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        makeSoundForPlayerTurnStart(turn % 2 == 0 ? event.getStadium().player1() : event.getStadium().player2());
-        String title = turn % 2 == 1 ? String.format("%s%s's Pre-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Pre-Combat Phase", GOLD, event.getStadium().player2().getName());
+        Player p = event.getStadium().currentPlayersTurn();
+        makeSoundForPlayerTurnStart(p);
+        String title = String.format("%s%s's Pre-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
         startTurnPhaseTimers(turn, SECOND_PRECOMBAT_PHASE, event.getStadium());
     }
@@ -142,8 +144,9 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(FIRST_POSTCOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        makeSoundForPlayerTurnStart(turn % 2 == 0 ? event.getStadium().player1() : event.getStadium().player2());
-        String title = turn % 2 == 0 ? String.format("%s%s's Post-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Post-Combat Phase", GOLD, event.getStadium().player2().getName());
+        Player p = event.getStadium().currentPlayersTurn();
+        makeSoundForPlayerTurnStart(p);
+        String title = String.format("%s%s's Post-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
         startTurnPhaseTimers(turn, FIRST_POSTCOMBAT_PHASE, event.getStadium());
     }
@@ -156,8 +159,9 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(SECOND_POSTCOMBAT_PHASE);
         int turn = event.getStadium().turn();
-        makeSoundForPlayerTurnStart(turn % 2 != 0 ? event.getStadium().player1() : event.getStadium().player2());
-        String title = turn % 2 != 0 ? String.format("%s%s's Post-Combat Phase", GREEN, event.getStadium().player1().getName()) : String.format("%s%s's Post-Combat Phase", GOLD, event.getStadium().player2().getName());
+        Player p = event.getStadium().currentPlayersTurn();
+        makeSoundForPlayerTurnStart(p);
+        String title = String.format("%s%s's Post-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
         startTurnPhaseTimers(turn, SECOND_POSTCOMBAT_PHASE, event.getStadium());
     }
@@ -202,7 +206,7 @@ public class TurnManager implements Listener {
         startTurnPhaseTimer(turn, turnPhase, stadium, 2);
         startTurnPhaseTimer(turn, turnPhase, stadium, 1);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            if (turn == stadium.turn() && turnPhase.equals(stadium.phase())) {
+            if (turn == stadium.turn() && turnPhase.equals(stadium.phase()) && !stadium.isDuelDone()) {
                 try {
                     Constructor<? extends Event> c = turnPhase.nextPhaseRequestEventClass().getConstructor(Stadium.class);
                     c.setAccessible(true);
@@ -218,7 +222,7 @@ public class TurnManager implements Listener {
 
     private void startTurnPhaseTimer(int turn, TurnPhase turnPhase, Stadium stadium, int secondsLeft) {
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            if (turn == stadium.turn() && turnPhase.equals(stadium.phase())) {
+            if (turn == stadium.turn() && turnPhase.equals(stadium.phase()) && !stadium.isDuelDone()) {
                 Player p = stadium.currentPlayersTurn();
                 stadium.player1().sendMessage(String.format("%s%s turn will end in %s seconds.%s", GRAY, p == null ? "The current" : p.getName() + "'s", secondsLeft, RESET));
                 stadium.player2().sendMessage(String.format("%s%s turn will end in %s seconds.%s", GRAY, p == null ? "The current" : p.getName() + "'s", secondsLeft, RESET));

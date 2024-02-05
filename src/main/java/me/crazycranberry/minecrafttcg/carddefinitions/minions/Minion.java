@@ -95,11 +95,13 @@ public abstract class Minion {
     public abstract void onCombatStart();
 
     /** Can't let target be of type Minion because it might be the Opposing Player. */
-    public void onDamageDealt(LivingEntity target, Integer damageDealt, Boolean wasProtected) {
-        attacksLeft--;
-        if (attacksLeft <= 0) {
-            removeAttackGoals();
-            minionInfo.stadium().doneAttacking();
+    public void onDamageDealt(LivingEntity target, Integer damageDealt, Boolean wasCombatAttack, Boolean wasProtected) {
+        if (wasCombatAttack) {
+            attacksLeft--;
+            if (attacksLeft <= 0) {
+                removeAttackGoals();
+                minionInfo.stadium().doneAttacking();
+            }
         }
     }
 

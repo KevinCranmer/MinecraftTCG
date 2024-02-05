@@ -269,6 +269,10 @@ public class Stadium {
         return p.equals(player1) ? List.of(RED_1_FRONT, RED_1_BACK, BLUE_1_FRONT, BLUE_1_BACK, GREEN_1_FRONT, GREEN_1_BACK) : List.of(RED_2_FRONT, RED_2_BACK, BLUE_2_FRONT, BLUE_2_BACK, GREEN_2_FRONT, GREEN_2_BACK);
     }
 
+    public List<Spot> enemyMinionSpots(Player p) {
+        return p.equals(player2) ? List.of(RED_1_FRONT, RED_1_BACK, BLUE_1_FRONT, BLUE_1_BACK, GREEN_1_FRONT, GREEN_1_BACK) : List.of(RED_2_FRONT, RED_2_BACK, BLUE_2_FRONT, BLUE_2_BACK, GREEN_2_FRONT, GREEN_2_BACK);
+    }
+
     public boolean isPlayerParticipating(Player p) {
         return p.equals(player1) || p.equals(player2);
     }
@@ -497,6 +501,10 @@ public class Stadium {
             return player2;
         }
         return null;
+    }
+
+    public ChatColor playersColor(Player p) {
+        return p.equals(player1) ? GREEN : GOLD;
     }
 
     public boolean isPlayersTurn(Player p) {

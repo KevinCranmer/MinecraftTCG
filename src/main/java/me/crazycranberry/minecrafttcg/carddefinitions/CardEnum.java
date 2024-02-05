@@ -8,6 +8,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.Ding
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch.HealWitchDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie.HungryZombieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro.UnstablePyroDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ToxicSpikes;
 
@@ -23,6 +24,7 @@ public enum CardEnum {
     HEAL_WITCH(new HealWitchDef()),
     HUNGRY_ZOMBIE(new HungryZombieDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),
+    UNSTABLE_PYRO(new UnstablePyroDef()),
 
     // Spells
     DIG_DEEPER(new DigDeeper()),

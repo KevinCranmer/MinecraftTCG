@@ -12,5 +12,7 @@ commands:
   forfeit:
     description: Forfeit your current duel.
     aliases: [ff, surrender]
+  refresh:
+    description: Refresh Configs.
   tc:
     description: test

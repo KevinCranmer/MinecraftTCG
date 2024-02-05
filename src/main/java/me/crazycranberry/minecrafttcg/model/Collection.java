@@ -226,42 +226,26 @@ public class Collection {
             targets.add("Spots");
         }
         return String.format("""
-            %s%sName:%s %s
-            %sRarity:%s %s
-            %sCard Type:%s %s
+            %s%s%s%s [%s] Cost: %s
             %sTargets:%s %s
-            %sCard Cost:%s %s
             %sDescription:%s %s
             """,
-                RESET, GOLD, RESET, card.cardName(),
-                GRAY, RESET, card.rarity().toString(),
-                AQUA, RESET, card instanceof CantripCardDefinition ? "Cantrip" : "Spell",
+                RESET, card.rarity().color(), card.cardName(), RESET, card instanceof CantripCardDefinition ? "CANTRIP" : "SPELL", card.cost(),
                 DARK_PURPLE, RESET, String.join(", ", targets),
-                LIGHT_PURPLE, RESET, card.cost(),
                 BLUE, RESET, card.cardDescription()
         );
     }
 
     public static String minionCardDescription(MinionCardDefinition card) {
         return String.format("""
-            %s%sName:%s %s
-            %sRarity:%s %s
-            %sCard Type:%s Minion
+            %s%s%s%s [MINION] Cost: %s
+            %s%s%s:%s %s❤%s:%s/%s
             %sMinion Type:%s %s
-            %sCard Cost:%s %s
-            %sIs Ranged:%s %s
-            %sStrength:%s %s
-            %sMax health:%s %s
             %sDescription:%s %s
             """,
-                RESET, GOLD, RESET, card.cardName(),
-                GRAY, RESET, card.rarity().toString(),
-                AQUA, RESET,
+                RESET, card.rarity().color(), card.cardName(), RESET, card.cost(),
+                DARK_GREEN, card.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, card.strength(), RED, RESET, card.maxHealth(), card.maxHealth(),
                 DARK_PURPLE, RESET, card.minionType(),
-                LIGHT_PURPLE, RESET, card.cost(),
-                DARK_GREEN, RESET, card.isRanged(),
-                GREEN, RESET, card.strength(),
-                RED, RESET, card.maxHealth(),
                 BLUE, RESET, card.cardDescription()
         );
     }

@@ -4,9 +4,11 @@ import me.crazycranberry.minecrafttcg.commands.CollectionCommand;
 import me.crazycranberry.minecrafttcg.commands.DeckCommand;
 import me.crazycranberry.minecrafttcg.commands.DuelCommand;
 import me.crazycranberry.minecrafttcg.commands.ForfeitCommand;
+import me.crazycranberry.minecrafttcg.commands.RefreshCommand;
 import me.crazycranberry.minecrafttcg.commands.TestCommand;
 import me.crazycranberry.minecrafttcg.config.MinecraftTcgConfig;
 import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
+import me.crazycranberry.minecrafttcg.managers.CardDropManager;
 import me.crazycranberry.minecrafttcg.managers.DeckManager;
 import me.crazycranberry.minecrafttcg.managers.DuelActionsManager;
 import me.crazycranberry.minecrafttcg.managers.PlayerManager;
@@ -54,6 +56,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
 
     private void registerManagers() {
         getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new CardDropManager(), this);
         getServer().getPluginManager().registerEvents(new DeckManager(), this);
         getServer().getPluginManager().registerEvents(new StadiumManager(), this);
         getServer().getPluginManager().registerEvents(new TurnManager(), this);
@@ -65,6 +68,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
         setCommandManager("deck", new DeckCommand());
         setCommandManager("duel", new DuelCommand());
         setCommandManager("forfeit", new ForfeitCommand());
+        setCommandManager("refresh", new RefreshCommand());
         setCommandManager("tc", new TestCommand());
     }
 
@@ -127,7 +131,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
 
     public String refreshConfigs() {
         try {
-            config = new MinecraftTcgConfig(loadConfig("minecraft_tcg.yml"));
+            config = new MinecraftTcgConfig(loadConfig("minecraft_tcg.yml"), loadConfig("drop_odds.yml"), loadConfig("card_drop_rules.yml"));
             return "Successfully loaded configs.";
         } catch (Exception e) {
             e.printStackTrace();

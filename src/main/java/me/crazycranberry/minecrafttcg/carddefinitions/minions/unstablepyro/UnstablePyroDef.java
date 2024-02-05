@@ -8,7 +8,7 @@ import org.bukkit.entity.EntityType;
 public class UnstablePyroDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 4;
+        return 3;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class UnstablePyroDef implements MinionCardDefinition {
 
     @Override
     public Integer maxHealth() {
-        return 3;
+        return 2;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class UnstablePyroDef implements MinionCardDefinition {
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return null;
+        return UnstablePyro.class;
     }
 
     @Override
