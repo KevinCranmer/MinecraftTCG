@@ -139,21 +139,21 @@ public class DeckManager implements Listener {
     }
 
     private void recoverInventoryStateBeforeDeckEdit(List<ItemStack> originalItems, Player p, Inventory inventory) {
-        for (ItemStack item : inventory.getContents()) {
-            if (item != null && !originalItems.contains(item)) {
-                p.getInventory().addItem(item);
-            }
-        }
         for (ItemStack item : originalItems) {
             if (item != null && !inventory.contains(item)) {
                 for (ItemStack itemInPlayerInv : p.getInventory()) {
                     if (itemInPlayerInv != null &&
-                            Boolean.TRUE.equals(itemInPlayerInv.getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN)) &&
-                            itemInPlayerInv.getItemMeta().getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING).equals(item.getItemMeta().getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING))) {
+                        Boolean.TRUE.equals(itemInPlayerInv.getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN)) &&
+                        itemInPlayerInv.getItemMeta().getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING).equals(item.getItemMeta().getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING))) {
                         p.getInventory().remove(itemInPlayerInv);
                         break;
                     }
                 }
+            }
+        }
+        for (ItemStack item : inventory.getContents()) {
+            if (item != null && !originalItems.contains(item)) {
+                p.getInventory().addItem(item);
             }
         }
     }
