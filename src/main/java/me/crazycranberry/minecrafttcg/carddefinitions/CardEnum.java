@@ -10,6 +10,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie.Hungr
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro.UnstablePyroDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.TheVoid;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ToxicSpikes;
 
 public enum CardEnum {
@@ -28,6 +29,7 @@ public enum CardEnum {
 
     // Spells
     DIG_DEEPER(new DigDeeper()),
+    THE_VOID(new TheVoid()),
     TOXIC_SPIKES(new ToxicSpikes());
 
     final Card card;
