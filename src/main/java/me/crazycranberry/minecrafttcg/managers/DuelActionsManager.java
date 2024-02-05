@@ -178,7 +178,7 @@ public class DuelActionsManager implements Listener {
             event.getItem().getItemMeta() != null &&
             Boolean.TRUE.equals(event.getItem().getItemMeta().getPersistentDataContainer().get(IS_CARD_KEY, PersistentDataType.BOOLEAN)) &&
             (event.getAction().equals(RIGHT_CLICK_BLOCK) || event.getAction().equals(RIGHT_CLICK_AIR)) &&
-            !event.getClickedBlock().getType().name().endsWith("_BUTTON") &&
+            (event.getClickedBlock() == null || !event.getClickedBlock().getType().name().endsWith("_BUTTON")) &&
             stadium != null &&
             stadium.isPlayerParticipating(event.getPlayer());
     }
