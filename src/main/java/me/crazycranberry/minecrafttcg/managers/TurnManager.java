@@ -186,7 +186,7 @@ public class TurnManager implements Listener {
         } else {
             sendTitles(String.format("%s%s is the winner!%s", event.winner().equals(event.stadium().player1()) ? GREEN : GOLD, event.winner().getName(), RESET), event.stadium());
         }
-        event.stadium().summonWinnerFireworks(event.winner(), event.isTie());
+        event.stadium().duelEnded(event.winner(), event.isTie());
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new DuelCloseEvent(event.stadium())), event.stadium().fireworkDuration());
     }
 

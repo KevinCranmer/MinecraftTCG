@@ -2,16 +2,15 @@ package me.crazycranberry.minecrafttcg.model;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
-import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
 import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
-import me.crazycranberry.minecrafttcg.managers.TurnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.EntityType;
@@ -24,7 +23,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
-import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,7 +48,6 @@ import static me.crazycranberry.minecrafttcg.model.Spot.RED_2_FRONT;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
-import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
@@ -68,6 +65,7 @@ public class Stadium {
     private final Location startingCorner;
     private final Player player1;
     private final Player player2;
+    private final int currentPlayerTurnParticlesTaskId;
     private int player1Mana = 0;
     private int player2Mana = 0;
     private int player1PendingDamage = 0;
@@ -110,6 +108,7 @@ public class Stadium {
         this.player1Deck = player1Deck;
         this.player2 = player2;
         this.player2Deck = player2Deck;
+        this.currentPlayerTurnParticlesTaskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), this::generateParticlesForCurrentPlayersTurn, 0 /*<-- the initial delay */, 8 /*<-- the interval */).getTaskId();
     }
 
     public void setChickens(LivingEntity player1RedChicken, LivingEntity player1BlueChicken, LivingEntity player1GreenChicken, LivingEntity player2RedChicken, LivingEntity player2BlueChicken, LivingEntity player2GreenChicken) {
@@ -347,7 +346,8 @@ public class Stadium {
         return duelDone;
     }
 
-    public void summonWinnerFireworks(Player winner, Boolean isTie) {
+    public void duelEnded(Player winner, Boolean isTie) {
+        Bukkit.getScheduler().cancelTask(currentPlayerTurnParticlesTaskId);
         duelDone = true;
         fireworkTaskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             int numFireworksAtATime = (int) (Math.random() * 4);
@@ -530,6 +530,13 @@ public class Stadium {
         return startingCorner;
     }
 
+    private void generateParticlesForCurrentPlayersTurn() {
+        Player p = currentPlayersTurn();
+        if (p != null) {
+            p.getWorld().spawnParticle(Particle.WAX_OFF, p.getEyeLocation(), 2, 0.5, 0.75, 0.5);
+        }
+    }
+
     public Player currentPlayersTurn() {
         if (isPlayersTurn(player1)) {
             return player1;
@@ -544,28 +551,21 @@ public class Stadium {
     }
 
     public boolean isPlayersTurn(Player p) {
+        if (phase == null) {
+            return false;
+        }
         if (p.equals(player1)) {
-            switch (phase) {
-                case FIRST_PRECOMBAT_PHASE:
-                case SECOND_POSTCOMBAT_PHASE:
-                    return turn % 2 == 1;
-                case SECOND_PRECOMBAT_PHASE:
-                case FIRST_POSTCOMBAT_PHASE:
-                    return turn % 2 == 0;
-                default:
-                    return false;
-            }
+            return switch (phase) {
+                case FIRST_PRECOMBAT_PHASE, SECOND_POSTCOMBAT_PHASE -> turn % 2 == 1;
+                case SECOND_PRECOMBAT_PHASE, FIRST_POSTCOMBAT_PHASE -> turn % 2 == 0;
+                default -> false;
+            };
         } else {
-            switch (phase) {
-                case FIRST_PRECOMBAT_PHASE:
-                case SECOND_POSTCOMBAT_PHASE:
-                    return turn % 2 == 0;
-                case SECOND_PRECOMBAT_PHASE:
-                case FIRST_POSTCOMBAT_PHASE:
-                    return turn % 2 == 1;
-                default:
-                    return false;
-            }
+            return switch (phase) {
+                case FIRST_PRECOMBAT_PHASE, SECOND_POSTCOMBAT_PHASE -> turn % 2 == 0;
+                case SECOND_PRECOMBAT_PHASE, FIRST_POSTCOMBAT_PHASE -> turn % 2 == 1;
+                default -> false;
+            };
         }
     }
 
