@@ -26,6 +26,7 @@ import org.bukkit.util.Vector;
 
 import java.sql.SQLOutput;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
@@ -265,6 +266,20 @@ public class Stadium {
         };
     }
 
+    public List<Spot> adjacentSpots(Spot spot) {
+        return switch (spot) {
+            case RED_1_FRONT, GREEN_1_FRONT -> List.of(BLUE_1_FRONT);
+            case BLUE_1_FRONT -> List.of(RED_1_FRONT, GREEN_1_FRONT);
+            case RED_2_FRONT, GREEN_2_FRONT -> List.of(BLUE_2_FRONT);
+            case BLUE_2_FRONT -> List.of(RED_2_FRONT, GREEN_2_FRONT);
+            case RED_1_BACK, GREEN_1_BACK -> List.of(BLUE_1_BACK);
+            case BLUE_1_BACK -> List.of(RED_1_BACK, GREEN_1_BACK);
+            case RED_2_BACK, GREEN_2_BACK -> List.of(BLUE_2_BACK);
+            case BLUE_2_BACK -> List.of(RED_2_BACK, GREEN_2_BACK);
+            default -> List.of();
+        };
+    }
+
     public List<Spot> allyMinionSpots(Player p) {
         return p.equals(player1) ? List.of(RED_1_FRONT, RED_1_BACK, BLUE_1_FRONT, BLUE_1_BACK, GREEN_1_FRONT, GREEN_1_BACK) : List.of(RED_2_FRONT, RED_2_BACK, BLUE_2_FRONT, BLUE_2_BACK, GREEN_2_FRONT, GREEN_2_BACK);
     }
@@ -468,6 +483,27 @@ public class Stadium {
         spot.minionSetRef().accept(this, null);
     }
 
+    private void minionBeingSet(Minion minion) {
+        if (minion == null) {
+            // TODO: Might want to actually have a minion object here so that we can do like "When a zombie died..."
+        } else {
+            allyMinionSpots(minion.minionInfo().master()).stream()
+                .filter(s -> !s.equals(minion.minionInfo().spot()))
+                .map(Spot::minionRef)
+                .filter(Objects::nonNull)
+                .map(mr -> mr.apply(this))
+                .filter(Objects::nonNull)
+                .forEach(m -> m.onAllyMinionEntered(minion));
+            enemyMinionSpots(minion.minionInfo().master()).stream()
+                .filter(s -> !s.equals(minion.minionInfo().spot()))
+                .map(Spot::minionRef)
+                .filter(Objects::nonNull)
+                .map(mr -> mr.apply(this))
+                .filter(Objects::nonNull)
+                .forEach(m -> m.onAllyMinionEntered(minion));
+        }
+    }
+
     public int turn() {
         return turn;
     }
@@ -620,6 +656,7 @@ public class Stadium {
 
     public void setRed2BackMinion(Minion minion) {
         red2BackMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setRed2FrontMinion(Minion minion) {

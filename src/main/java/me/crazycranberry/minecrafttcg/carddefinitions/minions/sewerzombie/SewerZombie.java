@@ -10,14 +10,4 @@ public class SewerZombie extends Minion {
     public SewerZombie(MinionInfo minionInfo) {
         super(CardEnum.SEWER_ZOMBIE, minionInfo);
     }
-
-    @Override
-    public void onCombatStart() {
-
-    }
-
-    @Override
-    public void onTurnEnd() {
-
-    }
 }

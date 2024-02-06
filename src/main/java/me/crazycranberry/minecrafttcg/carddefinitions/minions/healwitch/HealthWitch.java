@@ -17,11 +17,6 @@ public class HealthWitch extends Minion {
     }
 
     @Override
-    public void onCombatStart() {
-
-    }
-
-    @Override
     public void onTurnEnd() {
         List<Spot> allySpots = minionInfo().stadium().allyMinionSpots(minionInfo().master());
         Optional<Minion> allyToHeal = randomFromList(allySpots.stream()

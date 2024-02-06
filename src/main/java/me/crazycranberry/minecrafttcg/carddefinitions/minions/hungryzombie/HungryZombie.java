@@ -8,14 +8,4 @@ public class HungryZombie extends Minion {
     public HungryZombie(MinionInfo minionInfo) {
         super(CardEnum.HUNGRY_ZOMBIE, minionInfo);
     }
-
-    @Override
-    public void onCombatStart() {
-
-    }
-
-    @Override
-    public void onTurnEnd() {
-
-    }
 }

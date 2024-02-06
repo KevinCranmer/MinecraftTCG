@@ -7,6 +7,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.aggressivebandit.A
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch.HealWitchDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie.HungryZombieDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLeaderDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro.UnstablePyroDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
@@ -24,6 +25,7 @@ public enum CardEnum {
     DINGY_SKELETON(new DingySkeletonDef()),
     HEAL_WITCH(new HealWitchDef()),
     HUNGRY_ZOMBIE(new HungryZombieDef()),
+    PACK_LEADER(new PackLeaderDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),
     UNSTABLE_PYRO(new UnstablePyroDef()),
 

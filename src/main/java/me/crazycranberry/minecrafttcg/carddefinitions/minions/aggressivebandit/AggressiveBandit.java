@@ -9,14 +9,4 @@ public class AggressiveBandit extends Minion {
         super(CardEnum.AGGRESSIVE_BANDIT, minionInfo);
         setAttacksPerTurn(2);
     }
-
-    @Override
-    public void onCombatStart() {
-
-    }
-
-    @Override
-    public void onTurnEnd() {
-
-    }
 }

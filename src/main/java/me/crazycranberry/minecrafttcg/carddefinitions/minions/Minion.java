@@ -66,6 +66,10 @@ public abstract class Minion {
         this.attacksLeft = attacksPerTurn;
     }
 
+    public void addPermanentStrength(Integer additionalStrength) {
+        this.strength += additionalStrength;
+    }
+
     public Integer attacksLeft() {
         return attacksLeft;
     }
@@ -92,7 +96,18 @@ public abstract class Minion {
         temporaryBonusStrength = 0;
     }
 
-    public abstract void onCombatStart();
+    public void onCombatStart() {
+
+    }
+
+    // See PackLeader for an example
+    public void onAllyMinionEntered(Minion otherMinion) {
+
+    }
+
+    public void onEnemyMinionEntered(Minion otherMinion) {
+
+    }
 
     /** Can't let target be of type Minion because it might be the Opposing Player. */
     public void onDamageDealt(LivingEntity target, Integer damageDealt, Boolean wasCombatAttack, Boolean wasProtected) {
@@ -146,7 +161,7 @@ public abstract class Minion {
     }
 
     public boolean hasBonusStrength() {
-        return temporaryBonusStrength > 0;
+        return temporaryBonusStrength > 0 || strength > cardDef().strength();
     }
 
     public void onCombatEnd() {
@@ -159,7 +174,9 @@ public abstract class Minion {
         }
     }
 
-    public abstract void onTurnEnd();
+    public void onTurnEnd() {
+
+    }
 
     public void attackInFront() {
         LivingEntity target = minionInfo.stadium().getTargetInFront(this);

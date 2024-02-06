@@ -31,16 +31,6 @@ public class UnstablePyro extends Minion {
         fireballEnemyMinion();
     }
 
-    @Override
-    public void onCombatStart() {
-
-    }
-
-    @Override
-    public void onTurnEnd() {
-
-    }
-
     private void fireballEnemyMinion() {
         List<Spot> enemySpots = minionInfo().stadium().enemyMinionSpots(minionInfo().master());
         Optional<Minion> enemyToFireball = randomFromList(enemySpots.stream()

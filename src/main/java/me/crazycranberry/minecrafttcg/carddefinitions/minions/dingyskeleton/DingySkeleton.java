@@ -8,14 +8,4 @@ public class DingySkeleton extends Minion {
     public DingySkeleton(MinionInfo minionInfo) {
         super(CardEnum.DINGY_SKELETON, minionInfo);
     }
-
-    @Override
-    public void onCombatStart() {
-
-    }
-
-    @Override
-    public void onTurnEnd() {
-
-    }
 }
