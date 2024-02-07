@@ -12,6 +12,10 @@ commands:
   forfeit:
     description: Forfeit your current duel.
     aliases: [ff, surrender]
+  rankedduel:
+    description: Challenge other players to ranked duels.
+  ranks:
+    description: View ranks.
   refresh:
     description: Refresh Configs.
   tc:

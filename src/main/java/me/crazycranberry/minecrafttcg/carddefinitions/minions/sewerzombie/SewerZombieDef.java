@@ -35,7 +35,7 @@ public class SewerZombieDef implements MinionCardDefinition {
 
     @Override
     public Integer strength() {
-        return 1;
+        return 20;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package me.crazycranberry.minecrafttcg.managers;
 
-import me.crazycranberry.minecrafttcg.events.BuildStadiumEvent;
 import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
@@ -68,11 +67,6 @@ public class StadiumManager implements Listener {
     private static final Map<Location, Stadium> stadiums = new HashMap<>();
 
     @EventHandler
-    private void onBuildRequested(BuildStadiumEvent event) {
-        setupStadium(event.getStartingCorner(), event.player1(), event.player2());
-    }
-
-    @EventHandler
     private void onDuelClose(DuelCloseEvent event) {
         if (event.stadium().player1().getWorld().equals(event.stadium().startingCorner().getWorld()) && !event.stadium().player1().isDead()) {
             restoreStartingWorldConfig(event.stadium().player1());
@@ -86,10 +80,10 @@ public class StadiumManager implements Listener {
         }
     }
 
-    private static void setupStadium(Location startingCorner, Player player1, Player player2) {
+    private static void setupStadium(Location startingCorner, Player player1, Player player2, Boolean ranked) {
         clearStadiumArea(startingCorner);
         buildStadium(startingCorner);
-        Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2));
+        Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2), ranked);
         stadiums.put(startingCorner, newStadium);
         startingCorner.getWorld().getNearbyEntities(startingCorner, 40, 40, 40).stream().filter(e -> !e.getType().equals(EntityType.PLAYER)).forEach(Entity::remove);
         newStadium.setChickens(summonChicken(PLAYER_1_RED_CHICKEN, startingCorner),
@@ -183,7 +177,7 @@ public class StadiumManager implements Listener {
         return new Location(w, 0.5, 100, prevLoc.getZ() + DISTANCE_BETWEEN_STADIUMS_Z);
     }
 
-    public static void sendPlayersToDuel(World w, Player requester, Player accepter) {
+    public static void sendPlayersToDuel(World w, Player requester, Player accepter, Boolean ranked) {
         Bukkit.getPluginManager().callEvent(new RegisterListenersEvent(true));
         Location nextStartingCorner = getNextAvailableStartingCorner(w);
         saveStartingWorldConfig(new Participant(requester));
@@ -191,13 +185,13 @@ public class StadiumManager implements Listener {
         cleanUpPlayerBeforeDuel(requester);
         cleanUpPlayerBeforeDuel(accepter);
         if (Math.random() < 0.5) {
-            setupStadium(nextStartingCorner, requester, accepter);
+            setupStadium(nextStartingCorner, requester, accepter, ranked);
             Stadium stadium = stadiums.get(nextStartingCorner);
             requester.teleport(stadium.locOfSpot(PLAYER_1_OUTLOOK));
             accepter.teleport(stadium.locOfSpot(PLAYER_2_OUTLOOK));
             Bukkit.getPluginManager().callEvent(new DuelStartEvent(stadium));
         } else {
-            setupStadium(nextStartingCorner, accepter, requester);
+            setupStadium(nextStartingCorner, accepter, requester, ranked);
             Stadium stadium = stadiums.get(nextStartingCorner);
             accepter.teleport(stadium.locOfSpot(PLAYER_1_OUTLOOK));
             requester.teleport(stadium.locOfSpot(PLAYER_2_OUTLOOK));

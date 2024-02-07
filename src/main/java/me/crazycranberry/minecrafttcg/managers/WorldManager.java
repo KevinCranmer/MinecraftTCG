@@ -17,7 +17,7 @@ public class WorldManager implements Listener {
     @EventHandler
     private void onDuelAccepted(DuelAcceptedEvent event) {
         if (tcgWorld != null) {
-            StadiumManager.sendPlayersToDuel(tcgWorld, event.requester(), event.accepter());
+            StadiumManager.sendPlayersToDuel(tcgWorld, event.requester(), event.accepter(), event.isRanked());
             return;
         }
         File file = new File(Bukkit.getServer().getWorldContainer(), WORLD_NAME);
@@ -40,6 +40,6 @@ public class WorldManager implements Listener {
         tcgWorld = God.createWorld();
         tcgWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         tcgWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        StadiumManager.sendPlayersToDuel(tcgWorld, event.requester(), event.accepter());
+        StadiumManager.sendPlayersToDuel(tcgWorld, event.requester(), event.accepter(), event.isRanked());
     }
 }

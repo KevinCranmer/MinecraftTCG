@@ -11,10 +11,18 @@ public class DuelAcceptedEvent extends Event {
 
     private final Player requester;
     private final Player accepter;
+    private final Boolean isRanked;
 
     public DuelAcceptedEvent(Player requester, Player accepter) {
         this.requester = requester;
         this.accepter = accepter;
+        this.isRanked = false;
+    }
+
+    public DuelAcceptedEvent(Player requester, Player accepter, Boolean isRanked) {
+        this.requester = requester;
+        this.accepter = accepter;
+        this.isRanked = isRanked;
     }
 
     public Player requester() {
@@ -23,6 +31,10 @@ public class DuelAcceptedEvent extends Event {
 
     public Player accepter() {
         return accepter;
+    }
+
+    public Boolean isRanked() {
+        return isRanked;
     }
 
     @Override

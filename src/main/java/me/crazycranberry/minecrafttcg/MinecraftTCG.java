@@ -4,6 +4,8 @@ import me.crazycranberry.minecrafttcg.commands.CollectionCommand;
 import me.crazycranberry.minecrafttcg.commands.DeckCommand;
 import me.crazycranberry.minecrafttcg.commands.DuelCommand;
 import me.crazycranberry.minecrafttcg.commands.ForfeitCommand;
+import me.crazycranberry.minecrafttcg.commands.RankedDuelCommand;
+import me.crazycranberry.minecrafttcg.commands.RanksCommand;
 import me.crazycranberry.minecrafttcg.commands.RefreshCommand;
 import me.crazycranberry.minecrafttcg.commands.TestCommand;
 import me.crazycranberry.minecrafttcg.config.MinecraftTcgConfig;
@@ -68,6 +70,8 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
         setCommandManager("deck", new DeckCommand());
         setCommandManager("duel", new DuelCommand());
         setCommandManager("forfeit", new ForfeitCommand());
+        setCommandManager("rankedduel", new RankedDuelCommand());
+        setCommandManager("ranks", new RanksCommand());
         setCommandManager("refresh", new RefreshCommand());
         setCommandManager("tc", new TestCommand());
     }
@@ -108,6 +112,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
             logger().info("Duel crash recovery initiated for " + event.getPlayer().getName());
             restoreStartingWorldConfig(event.getPlayer());
         }
+        config().playerRank(event.getPlayer()); // Just to make sure everyone that's logged in has a rank
     }
 
     @EventHandler
@@ -131,7 +136,11 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
 
     public String refreshConfigs() {
         try {
-            config = new MinecraftTcgConfig(loadConfig("minecraft_tcg.yml"), loadConfig("drop_odds.yml"), loadConfig("card_drop_rules.yml"));
+            config = new MinecraftTcgConfig(loadConfig("minecraft_tcg.yml"),
+                loadConfig("drop_odds.yml"),
+                loadConfig("card_drop_rules.yml"),
+                loadConfig("player_ranks.yml")
+            );
             return "Successfully loaded configs.";
         } catch (Exception e) {
             e.printStackTrace();

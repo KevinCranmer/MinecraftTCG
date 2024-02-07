@@ -63,6 +63,7 @@ public class Stadium {
     private static final Material PLAYER_2_TARGET_MATERIAL = Material.ORANGE_CONCRETE;
     private static final int MAX_CARDS_IN_HAND = 9;
     private final Location startingCorner;
+    private final Boolean isRanked;
     private final Player player1;
     private final Player player2;
     private final int currentPlayerTurnParticlesTaskId;
@@ -102,12 +103,13 @@ public class Stadium {
     private int totalFireworkDuration = (fireworksLeft + 1) * fireworkInterval;
     private boolean duelDone = false;
 
-    public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck) {
+    public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck, Boolean ranked) {
         this.startingCorner = startingCorner;
         this.player1 = player1;
         this.player1Deck = player1Deck;
         this.player2 = player2;
         this.player2Deck = player2Deck;
+        this.isRanked = ranked;
         this.currentPlayerTurnParticlesTaskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), this::generateParticlesForCurrentPlayersTurn, 0 /*<-- the initial delay */, 8 /*<-- the interval */).getTaskId();
     }
 
@@ -462,6 +464,10 @@ public class Stadium {
     public boolean isWalled(Minion minion) {
         // TODO: IMPLEMENT
         return false;
+    }
+
+    public boolean isRanked() {
+        return isRanked;
     }
 
     public Integer numCardsInHand(Player p) {

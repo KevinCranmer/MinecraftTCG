@@ -1,7 +1,6 @@
 package me.crazycranberry.minecrafttcg;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
-import me.crazycranberry.minecrafttcg.events.BuildStadiumEvent;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
 import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
@@ -201,7 +200,6 @@ public class TestCommands {
             System.out.println("NO");
             return;
         }
-        Bukkit.getPluginManager().callEvent(new BuildStadiumEvent(startingCorner, player1.get(), player2.get()));
     }
 
     private static void stopShooting(Player p) {
