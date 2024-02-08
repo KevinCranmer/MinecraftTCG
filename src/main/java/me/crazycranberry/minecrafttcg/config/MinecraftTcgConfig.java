@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,6 +24,7 @@ public class MinecraftTcgConfig {
     private YamlConfiguration playerRanks;
     private YamlConfiguration config;
     private int duelSecondsPerRound;
+    private List<String> autoCollectPlayerNames;
 
     public MinecraftTcgConfig(YamlConfiguration config, YamlConfiguration dropOddsConfig, YamlConfiguration cardDropRulesConfig, YamlConfiguration playerRanks) {
         this.originalConfig = loadOriginalConfig("minecraft_tcg.yml");
@@ -54,6 +57,7 @@ public class MinecraftTcgConfig {
 
     private void loadConfig(YamlConfiguration config) {
         duelSecondsPerRound = config.getInt("duel.seconds_per_round", originalConfig.getInt("duel.seconds_per_round"));
+        autoCollectPlayerNames = new ArrayList<>((List<String>) config.getList("auto_collect", List.of()));
     }
 
     public int duelSecondsPerRound() {
@@ -70,6 +74,26 @@ public class MinecraftTcgConfig {
 
     public YamlConfiguration playerRanks() {
         return playerRanks;
+    }
+
+    public boolean shouldAutoCollect(String playersName) {
+        return autoCollectPlayerNames.contains(playersName);
+    }
+
+    public void updateAutoCollect(String playersName, boolean shouldAutoCollect) {
+        try {
+            if (shouldAutoCollect && !autoCollectPlayerNames.contains(playersName)) {
+                autoCollectPlayerNames.add(playersName);
+                config.set("auto_collect", autoCollectPlayerNames);
+                config.save(new File(getPlugin().getDataFolder() + "" + File.separatorChar + "minecraft_tcg.yml"));
+            } else if (!shouldAutoCollect && autoCollectPlayerNames.contains(playersName)) {
+                autoCollectPlayerNames.remove(playersName);
+                config.set("auto_collect", autoCollectPlayerNames);
+                config.save(new File(getPlugin().getDataFolder() + "" + File.separatorChar + "minecraft_tcg.yml"));
+            }
+        } catch (IOException e) {
+            logger().severe("Error trying to save to minecraft_tcg.yml: " + e.getMessage());
+        }
     }
 
     public Integer playerRank(Player p) {

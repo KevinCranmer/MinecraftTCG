@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg;
 
+import me.crazycranberry.minecrafttcg.commands.AutoCollectCommand;
 import me.crazycranberry.minecrafttcg.commands.CollectionCommand;
 import me.crazycranberry.minecrafttcg.commands.DeckCommand;
 import me.crazycranberry.minecrafttcg.commands.DuelCommand;
@@ -66,6 +67,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
     }
 
     private void registerCommands() {
+        setCommandManager("autocollect", new AutoCollectCommand());
         setCommandManager("collection", new CollectionCommand());
         setCommandManager("deck", new DeckCommand());
         setCommandManager("duel", new DuelCommand());

@@ -3,6 +3,8 @@ version: '${project.version}'
 main: me.crazycranberry.minecrafttcg.MinecraftTCG
 api-version: '1.20'
 commands:
+  autocollect:
+    description: Designate whether or not book drops should go directly to your collection.
   collection:
     description: View and grab from, or add to, your collection.
   deck:

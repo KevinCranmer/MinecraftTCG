@@ -170,4 +170,19 @@ public class CollectionConfigs {
         }
         return cardConfigMap;
     }
+
+    public static void addCardToCollection(Player p, CardEnum cardEnum) {
+        File playersCollectionFile = collectionFile(p);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playersCollectionFile);
+        ConfigurationSection collectionCs = config.getConfigurationSection("collection");
+        if (!playersCollectionFile.exists() || collectionCs == null) {
+            collectionCs = config.createSection("collection");
+        }
+        collectionCs.set(cardEnum.name(), collectionCs.getInt(cardEnum.name(), 0) + 1);
+        try {
+            config.save(playersCollectionFile);
+        } catch (IOException e) {
+            logger().severe("Error saving collection file for " + p.getName() + "\n" + e.getMessage());
+        }
+    }
 }

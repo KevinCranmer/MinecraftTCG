@@ -1,8 +1,15 @@
 package me.crazycranberry.minecrafttcg.managers;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.config.CollectionConfigs;
 import me.crazycranberry.minecrafttcg.model.Collection;
+import me.crazycranberry.minecrafttcg.model.Stadium;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Axolotl;
@@ -40,6 +47,12 @@ import java.util.Optional;
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
+import static org.bukkit.ChatColor.DARK_GREEN;
+import static org.bukkit.ChatColor.GOLD;
+import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.GREEN;
+import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.RESET;
 
 public class CardDropManager implements Listener {
     @EventHandler
@@ -49,10 +62,14 @@ public class CardDropManager implements Listener {
         double dropRate = getDropRate("block_place", name);
         System.out.println("The main roll for block_place." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
-            Optional<ItemStack> card = getCardToDrop("block_place." + name);
+            Optional<CardEnum> card = getCardToDrop("block_place." + name);
             if (card.isPresent()) {
-                event.getPlayer().sendMessage(String.format("%sA TCG card just dropped for you.%s", ChatColor.GRAY, ChatColor.RESET));
-                event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), card.get());
+                sendDropMessage(event.getPlayer(), card.get().card());
+                if (getPlugin().config().shouldAutoCollect(event.getPlayer().getName())) {
+                    CollectionConfigs.addCardToCollection(event.getPlayer(), card.get());
+                } else {
+                    event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), Collection.createCard(card.get()));
+                }
             }
         }
     }
@@ -67,25 +84,35 @@ public class CardDropManager implements Listener {
         double dropRate = getDropRate("block_break", name);
         System.out.println("The main roll for block_break." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
-            Optional<ItemStack> card = getCardToDrop("block_break." + name);
+            Optional<CardEnum> card = getCardToDrop("block_break." + name);
             if (card.isPresent()) {
-                event.getPlayer().sendMessage(String.format("%sA TCG card just dropped for you.%s", ChatColor.GRAY, ChatColor.RESET));
-                event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), card.get());
+                sendDropMessage(event.getPlayer(), card.get().card());
+                if (getPlugin().config().shouldAutoCollect(event.getPlayer().getName())) {
+                    CollectionConfigs.addCardToCollection(event.getPlayer(), card.get());
+                } else {
+                    event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), Collection.createCard(card.get()));
+                }
             }
         }
     }
 
     @EventHandler
     private void onCraftItem(CraftItemEvent event) {
-        String name = event.getRecipe().getResult().getType().name().toLowerCase();
-        double roll = Math.random();
-        double dropRate = getDropRate("craft_item", name);
-        System.out.println("The main roll for craft_item." + name + ": " + roll + " / " + dropRate);
-        if (roll < dropRate) {
-            Optional<ItemStack> card = getCardToDrop("craft_item." + name);
-            if (card.isPresent()) {
-                event.getWhoClicked().sendMessage(String.format("%sA TCG card just dropped for you.%s", ChatColor.GRAY, ChatColor.RESET));
-                event.getWhoClicked().getWorld().dropItemNaturally(event.getWhoClicked().getLocation(), card.get());
+        if (event.getWhoClicked() instanceof Player p) {
+            String name = event.getRecipe().getResult().getType().name().toLowerCase();
+            double roll = Math.random();
+            double dropRate = getDropRate("craft_item", name);
+            System.out.println("The main roll for craft_item." + name + ": " + roll + " / " + dropRate);
+            if (roll < dropRate) {
+                Optional<CardEnum> card = getCardToDrop("craft_item." + name);
+                if (card.isPresent()) {
+                    sendDropMessage(p, card.get().card());
+                    if (getPlugin().config().shouldAutoCollect(p.getName())) {
+                        CollectionConfigs.addCardToCollection(p, card.get());
+                    } else {
+                        p.getWorld().dropItemNaturally(p.getLocation(), Collection.createCard(card.get()));
+                    }
+                }
             }
         }
     }
@@ -97,8 +124,8 @@ public class CardDropManager implements Listener {
         double dropRate = getDropRate("smelt_item", name);
         System.out.println("The main roll for smelt_item." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
-            Optional<ItemStack> card = getCardToDrop("smelt_item." + name);
-            card.ifPresent(itemStack -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), itemStack));
+            Optional<CardEnum> card = getCardToDrop("smelt_item." + name);
+            card.ifPresent(c -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), Collection.createCard(c)));
         }
     }
 
@@ -109,10 +136,14 @@ public class CardDropManager implements Listener {
         double dropRate = getDropRate("enchant_item", name);
         System.out.println("The main roll for enchant_item." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
-            Optional<ItemStack> card = getCardToDrop("enchant_item." + name);
+            Optional<CardEnum> card = getCardToDrop("enchant_item." + name);
             if (card.isPresent()) {
-                event.getEnchanter().sendMessage(String.format("%sA TCG card just dropped for you.%s", ChatColor.GRAY, ChatColor.RESET));
-                event.getEnchantBlock().getWorld().dropItemNaturally(event.getEnchantBlock().getLocation(), card.get());
+                sendDropMessage(event.getEnchanter(), card.get().card());
+                if (getPlugin().config().shouldAutoCollect(event.getEnchanter().getName())) {
+                    CollectionConfigs.addCardToCollection(event.getEnchanter(), card.get());
+                } else {
+                    event.getEnchantBlock().getWorld().dropItemNaturally(event.getEnchantBlock().getLocation(), Collection.createCard(card.get()));
+                }
             }
         }
     }
@@ -129,12 +160,16 @@ public class CardDropManager implements Listener {
         double dropRate = getDropRate("fishing", name);
         System.out.println("The main roll for fishing." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
-            Optional<ItemStack> card = getCardToDrop("fishing." + name);
+            Optional<CardEnum> card = getCardToDrop("fishing." + name);
             if (card.isPresent()) {
-                event.getPlayer().sendMessage(String.format("%sA TCG card just dropped for you.%s", ChatColor.GRAY, ChatColor.RESET));
-                Item book = event.getPlayer().getWorld().dropItemNaturally(event.getCaught().getLocation(), card.get());
-                Vector differenceVector = event.getPlayer().getLocation().toVector().subtract(book.getLocation().toVector()).normalize().multiply(1.5);
-                book.setVelocity(differenceVector);
+                sendDropMessage(event.getPlayer(), card.get().card());
+                if (getPlugin().config().shouldAutoCollect(event.getPlayer().getName())) {
+                    CollectionConfigs.addCardToCollection(event.getPlayer(), card.get());
+                } else {
+                    Item book = event.getPlayer().getWorld().dropItemNaturally(event.getCaught().getLocation(), Collection.createCard(card.get()));
+                    Vector differenceVector = event.getPlayer().getLocation().toVector().subtract(book.getLocation().toVector()).normalize().multiply(1.5);
+                    book.setVelocity(differenceVector);
+                }
             }
         }
     }
@@ -148,16 +183,32 @@ public class CardDropManager implements Listener {
             double dropRate = getDropRate("mob_kill", name);
             System.out.println("The main roll for mob_kill." + name + ": " + roll + " / " + dropRate);
             if (roll < dropRate) {
-                Optional<ItemStack> card = getCardToDrop("mob_kill." + name);
+                Optional<CardEnum> card = getCardToDrop("mob_kill." + name);
                 if (card.isPresent()) {
-                    entity.getKiller().sendMessage(String.format("%sA TCG card just dropped for you.%s", ChatColor.GRAY, ChatColor.RESET));
-                    entity.getWorld().dropItemNaturally(entity.getLocation(), card.get());
+                    sendDropMessage(entity.getKiller(), card.get().card());
+                    if (getPlugin().config().shouldAutoCollect(entity.getKiller().getName())) {
+                        CollectionConfigs.addCardToCollection(entity.getKiller(), card.get());
+                    } else {
+                        entity.getWorld().dropItemNaturally(entity.getLocation(), Collection.createCard(card.get()));
+                    }
                 }
             }
         }
     }
 
-    private Optional<ItemStack> getCardToDrop(String event) {
+    private void sendDropMessage(Player p, Card card) {
+        TextComponent dropText = new TextComponent(String.format("%sA %s[%s]%s card has dropped for you.%s", GRAY, card.rarity().color(), card.cardName(), GRAY, RESET));
+        String description = "";
+        if (card instanceof MinionCardDefinition minionCard) {
+            description += String.format("%s%s%s:%s %s❤%s:%s/%s\n",
+                DARK_GREEN, minionCard.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minionCard.strength(), RED, RESET, minionCard.maxHealth(), minionCard.maxHealth());
+        }
+        description += card.cardDescription();
+        dropText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(description)));
+        p.spigot().sendMessage(dropText);
+    }
+
+    private Optional<CardEnum> getCardToDrop(String event) {
         List<CardEnum> possibleCardDrops = getEventExclusiveCards(event);
         if (possibleCardDrops.isEmpty()) {
             possibleCardDrops = getAllDroppableCards(event);
@@ -165,8 +216,7 @@ public class CardDropManager implements Listener {
         if (possibleCardDrops.isEmpty()) {
             return Optional.empty();
         }
-        Optional<CardEnum> rolledCard = rollForCardBasedOnRarity(possibleCardDrops);
-        return rolledCard.map(Collection::createCard);
+        return rollForCardBasedOnRarity(possibleCardDrops);
     }
 
     private Optional<CardEnum> rollForCardBasedOnRarity(List<CardEnum> possibleCardDrops) {
