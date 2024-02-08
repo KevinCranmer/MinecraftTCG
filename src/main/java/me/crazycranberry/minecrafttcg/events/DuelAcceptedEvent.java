@@ -1,6 +1,5 @@
 package me.crazycranberry.minecrafttcg.events;
 
-import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

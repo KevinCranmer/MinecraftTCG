@@ -1,6 +1,5 @@
 package me.crazycranberry.minecrafttcg.managers;
 
-import me.crazycranberry.minecrafttcg.MinecraftTCG;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartAttackingEvent;

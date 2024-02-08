@@ -1,20 +1,13 @@
 package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
-import me.crazycranberry.minecrafttcg.goals.LookForwardGoal;
 import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
-import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Chicken;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftChicken;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;

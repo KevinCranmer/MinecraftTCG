@@ -1,12 +1,7 @@
 package me.crazycranberry.minecrafttcg.goals;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
-import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.level.pathfinder.Path;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;

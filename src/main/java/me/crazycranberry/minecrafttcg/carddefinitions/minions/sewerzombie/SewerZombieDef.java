@@ -3,9 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
-import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
 public class SewerZombieDef implements MinionCardDefinition {
     @Override

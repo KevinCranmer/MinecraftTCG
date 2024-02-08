@@ -1,8 +1,5 @@
 package me.crazycranberry.minecrafttcg.commands;
 
-import me.crazycranberry.minecrafttcg.events.CollectionViewRequestEvent;
-import me.crazycranberry.minecrafttcg.model.Collection;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,8 +9,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
@@ -19,10 +18,10 @@ import static me.crazycranberry.minecrafttcg.utils.FileUtils.loadOriginalConfig;
 
 public class MinecraftTcgConfig {
     private final YamlConfiguration originalConfig;
-    private YamlConfiguration dropOddsConfig;
-    private YamlConfiguration cardDropRulesConfig;
-    private YamlConfiguration playerRanks;
-    private YamlConfiguration config;
+    private final YamlConfiguration dropOddsConfig;
+    private final YamlConfiguration cardDropRulesConfig;
+    private final YamlConfiguration playerRanks;
+    private final YamlConfiguration config;
     private int duelSecondsPerRound;
     private List<String> autoCollectPlayerNames;
 
