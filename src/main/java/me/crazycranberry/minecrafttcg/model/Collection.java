@@ -17,15 +17,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
@@ -34,14 +33,11 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
 import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.COST;
 import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.NAME;
-import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.DARK_PURPLE;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
-import static org.bukkit.ChatColor.GREEN;
-import static org.bukkit.ChatColor.LIGHT_PURPLE;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
 
@@ -49,6 +45,8 @@ public class Collection {
     public static final NamespacedKey IS_PAGING_KEY = new NamespacedKey(getPlugin(), "pagingitem");
     public static final NamespacedKey NEXT_PAGE_KEY = new NamespacedKey(getPlugin(), "nextpage");
     public static final int CARDS_PER_PAGE = 45;
+    private static final int previousPageIndex = 48;
+    private static final int nextPageIndex = 50;
     private final Map<CardEnum, Integer> collectionMap;
     private final List<List<ItemStack>> pages = new ArrayList<>();
     private int currentPage = 0;
@@ -67,17 +65,21 @@ public class Collection {
 
     private Inventory collectionInventory() {
         Inventory collectionInv = Bukkit.createInventory(null, CARDS_PER_PAGE + 9, "My Collection");
-        collectionInv.setContents(contentArrayForPage(currentPage));
+        int page = 0;
+        List<ItemStack> pageContents = Arrays.asList(contentArrayForPage(page));
+        pages.add(pageContents);
+        while (pageContents.get(nextPageIndex) != null) {
+            page++;
+            pageContents = Arrays.asList(contentArrayForPage(page));
+            pages.add(pageContents);
+        }
+        fillInPage(collectionInv);
         return collectionInv;
     }
 
     public void save(Inventory collectionInv, Player p) {
         List<ItemStack> currentPageItems = inventoryToList(collectionInv, p);
-        if (currentPage == pages.size()) {
-            pages.add(currentPageItems);
-        } else {
-            pages.set(currentPage, currentPageItems);
-        }
+        pages.set(currentPage, currentPageItems);
         CollectionConfigs.saveCollection(p, pages);
     }
 
@@ -109,11 +111,11 @@ public class Collection {
         }
         if (stillHaveCards) {
             ItemStack pagingItem = createPagingItem(true);
-            contents[50] = pagingItem;
+            contents[nextPageIndex] = pagingItem;
         }
         if (page > 0) {
             ItemStack pagingItem = createPagingItem(false);
-            contents[48] = pagingItem;
+            contents[previousPageIndex] = pagingItem;
         }
         return contents;
     }
@@ -124,25 +126,15 @@ public class Collection {
             return;
         }
         List<ItemStack> currentPageItems = inventoryToList(collectionInv, p);
-        if (currentPage == pages.size()) {
-            pages.add(currentPageItems);
-        } else {
-            pages.set(currentPage, currentPageItems);
-        }
+        pages.set(currentPage, currentPageItems);
         collectionInv.clear(); // Give the illusion that it's "loading" the next page. Otherwise there is no visual indicator that the next page button worked.
-        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            fillInPage(collectionInv, isNextPage);
-        }, 3);
+        currentPage = isNextPage ? currentPage + 1 : currentPage - 1;
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> fillInPage(collectionInv), 3);
     }
 
-    private void fillInPage(Inventory collectionInv, Boolean isNextPage) {
-        currentPage = isNextPage ? currentPage + 1 : currentPage - 1;
-        if (currentPage >= 0 && currentPage < pages.size()) {
-            ItemStack[] contents = new ItemStack[CARDS_PER_PAGE + 9];
-            collectionInv.setContents(pages.get(currentPage).toArray(contents));
-        } else {
-            collectionInv.setContents(contentArrayForPage(currentPage));
-        }
+    private void fillInPage(Inventory collectionInv) {
+        ItemStack[] contents = new ItemStack[CARDS_PER_PAGE + 9];
+        collectionInv.setContents(pages.get(currentPage).toArray(contents));
     }
 
     private List<ItemStack> inventoryToList(Inventory collectionInv, Player p) {
@@ -257,7 +249,7 @@ public class Collection {
 
         private final Comparator<CardEnum> comparator;
 
-        private SortBy(Comparator<CardEnum> comparator) {
+        SortBy(Comparator<CardEnum> comparator) {
             this.comparator = comparator;
         }
 
