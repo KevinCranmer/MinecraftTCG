@@ -38,8 +38,7 @@ public class RanksCommand implements CommandExecutor {
             %sTop ranks:%s
             %s
             %sYour rank:%s
-            %s%s
-            """,
+            %s%s""",
             LIGHT_PURPLE, GRAY,
             topRanks(playerRanks),
             LIGHT_PURPLE, GRAY,

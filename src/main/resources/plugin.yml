@@ -20,5 +20,7 @@ commands:
     description: View ranks.
   refresh:
     description: Refresh Configs.
+  tcg:
+    description: Get information about the plugin.
   tc:
     description: test

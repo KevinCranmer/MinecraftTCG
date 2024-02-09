@@ -8,6 +8,7 @@ import me.crazycranberry.minecrafttcg.commands.ForfeitCommand;
 import me.crazycranberry.minecrafttcg.commands.RankedDuelCommand;
 import me.crazycranberry.minecrafttcg.commands.RanksCommand;
 import me.crazycranberry.minecrafttcg.commands.RefreshCommand;
+import me.crazycranberry.minecrafttcg.commands.TcgCommand;
 import me.crazycranberry.minecrafttcg.commands.TestCommand;
 import me.crazycranberry.minecrafttcg.config.MinecraftTcgConfig;
 import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
@@ -80,6 +81,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
         setCommandManager("ranks", new RanksCommand());
         setCommandManager("refresh", new RefreshCommand());
         setCommandManager("tc", new TestCommand());
+        setCommandManager("tcg", new TcgCommand());
     }
 
     private void setCommandManager(String command, CommandExecutor commandManager) {
