@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,12 +26,12 @@ import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 public class StartingWorldConfigUtils {
     static final String CONFIG_FOLDER_NAME = "startingWorldConfigs";
 
-    public static void restoreStartingWorldConfig(Player p) {
-        restoreStartingWorldConfig(p, true);
+    public static void restoreStartingWorldConfig(Player p, Scoreboard maybeScoreboard) {
+        restoreStartingWorldConfig(p, true, maybeScoreboard);
     }
 
     //We load from a config file because we want to be able to maintain the player state in the event of a server crash
-    public static void restoreStartingWorldConfig(Player p, boolean shouldTeleport) {
+    public static void restoreStartingWorldConfig(Player p, boolean shouldTeleport, Scoreboard maybeScoreboard) {
         p.setInvulnerable(false);
         File f = configFile(p);
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
@@ -54,6 +55,10 @@ public class StartingWorldConfigUtils {
         }
         p.addPotionEffects((List<PotionEffect>) c.get("activePotionEffects"));
         p.setBedSpawnLocation(findNearbyBed(c.getLocation("bedSpawnLocation")));
+        if (maybeScoreboard != null) {
+            //If we still have the previous scoreboard from memory
+            p.setScoreboard(maybeScoreboard);
+        }
         List<Method> playerSetMethods = Arrays.stream(Player.class.getMethods()).filter(m -> m.getName().startsWith("set")).toList();
         for (Field field : Participant.ParticipantStartingWorldConfig.class.getDeclaredFields()) {
             if (List.of("inventory", "location", "gameMode", "activePotionEffects", "scoreboard", "bedSpawnLocation").contains(field.getName())) {

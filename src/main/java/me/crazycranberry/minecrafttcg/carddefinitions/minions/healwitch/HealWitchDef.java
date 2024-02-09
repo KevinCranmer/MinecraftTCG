@@ -8,7 +8,7 @@ import org.bukkit.entity.EntityType;
 public class HealWitchDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 3;
+        return 2;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class HealWitchDef implements MinionCardDefinition {
 
     @Override
     public Integer maxHealth() {
-        return 1;
+        return 2;
     }
 
     @Override

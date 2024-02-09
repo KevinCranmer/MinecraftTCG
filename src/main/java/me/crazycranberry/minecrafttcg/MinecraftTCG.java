@@ -16,9 +16,11 @@ import me.crazycranberry.minecrafttcg.managers.DeckManager;
 import me.crazycranberry.minecrafttcg.managers.DuelActionsManager;
 import me.crazycranberry.minecrafttcg.managers.PlayerManager;
 import me.crazycranberry.minecrafttcg.managers.MinionManager;
+import me.crazycranberry.minecrafttcg.managers.ScoreboardManager;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import me.crazycranberry.minecrafttcg.managers.TurnManager;
 import me.crazycranberry.minecrafttcg.managers.WorldManager;
+import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -28,6 +30,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -42,9 +45,10 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
     private static boolean managersRegistered = false;
     private MinecraftTcgConfig config;
     private static final List<Listener> managers = List.of(
-            new MinionManager(),
-            new DuelActionsManager(),
-            new PlayerManager()
+        new MinionManager(),
+        new DuelActionsManager(),
+        new PlayerManager(),
+        new ScoreboardManager()
     );
 
     @Override
@@ -112,7 +116,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
         if (startingWorldConfigExists(event.getPlayer())) {
             //Server crashed mid-duel, or they left during duel, and they're startingWorldConfig still exists, gotta load it up for them
             logger().info("Duel crash recovery initiated for " + event.getPlayer().getName());
-            restoreStartingWorldConfig(event.getPlayer());
+            restoreStartingWorldConfig(event.getPlayer(), null);
         }
         config().playerRank(event.getPlayer()); // Just to make sure everyone that's logged in has a rank
     }
@@ -120,7 +124,12 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
     @EventHandler
     private void onPlayerRespawn(PlayerRespawnEvent event) {
         if (startingWorldConfigExists(event.getPlayer())) {
-            restoreStartingWorldConfig(event.getPlayer());
+            Stadium maybeStadium = StadiumManager.stadium(event.getPlayer().getLocation());
+            Scoreboard scoreboard = null;
+            if (maybeStadium != null) {
+                scoreboard = maybeStadium.playerOriginalScoreboard(event.getPlayer());
+            }
+            restoreStartingWorldConfig(event.getPlayer(), scoreboard);
         }
     }
 

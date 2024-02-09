@@ -26,6 +26,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.scoreboard.Criteria;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -69,10 +73,10 @@ public class StadiumManager implements Listener {
     @EventHandler
     private void onDuelClose(DuelCloseEvent event) {
         if (event.stadium().player1().getWorld().equals(event.stadium().startingCorner().getWorld()) && !event.stadium().player1().isDead()) {
-            restoreStartingWorldConfig(event.stadium().player1());
+            restoreStartingWorldConfig(event.stadium().player1(), event.stadium().playerOriginalScoreboard(event.stadium().player1()));
         }
         if (event.stadium().player2().getWorld().equals(event.stadium().startingCorner().getWorld()) && !event.stadium().player2().isDead()) {
-            restoreStartingWorldConfig(event.stadium().player2());
+            restoreStartingWorldConfig(event.stadium().player2(), event.stadium().playerOriginalScoreboard(event.stadium().player2()));
         }
         stadiums.remove(event.stadium().startingCorner());
         if (stadiums.isEmpty()) {
@@ -182,21 +186,21 @@ public class StadiumManager implements Listener {
         Location nextStartingCorner = getNextAvailableStartingCorner(w);
         saveStartingWorldConfig(new Participant(requester));
         saveStartingWorldConfig(new Participant(accepter));
-        cleanUpPlayerBeforeDuel(requester);
-        cleanUpPlayerBeforeDuel(accepter);
+        Stadium stadium;
         if (Math.random() < 0.5) {
             setupStadium(nextStartingCorner, requester, accepter, ranked);
-            Stadium stadium = stadiums.get(nextStartingCorner);
+            stadium = stadiums.get(nextStartingCorner);
             requester.teleport(stadium.locOfSpot(PLAYER_1_OUTLOOK));
             accepter.teleport(stadium.locOfSpot(PLAYER_2_OUTLOOK));
-            Bukkit.getPluginManager().callEvent(new DuelStartEvent(stadium));
         } else {
             setupStadium(nextStartingCorner, accepter, requester, ranked);
-            Stadium stadium = stadiums.get(nextStartingCorner);
+            stadium = stadiums.get(nextStartingCorner);
             accepter.teleport(stadium.locOfSpot(PLAYER_1_OUTLOOK));
             requester.teleport(stadium.locOfSpot(PLAYER_2_OUTLOOK));
-            Bukkit.getPluginManager().callEvent(new DuelStartEvent(stadium));
         }
+        cleanUpPlayerBeforeDuel(requester);
+        cleanUpPlayerBeforeDuel(accepter);
+        Bukkit.getPluginManager().callEvent(new DuelStartEvent(stadium));
     }
 
     private static void cleanUpPlayerBeforeDuel(Player p) {
@@ -204,6 +208,11 @@ public class StadiumManager implements Listener {
         p.setFoodLevel(10);
         p.setGameMode(GameMode.ADVENTURE);
         p.getInventory().clear();
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective(p.getName() + "senemyhealth", Criteria.DUMMY, "Enemy's Health");
+        objective.setDisplayName("Enemy's Health");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        p.setScoreboard(scoreboard);
     }
 
     private static LivingEntity summonChicken(Spot spot, Location startingCorner) {
