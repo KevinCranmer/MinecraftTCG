@@ -1,2 +1,3 @@
 duel:
   seconds_per_round: 45
+  show_all_minion_names: false

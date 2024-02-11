@@ -23,6 +23,7 @@ public class MinecraftTcgConfig {
     private final YamlConfiguration playerRanks;
     private final YamlConfiguration config;
     private int duelSecondsPerRound;
+    private boolean duelShowAllMinionNames;
     private List<String> autoCollectPlayerNames;
 
     public MinecraftTcgConfig(YamlConfiguration config, YamlConfiguration dropOddsConfig, YamlConfiguration cardDropRulesConfig, YamlConfiguration playerRanks) {
@@ -56,11 +57,16 @@ public class MinecraftTcgConfig {
 
     private void loadConfig(YamlConfiguration config) {
         duelSecondsPerRound = config.getInt("duel.seconds_per_round", originalConfig.getInt("duel.seconds_per_round"));
+        duelShowAllMinionNames = config.getBoolean("duel.show_all_minion_names", originalConfig.getBoolean("duel.show_all_minion_names"));
         autoCollectPlayerNames = new ArrayList<>((List<String>) config.getList("auto_collect", List.of()));
     }
 
     public int duelSecondsPerRound() {
         return duelSecondsPerRound;
+    }
+
+    public boolean duelShowAllMinionNames() {
+        return duelShowAllMinionNames;
     }
 
     public YamlConfiguration dropOddsConfig() {

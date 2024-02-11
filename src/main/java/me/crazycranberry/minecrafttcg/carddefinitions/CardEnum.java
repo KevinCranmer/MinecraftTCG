@@ -4,6 +4,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Adrenaline;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Heal;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Protect;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.aggressivebandit.AggressiveBanditDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDozerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch.HealWitchDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie.HungryZombieDef;
@@ -22,6 +23,7 @@ public enum CardEnum {
 
     // Minions
     AGGRESSIVE_BANDIT(new AggressiveBanditDef()),
+    BULLDOZER(new BullDozerDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
     HEAL_WITCH(new HealWitchDef()),
     HUNGRY_ZOMBIE(new HungryZombieDef()),

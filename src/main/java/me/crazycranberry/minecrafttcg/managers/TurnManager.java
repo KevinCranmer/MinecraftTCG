@@ -132,7 +132,7 @@ public class TurnManager implements Listener {
 
     @EventHandler
     private void onCombatEnd(CombatEndEvent event) {
-        System.out.println("onCombatStartAttacking");
+        System.out.println("onCombatEnd");
         if (event.getStadium().isDuelDone()) {
             return;
         }

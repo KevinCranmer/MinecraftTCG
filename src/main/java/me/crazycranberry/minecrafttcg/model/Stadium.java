@@ -227,7 +227,7 @@ public class Stadium {
     }
 
     private void hideName(Spot spot) {
-        if (spot.minionRef() != null && spot.minionRef().apply(this) != null) {
+        if (spot.minionRef() != null && spot.minionRef().apply(this) != null && !getPlugin().config().duelShowAllMinionNames()) {
             spot.minionRef().apply(this).minionInfo().entity().setCustomNameVisible(false);
         }
     }
@@ -341,7 +341,7 @@ public class Stadium {
         for (Spot spot : Spot.values()) {
             if (spot.minionRef() != null) {
                 Minion minion = spot.minionRef().apply(this);
-                if (minion != null && entity.equals(minion.minionInfo().entity())) {
+                if (minion != null && minion.minionInfo().entity().equals(entity)) {
                     return Optional.of(minion);
                 }
             }
@@ -463,6 +463,24 @@ public class Stadium {
             case GREEN_2_BACK -> GREEN_2_FRONT.minionRef().apply(this) != null;
             case GREEN_1_BACK -> GREEN_1_FRONT.minionRef().apply(this) != null;
             default -> false;
+        };
+    }
+
+    public LivingEntity getEntityBehind(Spot spot) {
+        return switch (spot) {
+            case RED_2_BACK -> player2RedChicken;
+            case RED_2_FRONT -> Optional.ofNullable(RED_2_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player2RedChicken);
+            case RED_1_BACK -> player1RedChicken;
+            case RED_1_FRONT -> Optional.ofNullable(RED_1_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player1RedChicken);
+            case BLUE_2_BACK -> player2BlueChicken;
+            case BLUE_2_FRONT -> Optional.ofNullable(BLUE_2_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player2BlueChicken);
+            case BLUE_1_BACK -> player1BlueChicken;
+            case BLUE_1_FRONT -> Optional.ofNullable(BLUE_1_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player1BlueChicken);
+            case GREEN_2_BACK -> player2GreenChicken;
+            case GREEN_2_FRONT -> Optional.ofNullable(GREEN_2_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player2GreenChicken);
+            case GREEN_1_BACK -> player1GreenChicken;
+            case GREEN_1_FRONT -> Optional.ofNullable(GREEN_1_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player1GreenChicken);
+            default -> null;
         };
     }
 

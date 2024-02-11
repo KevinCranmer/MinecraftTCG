@@ -19,6 +19,8 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityTargetEvent;
 
+import java.util.Optional;
+
 public abstract class Minion {
     private Integer strength;
     private Integer health;
@@ -30,6 +32,8 @@ public abstract class Minion {
     private final PathfinderMob nmsMob;
     private Integer numTurnsProtected = 0;
     private Integer temporaryBonusStrength = 0;
+    private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
+    private Integer numTurnsOverkill = 0;
 
     public Minion(CardEnum cardEnum, MinionInfo minionInfo) {
         this.cardDef = (MinionCardDefinition) cardEnum.card();
@@ -70,6 +74,10 @@ public abstract class Minion {
         this.strength += additionalStrength;
     }
 
+    public void setPermanentOverkill(Boolean giveOverkill) {
+        this.hasOverkill = giveOverkill;
+    }
+
     public Integer attacksLeft() {
         return attacksLeft;
     }
@@ -93,6 +101,7 @@ public abstract class Minion {
     public void onTurnStart() {
         attacksLeft = attacksPerTurn;
         numTurnsProtected = Math.max(0, numTurnsProtected - 1);
+        numTurnsOverkill = Math.max(0, numTurnsOverkill - 1);
         temporaryBonusStrength = 0;
     }
 
@@ -156,8 +165,8 @@ public abstract class Minion {
         minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.ITEM_SHIELD_BLOCK, 2, 1);
     }
 
-    public Integer turnsProtected() {
-        return numTurnsProtected;
+    public Boolean isProtected() {
+        return numTurnsProtected > 0;
     }
 
     public boolean hasBonusStrength() {
@@ -209,5 +218,9 @@ public abstract class Minion {
 
     private void setProtectionParticlesGoal() {
         nmsMob.goalSelector.addGoal(7, new ShowTemporaryEffectParticlesGoal<>(this));
+    }
+
+    public Boolean hasOverkill() {
+        return numTurnsOverkill > 0 || hasOverkill;
     }
 }

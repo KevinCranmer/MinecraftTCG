@@ -43,7 +43,7 @@ public class UnstablePyro extends Minion {
         minionInfo().entity().getWorld().spawnParticle(Particle.LAVA, enemyToFireball.get().minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> minionInfo().entity().getWorld().spawnParticle(Particle.LAVA, enemyToFireball.get().minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5), 10);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            boolean isProtected = enemyToFireball.get().turnsProtected() > 0;
+            boolean isProtected = enemyToFireball.get().isProtected();
             enemyToFireball.ifPresent(minion -> minion.onDamageReceived(this.minionInfo().entity(), 1, isProtected));
             this.onDamageDealt(enemyToFireball.get().minionInfo().entity(), 1, false, isProtected);
             // This is just for the animation. Manually track damage this way because if it goes through

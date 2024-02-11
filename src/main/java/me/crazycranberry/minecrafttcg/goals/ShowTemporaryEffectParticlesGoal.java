@@ -18,7 +18,7 @@ public class ShowTemporaryEffectParticlesGoal<T> extends Goal {
 
     @Override
     public boolean canUse() {
-        return minion.turnsProtected() > 0 || minion.hasBonusStrength();
+        return minion.isProtected() || minion.hasBonusStrength();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ShowTemporaryEffectParticlesGoal<T> extends Goal {
     }
 
     private void protectionParticles() {
-        if (minion.turnsProtected() > 0) {
+        if (minion.isProtected()) {
             minion.minionInfo().entity().getWorld().spawnParticle(Particle.SPELL, minion.minionInfo().entity().getEyeLocation(), 2, 0.3, 0.3, 0.3);
             minion.minionInfo().entity().getWorld().spawnParticle(Particle.SPELL, minion.minionInfo().entity().getLocation(), 1, 0.3, 0.3, 0.3);
         }

@@ -38,6 +38,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         "deck", deckInfo(),
         "collection", collectionInfo(),
         "multiAttack", multiAttackInfo(),
+        "overkill", overkillInfo(),
         "ranked", rankedInfo()
     );
 
@@ -120,7 +121,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
 
     private static String cardsInfo() {
         return String.format("""
-            %sThere are 3 types of cards:%s
+            %sThere are 3 types of cards:
             1. Minions - Playable mobs that attack the enemy for you.
             2. Spells - Cards that interact with the match or minions in some way.
             3. Cantrips - Similar to spells, except they can be cast at any time.
@@ -155,6 +156,14 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         return String.format("""
             %sMinions with Multi-Attack will attack however many times their Multi-Attack level is.
             A minion with Multi-Attack 3, will attack 3 times each combat. Giving these minions bonus strength is a great idea because it'd be bonus damage for each attack.%s""",
+            GRAY,
+            RESET);
+    }
+
+    private static String overkillInfo() {
+        return String.format("""
+            %sMinions with Overkill will deal excess damage to the Entities behind.
+            For example, an Overkill minion with 5 strength attacking a minion with 3 health will do 3 damage to that minion, and then 2 damage to the enemy player.%s""",
             GRAY,
             RESET);
     }

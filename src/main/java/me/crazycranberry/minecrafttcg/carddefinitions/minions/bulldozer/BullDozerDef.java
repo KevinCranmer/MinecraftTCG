@@ -1,49 +1,47 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
-public class SewerZombieDef implements MinionCardDefinition {
+public class BullDozerDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 1;
+        return 7;
     }
 
     @Override
     public String cardName() {
-        return "Sewer Zombie";
+        return "Bulldozer";
     }
 
     @Override
     public String cardDescription() {
-        return "";
+        return String.format("%sOverkill%s", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.COMMON;
-    }
-
-    @Override
-    public String signDescription() {
-        return "";
+        return CardRarity.RARE;
     }
 
     @Override
     public Integer strength() {
-        return 1;
+        return 6;
     }
 
     @Override
     public Integer maxHealth() {
-        return 3;
+        return 9;
     }
 
     @Override
     public EntityType minionType() {
-        return EntityType.ZOMBIE;
+        return EntityType.RAVAGER;
     }
 
     @Override
@@ -53,6 +51,11 @@ public class SewerZombieDef implements MinionCardDefinition {
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return SewerZombie.class;
+        return BullDozer.class;
+    }
+
+    @Override
+    public String signDescription() {
+        return "Overkill";
     }
 }
