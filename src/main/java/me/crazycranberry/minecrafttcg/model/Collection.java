@@ -208,22 +208,24 @@ public class Collection {
 
     public static String spellOrCantripCardDescription(SpellOrCantripCardDefinition card) {
         List<String> targets = new ArrayList<>();
-        if (card.targetsMinion()) {
-            targets.add("Minions");
+        if (card.targetRules().targetsAllyMinions()) {
+            targets.add("Ally Minions");
         }
-        if (card.targetsPlayer()) {
+        if (card.targetRules().targetsEnemyMinions()) {
+            targets.add("Enemy Minions");
+        }
+        if (card.targetRules().targetsPlayers()) {
             targets.add("Players");
         }
-        if (card.targetsEmptySpots()) {
+        if (card.targetRules().targetsEmptySpots()) {
             targets.add("Spots");
         }
         return String.format("""
             %s%s%s%s [%s] Cost: %s
-            %sTargets:%s %s
-            %sDescription:%s %s
+            %s%sDescription:%s %s
             """,
                 RESET, card.rarity().color(), card.cardName(), RESET, card instanceof CantripCardDefinition ? "CANTRIP" : "SPELL", card.cost(),
-                DARK_PURPLE, RESET, String.join(", ", targets),
+                targets.isEmpty() ? "" : String.format("%sTargets:%s %s%n", DARK_PURPLE, RESET, String.join(", ", targets)),
                 BLUE, RESET, card.cardDescription()
         );
     }

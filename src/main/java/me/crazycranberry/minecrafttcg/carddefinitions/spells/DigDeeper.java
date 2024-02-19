@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.spells;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
+import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;
 
@@ -32,17 +33,7 @@ public class DigDeeper implements SpellCardDefinition {
     }
 
     @Override
-    public boolean targetsMinion() {
-        return false;
-    }
-
-    @Override
-    public boolean targetsPlayer() {
-        return false;
-    }
-
-    @Override
-    public boolean targetsEmptySpots() {
-        return false;
+    public TargetRules targetRules() {
+        return new TargetRules(false, false, false, false);
     }
 }

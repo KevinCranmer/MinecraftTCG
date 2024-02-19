@@ -3,11 +3,13 @@ package me.crazycranberry.minecrafttcg.managers;
 import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.SpellOrCantripCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.CantripCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
 import me.crazycranberry.minecrafttcg.events.CastCardEvent;
+import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -142,16 +144,20 @@ public class DuelActionsManager implements Listener {
     }
 
     private boolean validTarget(Player p, Stadium stadium, SpellOrCantripCardDefinition spellOrCantripCardDef) {
-        if (!spellOrCantripCardDef.targetsEmptySpots() && !spellOrCantripCardDef.targetsMinion() && !spellOrCantripCardDef.targetsPlayer()) {
+        TargetRules targetRules = spellOrCantripCardDef.targetRules();
+        if (!targetRules.targetsEmptySpots() && !targetRules.targetsAllyMinions() && !targetRules.targetsEnemyMinions() && !targetRules.targetsPlayers()) {
             return true;
         }
         Minion targetedMinion = stadium.targetedMinion(p);
-        return switch (stadium.playerTargetSpot(p)) {
-            case RED_1_BACK, RED_2_BACK, RED_1_FRONT, RED_2_FRONT, BLUE_1_BACK, BLUE_2_BACK, BLUE_1_FRONT, BLUE_2_FRONT, GREEN_1_BACK, GREEN_2_BACK, GREEN_1_FRONT, GREEN_2_FRONT ->
-                    (spellOrCantripCardDef.targetsMinion() && targetedMinion != null) || (spellOrCantripCardDef.targetsEmptySpots() && targetedMinion == null);
-            case PLAYER_1_OUTLOOK, PLAYER_2_OUTLOOK -> spellOrCantripCardDef.targetsPlayer();
-            default -> false;
-        };
+        Spot spot = stadium.playerTargetSpot(p);
+        if (stadium.allyMinionSpots(p).contains(spot)) {
+            return (targetRules.targetsAllyMinions() && targetedMinion != null) || (targetRules.targetsEmptySpots() && targetedMinion == null);
+        } else if (stadium.enemyMinionSpots(p).contains(spot)) {
+            return (targetRules.targetsEnemyMinions() && targetedMinion != null) || (targetRules.targetsEmptySpots() && targetedMinion == null);
+        } else if (spot.equals(Spot.PLAYER_1_OUTLOOK) || spot.equals(Spot.PLAYER_2_OUTLOOK)) {
+            return targetRules.targetsPlayers();
+        }
+        return false;
     }
 
     private boolean summonable(Player p, Stadium stadium) {

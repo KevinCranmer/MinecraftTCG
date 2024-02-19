@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.cantrips;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
+import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;
 
@@ -31,17 +32,7 @@ public class Protect implements CantripCardDefinition {
     }
 
     @Override
-    public boolean targetsMinion() {
-        return true;
-    }
-
-    @Override
-    public boolean targetsPlayer() {
-        return false;
-    }
-
-    @Override
-    public boolean targetsEmptySpots() {
-        return false;
+    public TargetRules targetRules() {
+        return new TargetRules(true, true, false, false);
     }
 }

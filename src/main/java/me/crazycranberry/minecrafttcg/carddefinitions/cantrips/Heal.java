@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.cantrips;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
+import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
@@ -43,17 +44,7 @@ public class Heal implements CantripCardDefinition {
     }
 
     @Override
-    public boolean targetsMinion() {
-        return true;
-    }
-
-    @Override
-    public boolean targetsPlayer() {
-        return true;
-    }
-
-    @Override
-    public boolean targetsEmptySpots() {
-        return false;
+    public TargetRules targetRules() {
+        return new TargetRules(true, true, true, false);
     }
 }

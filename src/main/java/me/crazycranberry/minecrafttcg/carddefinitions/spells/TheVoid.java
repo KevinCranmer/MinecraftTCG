@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.spells;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
+import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
@@ -46,18 +47,8 @@ public class TheVoid implements SpellCardDefinition {
     }
 
     @Override
-    public boolean targetsMinion() {
-        return true;
-    }
-
-    @Override
-    public boolean targetsPlayer() {
-        return false;
-    }
-
-    @Override
-    public boolean targetsEmptySpots() {
-        return true;
+    public TargetRules targetRules() {
+        return new TargetRules(true, true, false, true);
     }
 
     private static class TheVoidTracker {
