@@ -19,8 +19,6 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityTargetEvent;
 
-import java.util.Optional;
-
 public abstract class Minion {
     private Integer strength;
     private Integer health;
@@ -87,10 +85,7 @@ public abstract class Minion {
     }
 
     public void onEnter() {
-        removeGoals();
-        setGoalOfStayingOnSpot();
-        setGoalOfLookingForward();
-        setProtectionParticlesGoal();
+        setupGoals();
     }
 
     public void onDeath() {
@@ -198,6 +193,13 @@ public abstract class Minion {
         }
     }
 
+    public void setupGoals() {
+        removeGoals();
+        setGoalOfStayingOnSpot();
+        setGoalOfLookingForward();
+        setProtectionParticlesGoal();
+    }
+
     public void removeAttackGoals() {
         nmsMob.goalSelector.getRunningGoals().filter(g -> g.getGoal() instanceof MeleeAttackGoal || g.getGoal() instanceof ShootParticlesGoal).forEach(WrappedGoal::stop);
         nmsMob.removeAllGoals(g -> g instanceof MeleeAttackGoal || g instanceof ShootParticlesGoal);
@@ -209,7 +211,7 @@ public abstract class Minion {
     }
 
     private void setGoalOfStayingOnSpot() {
-        nmsMob.goalSelector.addGoal(5, new WalkToLocationGoal(nmsMob, minionInfo().stadium().playerTargetLoc(minionInfo().master())));
+        nmsMob.goalSelector.addGoal(5, new WalkToLocationGoal(nmsMob, minionInfo().stadium().locOfSpot(minionInfo().spot())));
     }
 
     private void setGoalOfLookingForward() {

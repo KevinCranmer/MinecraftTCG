@@ -2,6 +2,7 @@ package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
+import me.crazycranberry.minecrafttcg.carddefinitions.MultiTargetCard;
 import me.crazycranberry.minecrafttcg.carddefinitions.SpellOrCantripCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.CantripCardDefinition;
@@ -9,8 +10,10 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
 import me.crazycranberry.minecrafttcg.events.CastCardEvent;
+import me.crazycranberry.minecrafttcg.events.CastCardTargetEvent;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
+import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
@@ -28,14 +31,21 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import static me.crazycranberry.minecrafttcg.CommonFunctions.nthSuffix;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
+import static me.crazycranberry.minecrafttcg.model.Collection.targetsString;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
@@ -50,6 +60,7 @@ import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public class DuelActionsManager implements Listener {
     Set<String> cardsBeingDescriptionChecked = new HashSet<>();
+    Map<UUID, CastInProgress> castsInProgressMap = new HashMap<>();
 
     @EventHandler
     private void onAction(PlayerInteractEvent event) {
@@ -61,12 +72,12 @@ public class DuelActionsManager implements Listener {
             String UUID = event.getItem().getItemMeta().getPersistentDataContainer().get(RANDOM_UUID_KEY, PersistentDataType.STRING);
             cardsBeingDescriptionChecked.add(UUID);
             Bukkit.getScheduler().runTaskLater(getPlugin(), () -> cardsBeingDescriptionChecked.remove(UUID), 1);
-        } else if (isValidCastAttempt(event, stadium)) {
+        } else if (isValidTargetAttempt(event, stadium)) {
             BookMeta bookMeta = (BookMeta) event.getItem().getItemMeta();
             CardEnum cardEnum = CardEnum.valueOf(bookMeta.getPersistentDataContainer().get(CARD_NAME_KEY, PersistentDataType.STRING));
             Card card = cardEnum.card();
             if (castable(p, stadium, card)) {
-                Bukkit.getPluginManager().callEvent(new CastCardEvent(card, stadium, p, event.getItem()));
+                Bukkit.getPluginManager().callEvent(new CastCardTargetEvent(card, stadium, p, event.getItem()));
             }
         } else if (isValidDescCheck(event, stadium)) {
             stadium.displayDescription(p);
@@ -96,44 +107,79 @@ public class DuelActionsManager implements Listener {
     }
 
     @EventHandler
-    private void onCardCast(CastCardEvent event) {
-        cast(event.caster(), event.stadium(), event.card());
-        event.caster().getInventory().remove(event.cardItem());
-        sendCastMessage(event.caster(), event.stadium(), event.card());
-        event.stadium().reduceMana(event.caster(), event.card().cost());
-    }
-
-    private void cast(Player player, Stadium stadium, Card card) {
-        if (card instanceof MinionCardDefinition minionCardDefinition) {
-            castMinion(player, stadium, minionCardDefinition);
-        } else if (card instanceof CantripCardDefinition cantripCardDefinition) {
-            castCantrip(player, stadium, cantripCardDefinition);
-        } else if (card instanceof SpellCardDefinition spellCardDefinition) {
-            castSpell(player, stadium, spellCardDefinition);
+    private void onTarget(CastCardTargetEvent event) {
+        CastInProgress cast = castsInProgressMap.get(event.caster().getUniqueId());
+        String cardUuid = event.cardItem().getItemMeta().getPersistentDataContainer().get(RANDOM_UUID_KEY, PersistentDataType.STRING);
+        Spot targetedSpot = event.stadium().playerTargetSpot(event.caster());
+        if (cast != null && !cast.cardUuid().equals(cardUuid)) {
+            castsInProgressMap.remove(event.caster().getUniqueId());
+        } else if (event.card() instanceof MultiTargetCard multiTargetCard) {
+            if (cast == null) {
+                cast = new CastInProgress(cardUuid);
+                castsInProgressMap.put(event.caster().getUniqueId(), cast);
+            }
+            cast.addTarget(targetedSpot);
+            if (cast.targets().size() >= multiTargetCard.targetRulesForExtraTargets().size() + 1) { // + 1 because it's "Extra" targets beyond the initial first target which is required for all cards
+                Bukkit.getPluginManager().callEvent(new CastCardEvent(event.card(), event.stadium(), event.caster(), event.cardItem(), cast.targets()));
+            } else {
+                event.caster().sendMessage(String.format("%s%sNow select your %s target for this spell.%s", GRAY, ITALIC, nthSuffix(cast.targets().size()), RESET));
+            }
+        } else {
+            Bukkit.getPluginManager().callEvent(new CastCardEvent(event.card(), event.stadium(), event.caster(), event.cardItem(), List.of(targetedSpot)));
         }
     }
 
-    private void castMinion(Player player, Stadium stadium, MinionCardDefinition minionCard) {
-        minionCard.onCast(stadium, player);
+    @EventHandler
+    private void onCardFinishedCasting(CastCardEvent event) {
+        cast(event.caster(), event.stadium(), event.card(), event.targets());
+        event.caster().getInventory().remove(event.cardItem());
+        sendCastMessage(event.caster(), event.stadium(), event.card());
+        event.stadium().reduceMana(event.caster(), event.card().cost());
+        castsInProgressMap.remove(event.caster().getUniqueId());
     }
 
-    private void castCantrip(Player player, Stadium stadium, CantripCardDefinition cantripCard) {
-        cantripCard.onCast(stadium, player);
+    private void cast(Player player, Stadium stadium, Card card, List<Spot> targets) {
+        if (card instanceof MinionCardDefinition minionCardDefinition) {
+            castMinion(player, stadium, minionCardDefinition, targets);
+        } else if (card instanceof CantripCardDefinition cantripCardDefinition) {
+            castCantrip(player, stadium, cantripCardDefinition, targets);
+        } else if (card instanceof SpellCardDefinition spellCardDefinition) {
+            castSpell(player, stadium, spellCardDefinition, targets);
+        }
     }
 
-    private void castSpell(Player player, Stadium stadium, SpellCardDefinition spellCard) {
-        spellCard.onCast(stadium, player);
+    private void castMinion(Player player, Stadium stadium, MinionCardDefinition minionCard, List<Spot> targets) {
+        minionCard.onCast(stadium, player, targets);
+    }
+
+    private void castCantrip(Player player, Stadium stadium, CantripCardDefinition cantripCard, List<Spot> targets) {
+        cantripCard.onCast(stadium, player, targets);
+    }
+
+    private void castSpell(Player player, Stadium stadium, SpellCardDefinition spellCard, List<Spot> targets) {
+        spellCard.onCast(stadium, player, targets);
     }
 
     private boolean castable(Player p, Stadium stadium, Card card) {
         /*if (card.cost() > stadium.playerMana(p)) {
             p.sendMessage(String.format("%s%sYou only have %s mana, this card costs %s.%s", GRAY, ITALIC, stadium.playerMana(p), card.cost(), RESET));
             return false;
-        } else */if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
+        } else */ if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
             p.sendMessage(String.format("%s%sYou cannot cast this card while it's not your turn.%s", GRAY, ITALIC, RESET));
             return false;
+        }  else if (card instanceof CantripCardDefinition cantripCardDefinition && ((stadium.phase().equals(TurnPhase.COMBAT_PHASE) || stadium.phase().equals(TurnPhase.POST_COMBAT_CLEANUP)) && !cantripCardDefinition.canCastDuringCombat())) {
+            p.sendMessage(String.format("%s%sThis card cannot be cast during combat.%s", GRAY, ITALIC, RESET));
+            return false;
+        } else if (card instanceof MultiTargetCard multiTargetCard && castsInProgressMap.containsKey(p.getUniqueId())) {
+            CastInProgress cast = castsInProgressMap.get(p.getUniqueId());
+            TargetRules targetRules = multiTargetCard.targetRulesForExtraTargets().get(cast.targets().size()-1);
+            if (!validTarget(p, stadium, targetRules) || !multiTargetCard.isValidAdditionalTarget(p, stadium, card, cast.targets(), stadium.playerTargetSpot(p))) {
+                String targetNumberString = nthSuffix(cast.targets().size());
+                p.sendMessage(String.format("%s%sValid %s targets for this card are: [%s]%s", GRAY, ITALIC, targetNumberString, targetsString(targetRules), RESET));
+                return false;
+            }
         } else if (card instanceof SpellOrCantripCardDefinition spellOrCantripCardDef) {
-            if (!validTarget(p, stadium, spellOrCantripCardDef)) {
+            if (!validTarget(p, stadium, spellOrCantripCardDef.targetRules())) {
                 p.sendMessage(String.format("%s%sThat is not a valid target for this spell.%s", GRAY, ITALIC, RESET));
                 return false;
             }
@@ -143,8 +189,7 @@ public class DuelActionsManager implements Listener {
         return true;
     }
 
-    private boolean validTarget(Player p, Stadium stadium, SpellOrCantripCardDefinition spellOrCantripCardDef) {
-        TargetRules targetRules = spellOrCantripCardDef.targetRules();
+    private boolean validTarget(Player p, Stadium stadium, TargetRules targetRules) {
         if (!targetRules.targetsEmptySpots() && !targetRules.targetsAllyMinions() && !targetRules.targetsEnemyMinions() && !targetRules.targetsPlayers()) {
             return true;
         }
@@ -186,7 +231,7 @@ public class DuelActionsManager implements Listener {
             stadium.isPlayerParticipating(event.getPlayer());
     }
 
-    private boolean isValidCastAttempt(PlayerInteractEvent event, Stadium stadium) {
+    private boolean isValidTargetAttempt(PlayerInteractEvent event, Stadium stadium) {
         return EquipmentSlot.HAND.equals(event.getHand()) &&
                 event.getItem() != null &&
                 event.getItem().getType().equals(Material.WRITTEN_BOOK) &&
@@ -230,6 +275,28 @@ public class DuelActionsManager implements Listener {
             }
         } else {
             player.sendMessage(String.format("%sYou cannot change the turn phase, it's not your turn.%s", GRAY, RESET));
+        }
+    }
+
+    private static class CastInProgress {
+        private final String cardUuid;
+        private final List<Spot> targets;
+
+        public CastInProgress(String cardUuid) {
+            this.cardUuid = cardUuid;
+            this.targets = new ArrayList<>();
+        }
+
+        public String cardUuid() {
+            return cardUuid;
+        }
+
+        public List<Spot> targets() {
+            return targets;
+        }
+
+        public void addTarget(Spot newTarget) {
+            targets.add(newTarget);
         }
     }
 }

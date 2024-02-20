@@ -2,7 +2,9 @@ package me.crazycranberry.minecrafttcg.model;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
+import me.crazycranberry.minecrafttcg.carddefinitions.MultiTargetCard;
 import me.crazycranberry.minecrafttcg.carddefinitions.SpellOrCantripCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.CantripCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static me.crazycranberry.minecrafttcg.CommonFunctions.nthSuffix;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
@@ -38,6 +41,7 @@ import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.DARK_PURPLE;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.LIGHT_PURPLE;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
 
@@ -206,26 +210,49 @@ public class Collection {
         return book;
     }
 
-    public static String spellOrCantripCardDescription(SpellOrCantripCardDefinition card) {
+    public static String targetsString(TargetRules targetRules) {
         List<String> targets = new ArrayList<>();
-        if (card.targetRules().targetsAllyMinions()) {
-            targets.add("Ally Minions");
+        if (targetRules.targetsAllyMinions()) {
+            targets.add("Allies");
         }
-        if (card.targetRules().targetsEnemyMinions()) {
-            targets.add("Enemy Minions");
+        if (targetRules.targetsEnemyMinions()) {
+            targets.add("Enemies");
         }
-        if (card.targetRules().targetsPlayers()) {
+        if (targetRules.targetsPlayers()) {
             targets.add("Players");
         }
-        if (card.targetRules().targetsEmptySpots()) {
+        if (targetRules.targetsEmptySpots()) {
             targets.add("Spots");
         }
+        return targets.isEmpty() ? "" : String.join(", ", targets);
+    }
+
+    private static String targetsDescription(Card card) {
+        StringBuilder description = new StringBuilder();
+        if (card instanceof MultiTargetCard multiTargetCard) {
+            description.append(String.format("%sMULTI-TARGET%s", DARK_PURPLE, RESET));
+            if (card instanceof MinionCardDefinition) {
+                description.append(String.format("%s1st Target:%s Empty Spot", DARK_PURPLE, RESET));
+            } else if (card instanceof SpellOrCantripCardDefinition spellOrCantripCardDefinition) {
+                description.append(String.format("%s1st Target:%s %s", DARK_PURPLE, RESET, targetsString(spellOrCantripCardDefinition.targetRules())));
+            }
+            for (int i = 0; i < multiTargetCard.targetRulesForExtraTargets().size(); i++) {
+                String targetNumberString = nthSuffix(i + 1);
+                description.append(String.format("%s%s Target:%s %s", DARK_PURPLE, targetNumberString, RESET, targetsString(multiTargetCard.targetRulesForExtraTargets().get(i))));
+            }
+        } else if (card instanceof SpellOrCantripCardDefinition spellOrCantripCardDefinition) {
+                description.append(String.format("%starget:%s %s", DARK_PURPLE, RESET, targetsString(spellOrCantripCardDefinition.targetRules())));
+        }
+        return description.toString();
+    }
+
+    public static String spellOrCantripCardDescription(SpellOrCantripCardDefinition card) {
         return String.format("""
             %s%s%s%s [%s] Cost: %s
             %s%sDescription:%s %s
             """,
                 RESET, card.rarity().color(), card.cardName(), RESET, card instanceof CantripCardDefinition ? "CANTRIP" : "SPELL", card.cost(),
-                targets.isEmpty() ? "" : String.format("%sTargets:%s %s%n", DARK_PURPLE, RESET, String.join(", ", targets)),
+                String.format("%s", targetsDescription(card)),
                 BLUE, RESET, card.cardDescription()
         );
     }
@@ -235,11 +262,12 @@ public class Collection {
             %s%s%s%s [MINION] Cost: %s
             %s%s%s:%s %s❤%s:%s/%s
             %sMinion Type:%s %s
-            %sDescription:%s %s
+            %s%sDescription:%s %s
             """,
                 RESET, card.rarity().color(), card.cardName(), RESET, card.cost(),
                 DARK_GREEN, card.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, card.strength(), RED, RESET, card.maxHealth(), card.maxHealth(),
-                DARK_PURPLE, RESET, card.minionType(),
+                LIGHT_PURPLE, RESET, card.minionType(),
+                String.format("%s", targetsDescription(card)),
                 BLUE, RESET, card.cardDescription()
         );
     }

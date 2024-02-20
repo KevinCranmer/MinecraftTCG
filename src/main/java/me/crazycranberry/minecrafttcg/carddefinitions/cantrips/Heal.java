@@ -8,6 +8,8 @@ import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class Heal implements CantripCardDefinition {
     private static final int healsFor = 3;
     @Override
@@ -31,7 +33,7 @@ public class Heal implements CantripCardDefinition {
     }
 
     @Override
-    public void onCast(Stadium stadium, Player caster) {
+    public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         Spot spot = stadium.playerTargetSpot(caster);
         if (spot.equals(Spot.PLAYER_1_OUTLOOK)) {
             stadium.player1().setHealth(Math.min(stadium.player1().getHealth() + healsFor, stadium.player1().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
@@ -46,5 +48,10 @@ public class Heal implements CantripCardDefinition {
     @Override
     public TargetRules targetRules() {
         return new TargetRules(true, true, true, false);
+    }
+
+    @Override
+    public Boolean canCastDuringCombat() {
+        return true;
     }
 }

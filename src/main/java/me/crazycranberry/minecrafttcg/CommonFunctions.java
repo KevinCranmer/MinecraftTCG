@@ -12,4 +12,8 @@ public class CommonFunctions {
         int randomIndex = (int) (Math.random() * list.size());
         return Optional.of(list.get(randomIndex));
     }
+
+    public static String nthSuffix(int i) {
+        return i == 0 ? "1st" : i == 1 ? "2nd" : i == 2 ? "3rd" : i + "th";
+    }
 }

@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public class MinionInfo {
     private final Stadium stadium;
-    private final Spot spot;
+    private Spot spot;
     private final LivingEntity entity;
     private final Player master;
 
@@ -32,5 +32,9 @@ public class MinionInfo {
 
     public Player master() {
         return master;
+    }
+
+    public void setSpot(Spot spot) {
+        this.spot = spot;
     }
 }

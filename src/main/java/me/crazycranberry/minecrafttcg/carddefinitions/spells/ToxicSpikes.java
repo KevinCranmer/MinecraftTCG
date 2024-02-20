@@ -41,7 +41,7 @@ public class ToxicSpikes implements SpellCardDefinition {
     }
 
     @Override
-    public void onCast(Stadium stadium, Player caster) {
+    public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         new ToxicTracker(stadium.targetedRow(caster), stadium, caster);
     }
 
@@ -78,8 +78,8 @@ public class ToxicSpikes implements SpellCardDefinition {
         private static void spawnParticles(Stadium stadium, List<Spot> spots, Integer progressInTicks) {
             for (Spot spot : spots) {
                 Location spotLoc = stadium.locOfSpot(spot);
-                Integer yStep = progressInTicks < (numTicks/2) ? progressInTicks : numTicks - progressInTicks;
-                Double yOffset = ((double)yStep / (double)(numTicks/2)) * maxHeight;
+                int yStep = progressInTicks < (numTicks/2) ? progressInTicks : numTicks - progressInTicks;
+                double yOffset = ((double)yStep / (double)(numTicks/2)) * maxHeight;
                 spotLoc.getWorld().spawnParticle(Particle.REDSTONE, spotLoc.clone().add(0, yOffset, -1), 2, dustOptions);
                 spotLoc.getWorld().spawnParticle(Particle.REDSTONE, spotLoc.clone().add(0, yOffset, -0.5), 2, dustOptions);
                 spotLoc.getWorld().spawnParticle(Particle.REDSTONE, spotLoc.clone().add(0, yOffset, 0), 2, dustOptions);

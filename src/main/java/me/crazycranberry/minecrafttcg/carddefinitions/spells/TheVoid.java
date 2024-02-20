@@ -11,6 +11,7 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Objects;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
@@ -42,7 +43,7 @@ public class TheVoid implements SpellCardDefinition {
     }
 
     @Override
-    public void onCast(Stadium stadium, Player caster) {
+    public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         new TheVoidTracker(stadium, caster);
     }
 

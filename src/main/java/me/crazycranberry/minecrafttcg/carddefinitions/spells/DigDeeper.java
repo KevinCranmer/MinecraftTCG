@@ -2,8 +2,11 @@ package me.crazycranberry.minecrafttcg.carddefinitions.spells;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
+import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class DigDeeper implements SpellCardDefinition {
     @Override
@@ -27,7 +30,7 @@ public class DigDeeper implements SpellCardDefinition {
     }
 
     @Override
-    public void onCast(Stadium stadium, Player caster) {
+    public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         stadium.draw(caster);
         stadium.draw(caster);
     }

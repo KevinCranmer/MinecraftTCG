@@ -18,7 +18,7 @@ public class TargetRules {
     }
 
     public boolean targetsEnemyMinions() {
-        return targetsAllyMinions;
+        return targetsEnemyMinions;
     }
 
     public boolean targetsPlayers() {

@@ -61,7 +61,6 @@ public class MinionManager implements Listener {
         }
         Optional<Minion> maybeMinion = stadium.minionFromEntity((LivingEntity) event.getDamager());
         Optional<Minion> maybeTarget = stadium.minionFromEntity((LivingEntity) event.getEntity());
-        System.out.println("Damaged by a " + event.getDamager().getType());
         if (maybeMinion.isPresent() && event.getEntity().getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
             handleChickenAttacked(stadium, maybeMinion.get(), (LivingEntity) event.getEntity());
             event.setDamage(0);
@@ -92,7 +91,6 @@ public class MinionManager implements Listener {
 
     private void handleMinionAttacked(Minion damager, Minion damagee) {
         if (damager.hasOverkill() && !damagee.isProtected() && damager.strength() > damagee.health()) {
-            System.out.println("Doing overkill damage");
             handleOverkillDamage(damager, damagee, true, damager.strength(), false);
         } else {
             damagee.onDamageReceived(damager.minionInfo().entity(), damager.strength(), damagee.isProtected());

@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Adrenaline;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Heal;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Protect;
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Switch;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.aggressivebandit.AggressiveBanditDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDozerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
@@ -20,6 +21,7 @@ public enum CardEnum {
     ADRENALINE(new Adrenaline()),
     HEAL(new Heal()),
     PROTECT(new Protect()),
+    SWITCH(new Switch()),
 
     // Minions
     AGGRESSIVE_BANDIT(new AggressiveBanditDef()),

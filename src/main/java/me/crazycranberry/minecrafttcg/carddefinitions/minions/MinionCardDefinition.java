@@ -13,29 +13,30 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 
 public interface MinionCardDefinition extends Card {
-    public Integer strength();
-    public Integer maxHealth();
-    public EntityType minionType();
-    public boolean isRanged();
-    public Class<? extends Minion> minionClass();
+    Integer strength();
+    Integer maxHealth();
+    EntityType minionType();
+    boolean isRanged();
+    Class<? extends Minion> minionClass();
     /**
      *  Use '\n' for where a line break in the Signs should be, only 5 \n's allowed.
      *  \n can be used as many times as you want, as it'll only be utilized in the cards book.
      */
-    public String signDescription();
-    default public void onCast(Stadium stadium, Player caster) {
+    String signDescription();
+    default void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         Map<EquipmentSlot, ItemStack> equipment = new HashMap<>();
         if (minionType().equals(EntityType.SKELETON)) {
             equipment.put(EquipmentSlot.HAND, new ItemStack(Material.BOW));
         }
         onCast(stadium, caster, equipment);
     }
-    default public void onCast(Stadium stadium, Player caster, Map<EquipmentSlot, ItemStack> equipment) {
+    default void onCast(Stadium stadium, Player caster, Map<EquipmentSlot, ItemStack> equipment) {
         try {
             Constructor<? extends Minion> c = minionClass().getConstructor(MinionInfo.class);
             c.setAccessible(true);
