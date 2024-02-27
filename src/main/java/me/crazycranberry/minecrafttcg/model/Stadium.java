@@ -466,6 +466,18 @@ public class Stadium {
         };
     }
 
+    public Minion getAllyMinionBehind(Spot spot) {
+        return switch (spot) {
+            case RED_2_FRONT -> RED_2_BACK.minionRef().apply(this);
+            case RED_1_FRONT -> RED_1_BACK.minionRef().apply(this);
+            case BLUE_2_FRONT -> BLUE_2_BACK.minionRef().apply(this);
+            case BLUE_1_FRONT -> BLUE_1_BACK.minionRef().apply(this);
+            case GREEN_2_FRONT -> GREEN_2_BACK.minionRef().apply(this);
+            case GREEN_1_FRONT -> GREEN_1_BACK.minionRef().apply(this);
+            default -> null;
+        };
+    }
+
     public LivingEntity getEntityBehind(Spot spot) {
         return switch (spot) {
             case RED_2_BACK -> player2RedChicken;
@@ -529,7 +541,7 @@ public class Stadium {
                 .filter(Objects::nonNull)
                 .map(mr -> mr.apply(this))
                 .filter(Objects::nonNull)
-                .forEach(m -> m.onAllyMinionEntered(minion));
+                .forEach(m -> m.onEnemyMinionEntered(minion));
         }
     }
 
@@ -694,45 +706,56 @@ public class Stadium {
 
     public void setRed2FrontMinion(Minion minion) {
         red2FrontMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setRed1FrontMinion(Minion minion) {
         red1FrontMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setRed1BackMinion(Minion minion) {
         red1BackMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setBlue2BackMinion(Minion minion) {
         blue2BackMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setBlue2FrontMinion(Minion minion) {
         blue2FrontMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setBlue1FrontMinion(Minion minion) {
         blue1FrontMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setBlue1BackMinion(Minion minion) {
         blue1BackMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setGreen2BackMinion(Minion minion) {
         green2BackMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setGreen2FrontMinion(Minion minion) {
         green2FrontMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setGreen1FrontMinion(Minion minion) {
         green1FrontMinion = minion;
+        minionBeingSet(minion);
     }
 
     public void setGreen1BackMinion(Minion minion) {
         green1BackMinion = minion;
+        minionBeingSet(minion);
     }
 }

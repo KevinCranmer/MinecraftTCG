@@ -28,7 +28,7 @@ public class PackLeader extends Minion {
 
     @Override
     public void onAllyMinionEntered(Minion otherMinion) {
-        super.onEnter();
+        super.onAllyMinionEntered(otherMinion);
         List<Spot> adjacentSpots = minionInfo().stadium().adjacentSpots(minionInfo().spot());
         if (adjacentSpots.contains(otherMinion.minionInfo().spot())) {
             otherMinion.addPermanentStrength(1);
@@ -37,7 +37,7 @@ public class PackLeader extends Minion {
 
     @Override
     public void onDeath() {
-        super.onEnter();
+        super.onDeath();
         List<Spot> adjacentSpots = minionInfo().stadium().adjacentSpots(minionInfo().spot());
         adjacentSpots.stream()
             .map(Spot::minionRef)

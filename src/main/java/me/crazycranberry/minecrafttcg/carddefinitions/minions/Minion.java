@@ -55,6 +55,11 @@ public abstract class Minion {
         return maxHealth;
     }
 
+    public void setMaxHealth(int newMaxHealth) {
+        maxHealth = newMaxHealth;
+        minionInfo.stadium().updateCustomName(this);
+    }
+
     public MinionCardDefinition cardDef() {
         return cardDef;
     }
@@ -70,6 +75,7 @@ public abstract class Minion {
 
     public void addPermanentStrength(Integer additionalStrength) {
         this.strength += additionalStrength;
+        minionInfo.stadium().updateCustomName(this);
     }
 
     public void setPermanentOverkill(Boolean giveOverkill) {
@@ -90,6 +96,7 @@ public abstract class Minion {
 
     public void onDeath() {
         minionInfo.entity().setHealth(0);
+        minionInfo.stadium().updateCustomName(this);
         minionInfo.stadium().minionDied(minionInfo.spot());
     }
 
@@ -98,6 +105,7 @@ public abstract class Minion {
         numTurnsProtected = Math.max(0, numTurnsProtected - 1);
         numTurnsOverkill = Math.max(0, numTurnsOverkill - 1);
         temporaryBonusStrength = 0;
+        minionInfo.stadium().updateCustomName(this);
     }
 
     public void onCombatStart() {
@@ -152,12 +160,17 @@ public abstract class Minion {
     public void giveTemporaryStrength(Integer bonusStrength) {
         temporaryBonusStrength += bonusStrength;
         minionInfo.stadium().updateCustomName(this);
-        minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.BLOCK_ANVIL_USE, 2, 1);
+        minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.BLOCK_ANVIL_USE, 1, 1);
+        this.minionInfo().stadium().updateCustomName(this);
     }
 
     public void setProtected(int numTurns) {
         numTurnsProtected = numTurns;
         minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.ITEM_SHIELD_BLOCK, 2, 1);
+    }
+
+    public void setTemporaryOverkill(int numTurns) {
+        numTurnsOverkill = numTurns;
     }
 
     public Boolean isProtected() {
@@ -197,7 +210,7 @@ public abstract class Minion {
         removeGoals();
         setGoalOfStayingOnSpot();
         setGoalOfLookingForward();
-        setProtectionParticlesGoal();
+        setAlterationParticlesGoal();
     }
 
     public void removeAttackGoals() {
@@ -218,7 +231,7 @@ public abstract class Minion {
         nmsMob.goalSelector.addGoal(7, new LookForwardGoal(nmsMob, minionInfo().stadium().locOfSpot(Spot.opposingFrontRankSpot(minionInfo().spot()))));
     }
 
-    private void setProtectionParticlesGoal() {
+    private void setAlterationParticlesGoal() {
         nmsMob.goalSelector.addGoal(7, new ShowTemporaryEffectParticlesGoal<>(this));
     }
 
