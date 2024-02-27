@@ -42,11 +42,6 @@ public class HeavySlammerDef implements MinionCardDefinition {
     }
 
     @Override
-    public boolean isRanged() {
-        return false;
-    }
-
-    @Override
     public Class<? extends Minion> minionClass() {
         return HeavySlammer.class;
     }

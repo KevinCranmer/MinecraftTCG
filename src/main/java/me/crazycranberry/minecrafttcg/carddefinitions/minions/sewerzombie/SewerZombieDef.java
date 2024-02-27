@@ -47,11 +47,6 @@ public class SewerZombieDef implements MinionCardDefinition {
     }
 
     @Override
-    public boolean isRanged() {
-        return false;
-    }
-
-    @Override
     public Class<? extends Minion> minionClass() {
         return SewerZombie.class;
     }

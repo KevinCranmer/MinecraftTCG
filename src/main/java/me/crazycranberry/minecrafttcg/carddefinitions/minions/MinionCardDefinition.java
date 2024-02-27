@@ -22,7 +22,12 @@ public interface MinionCardDefinition extends Card {
     Integer strength();
     Integer maxHealth();
     EntityType minionType();
-    boolean isRanged();
+    default boolean isRanged() {
+        return false;
+    }
+    default boolean isFlying() {
+        return false;
+    }
     Class<? extends Minion> minionClass();
     /**
      *  Use '\n' for where a line break in the Signs should be, only 5 \n's allowed.

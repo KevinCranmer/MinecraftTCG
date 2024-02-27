@@ -19,6 +19,8 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityTargetEvent;
 
+import org.bukkit.util.Vector;
+
 public abstract class Minion {
     private Integer strength;
     private Integer health;
@@ -32,6 +34,8 @@ public abstract class Minion {
     private Integer temporaryBonusStrength = 0;
     private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
     private Integer numTurnsOverkill = 0;
+    private Boolean isFlying = false;
+    private Integer numTurnsFlying = 0;
 
     public Minion(CardEnum cardEnum, MinionInfo minionInfo) {
         this.cardDef = (MinionCardDefinition) cardEnum.card();
@@ -80,6 +84,11 @@ public abstract class Minion {
 
     public void setPermanentOverkill(Boolean giveOverkill) {
         this.hasOverkill = giveOverkill;
+    }
+
+    public void setPermanentFlying(Boolean giveFlying) {
+        this.isFlying = giveFlying;
+        setupGoals();
     }
 
     public Integer attacksLeft() {
@@ -224,7 +233,8 @@ public abstract class Minion {
     }
 
     private void setGoalOfStayingOnSpot() {
-        nmsMob.goalSelector.addGoal(5, new WalkToLocationGoal(nmsMob, minionInfo().stadium().locOfSpot(minionInfo().spot())));
+        Vector flyingModifier = this.cardDef().isFlying() ? new Vector(0, 3, 0) : new Vector(0, 0, 0);
+        nmsMob.goalSelector.addGoal(5, new WalkToLocationGoal(nmsMob, minionInfo().stadium().locOfSpot(minionInfo().spot()).add(flyingModifier)));
     }
 
     private void setGoalOfLookingForward() {
@@ -237,5 +247,9 @@ public abstract class Minion {
 
     public Boolean hasOverkill() {
         return numTurnsOverkill > 0 || hasOverkill;
+    }
+
+    public Boolean hasFlying() {
+        return numTurnsFlying > 0 || isFlying;
     }
 }

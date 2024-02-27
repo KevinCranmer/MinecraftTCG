@@ -196,7 +196,7 @@ public class CardDropManager implements Listener {
         String description = "";
         if (card instanceof MinionCardDefinition minionCard) {
             description += String.format("%s%s%s:%s %s❤%s:%s/%s\n",
-                DARK_GREEN, minionCard.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minionCard.strength(), RED, RESET, minionCard.maxHealth(), minionCard.maxHealth());
+                DARK_GREEN, minionCard.isFlying() ? "☁" : minionCard.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minionCard.strength(), RED, RESET, minionCard.maxHealth(), minionCard.maxHealth());
         }
         description += card.cardDescription();
         dropText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(description)));

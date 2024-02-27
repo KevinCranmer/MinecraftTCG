@@ -264,7 +264,7 @@ public class Collection {
             %s%sDescription:%s %s
             """,
                 RESET, card.rarity().color(), card.cardName(), RESET, card.cost(),
-                DARK_GREEN, card.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, card.strength(), RED, RESET, card.maxHealth(), card.maxHealth(),
+                DARK_GREEN, card.isFlying() ? "☁" : card.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, card.strength(), RED, RESET, card.maxHealth(), card.maxHealth(),
                 LIGHT_PURPLE, RESET, card.minionType(),
                 String.format("%s", targetsDescription(card)),
                 BLUE, RESET, card.cardDescription()

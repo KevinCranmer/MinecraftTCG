@@ -214,7 +214,7 @@ public class Stadium {
     public void updateCustomName(Minion minion) {
         minion.minionInfo().entity().setCustomName(String.format("%s%s %s%s%s:%s %s❤%s:%s/%s",
             minion.minionInfo().spot().isPlayer1Spot() ? GREEN : GOLD, minion.cardDef().cardName(),
-            DARK_GREEN, minion.cardDef().isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()
+            DARK_GREEN, minion.hasFlying() ? "☁" : minion.cardDef().isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()
         ));
     }
 
@@ -328,9 +328,9 @@ public class Stadium {
 
     public LivingEntity getTargetInFront(Minion minion) {
         Minion opposingMinion = Spot.opposingFrontRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
-        if (opposingMinion == null) {
+        if (opposingMinion == null || opposingMinion.hasFlying()) {
             opposingMinion = Spot.opposingBackRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
-            if (opposingMinion == null) {
+            if (opposingMinion == null || opposingMinion.hasFlying()) {
                 return Spot.opposingChicken(minion.minionInfo().spot(), this);
             }
         }
@@ -420,7 +420,7 @@ public class Stadium {
         Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
         Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
         sign1.getSide(Side.FRONT).setLine(0, String.format("%s%s%s", minionNameColor, minion.cardDef().cardName(), RESET));
-        sign1.getSide(Side.FRONT).setLine(1, String.format("%s%s%s:%s %s❤%s:%s/%s\n", DARK_GREEN, minion.cardDef().isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()));
+        sign1.getSide(Side.FRONT).setLine(1, String.format("%s%s%s:%s %s❤%s:%s/%s\n", DARK_GREEN, minion.hasFlying() ? "☁" : minion.cardDef().isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()));
         List<String> lines = List.of(minion.cardDef().signDescription().split("\n"));
         for (int i = 0; i < 6; i++) {
             int lineIndex = i + 2;
