@@ -699,6 +699,10 @@ public class Stadium {
         return player2;
     }
 
+    public Player opponent(Player p) {
+        return p.equals(player1) ? player2 : player1;
+    }
+
     public void setRed2BackMinion(Minion minion) {
         red2BackMinion = minion;
         minionBeingSet(minion);

@@ -39,6 +39,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         "collection", collectionInfo(),
         "multiAttack", multiAttackInfo(),
         "overkill", overkillInfo(),
+        "pacifist", pacifistInfo(),
         "ranked", rankedInfo()
     );
 
@@ -164,6 +165,13 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         return String.format("""
             %sMinions with Overkill will deal excess damage to the Entities behind.
             For example, an Overkill minion with 5 strength attacking a minion with 3 health will do 3 damage to that minion, and then 2 damage to the enemy player.%s""",
+            GRAY,
+            RESET);
+    }
+
+    private static String pacifistInfo() {
+        return String.format("""
+            %sMinions with Pacifist do not attack during combat.%s""",
             GRAY,
             RESET);
     }

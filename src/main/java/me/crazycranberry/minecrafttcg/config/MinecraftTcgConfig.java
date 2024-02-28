@@ -134,15 +134,24 @@ public class MinecraftTcgConfig {
         String currentKingName = config.getString("current_highest_ranked_player_name");
         String newKingName = topRankedPlayerName();
         if (currentKingName == null) {
-            Bukkit.getPlayer(newKingName).setDisplayName(ChatColor.AQUA + newKingName);
-            Bukkit.getPlayer(newKingName).setPlayerListName(ChatColor.AQUA + newKingName);
+            Player newKing = Bukkit.getPlayer(newKingName);
+            if (newKing != null) {
+                newKing.setDisplayName(ChatColor.AQUA + newKingName);
+                newKing.setPlayerListName(ChatColor.AQUA + newKingName);
+            }
             config.set("current_highest_ranked_player_name", newKingName);
             config.save(new File(getPlugin().getDataFolder() + "" + File.separatorChar + "minecraft_tcg.yml"));
         } else if (!currentKingName.equals(newKingName)) {
-            Bukkit.getPlayer(currentKingName).setDisplayName(currentKingName);
-            Bukkit.getPlayer(currentKingName).setPlayerListName(currentKingName);
-            Bukkit.getPlayer(newKingName).setDisplayName(ChatColor.AQUA + newKingName);
-            Bukkit.getPlayer(newKingName).setPlayerListName(ChatColor.AQUA + newKingName);
+            Player currentKing = Bukkit.getPlayer(currentKingName);
+            Player newKing = Bukkit.getPlayer(newKingName);
+            if (currentKing != null) {
+                currentKing.setDisplayName(currentKingName);
+                currentKing.setPlayerListName(currentKingName);
+            }
+            if (newKing != null) {
+                newKing.setDisplayName(ChatColor.AQUA + newKingName);
+                newKing.setPlayerListName(ChatColor.AQUA + newKingName);
+            }
             config.set("current_highest_ranked_player_name", newKingName);
             config.save(new File(getPlugin().getDataFolder() + "" + File.separatorChar + "minecraft_tcg.yml"));
         }

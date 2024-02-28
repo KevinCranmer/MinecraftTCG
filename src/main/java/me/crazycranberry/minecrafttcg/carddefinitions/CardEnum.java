@@ -10,11 +10,15 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.Ding
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch.HealWitchDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.heavyslammer.HeavySlammerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie.HungryZombieDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.kevinthesmith.KevinTheSmithDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTellerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLeaderDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.theduke.TheDukeDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro.UnstablePyroDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.FlingSmallPoops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FreshWaterBottle;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.KeepItSchwifty;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.TheVoid;
@@ -35,13 +39,17 @@ public enum CardEnum {
     HEAL_WITCH(new HealWitchDef()),
     HEAVY_SLAMMER(new HeavySlammerDef()),
     HUNGRY_ZOMBIE(new HungryZombieDef()),
+    KEVIN_THE_SMITH(new KevinTheSmithDef()),
+    MIKE_THE_STORY_TELLER(new MikeTheStoryTellerDef()),
     NINJA_MAC(new NinjaMacDef()),
     PACK_LEADER(new PackLeaderDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),
+    THE_DUKE(new TheDukeDef()),
     UNSTABLE_PYRO(new UnstablePyroDef()),
 
     // Spells
     DIG_DEEPER(new DigDeeper()),
+    FLING_SMALL_POOPS(new FlingSmallPoops()),
     FRESH_WATER_BOTTLE(new FreshWaterBottle()),
     KEEP_IT_SCHWIFTY(new KeepItSchwifty()),
     THE_VOID(new TheVoid()),

@@ -23,6 +23,7 @@ import me.crazycranberry.minecrafttcg.managers.TurnManager;
 import me.crazycranberry.minecrafttcg.managers.WorldManager;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.EventHandler;
@@ -121,6 +122,10 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
             restoreStartingWorldConfig(event.getPlayer(), null);
         }
         config().playerRank(event.getPlayer()); // Just to make sure everyone that's logged in has a rank
+        if (event.getPlayer().getName().equals(config().topRankedPlayerName())) {
+            event.getPlayer().setDisplayName(ChatColor.AQUA + event.getPlayer().getName());
+            event.getPlayer().setPlayerListName(ChatColor.AQUA + event.getPlayer().getName());
+        }
     }
 
     @EventHandler

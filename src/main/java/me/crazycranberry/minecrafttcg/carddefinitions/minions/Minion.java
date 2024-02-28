@@ -205,6 +205,9 @@ public abstract class Minion {
     }
 
     public void attackInFront() {
+        if (attacksLeft <= 0) {
+            return;
+        }
         LivingEntity target = minionInfo.stadium().getTargetInFront(this);
         nmsMob.setTarget(((CraftLivingEntity) target).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
         if (cardDef().isRanged()) {
