@@ -17,6 +17,7 @@ import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Llama;
 import org.bukkit.event.entity.EntityTargetEvent;
 
 import org.bukkit.util.Vector;
@@ -137,6 +138,9 @@ public abstract class Minion {
             if (attacksLeft <= 0) {
                 removeAttackGoals();
                 minionInfo.stadium().doneAttacking();
+                if (this.minionInfo().entity() instanceof Llama) { //idk llamas want to spit once they attack?
+                    setupGoals();
+                }
             }
         }
     }

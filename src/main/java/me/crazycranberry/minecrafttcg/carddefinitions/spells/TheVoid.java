@@ -49,7 +49,7 @@ public class TheVoid implements SpellCardDefinition {
 
     @Override
     public TargetRules targetRules() {
-        return new TargetRules(true, true, false, true);
+        return new TargetRules(false, false, false, false, false);
     }
 
     private static class TheVoidTracker {

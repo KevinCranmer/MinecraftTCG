@@ -47,7 +47,7 @@ public class Heal implements CantripCardDefinition {
 
     @Override
     public TargetRules targetRules() {
-        return new TargetRules(true, true, true, false);
+        return new TargetRules(true, true, true, false, false);
     }
 
     @Override

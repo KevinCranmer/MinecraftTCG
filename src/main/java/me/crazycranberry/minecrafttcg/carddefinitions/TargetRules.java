@@ -4,13 +4,15 @@ public class TargetRules {
     private final boolean targetsAllyMinions;
     private final boolean targetsEnemyMinions;
     private final boolean targetsPlayers;
-    private final boolean targetsEmptySpots;
+    private final boolean targetsEmptyAllySpots;
+    private final boolean targetsEmptyEnemySpots;
 
-    public TargetRules(boolean targetsAllyMinions, boolean targetsEnemyMinions, boolean targetsPlayers, boolean targetsEmptySpots) {
+    public TargetRules(boolean targetsAllyMinions, boolean targetsEnemyMinions, boolean targetsPlayers, boolean targetsEmptyAllySpots, boolean targetsEmptyEnemySpots) {
         this.targetsAllyMinions = targetsAllyMinions;
         this.targetsEnemyMinions = targetsEnemyMinions;
         this.targetsPlayers = targetsPlayers;
-        this.targetsEmptySpots = targetsEmptySpots;
+        this.targetsEmptyAllySpots = targetsEmptyAllySpots;
+        this.targetsEmptyEnemySpots = targetsEmptyEnemySpots;
     }
 
     public boolean targetsAllyMinions() {
@@ -25,7 +27,11 @@ public class TargetRules {
         return targetsPlayers;
     }
 
-    public boolean targetsEmptySpots() {
-        return targetsEmptySpots;
+    public boolean targetsEmptyAllySpots() {
+        return targetsEmptyAllySpots;
+    }
+
+    public boolean targetsEmptyEnemySpots() {
+        return targetsEmptyEnemySpots;
     }
 }

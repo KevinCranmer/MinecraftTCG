@@ -64,10 +64,10 @@ public class TheDuke extends Minion {
                     exodiaInfos.add(new ExodiaInfo(minion, stadium.opponent(caster)));
                 }
             }
-            startLoop(caster, stadium.startingCorner());
+            startLoop(stadium.startingCorner());
         }
 
-        public void startLoop(Player caster, Location startingLoc) {
+        public void startLoop(Location startingLoc) {
             taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
                 for (ExodiaInfo exodia : exodiaInfos) {
                     if (progressTicks > ticksPhase1 + ticksPhase2 + ticksPhase3) {

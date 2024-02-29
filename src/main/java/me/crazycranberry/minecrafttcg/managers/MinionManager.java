@@ -55,6 +55,7 @@ public class MinionManager implements Listener {
 
     @EventHandler
     private void onDamage(EntityDamageByEntityEvent event) {
+        System.out.println("An entity was damaged!");
         Stadium stadium = StadiumManager.stadium(event.getDamager().getLocation());
         if (stadium == null || !(event.getDamager() instanceof LivingEntity)) {
             return;
@@ -63,15 +64,20 @@ public class MinionManager implements Listener {
         Optional<Minion> maybeTarget = stadium.minionFromEntity((LivingEntity) event.getEntity());
         if (maybeMinion.isPresent() && event.getEntity().getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
             handleChickenAttacked(stadium, maybeMinion.get(), (LivingEntity) event.getEntity());
-            event.setDamage(0);
+            ((LivingEntity) event.getEntity()).damage(0);
+            event.setCancelled(true);
         } else if (maybeMinion.isPresent() && maybeTarget.isPresent()){
-            event.setDamage(0);
             handleMinionAttacked(maybeMinion.get(), maybeTarget.get());
-            event.setCancelled(maybeTarget.get().isProtected());
+            if (!maybeTarget.get().isProtected()) {
+                ((LivingEntity) event.getEntity()).damage(0);
+            }
+            event.setCancelled(true);
         } else if (maybeTarget.isPresent()) {
             handleMinionAttackedByPlayer((LivingEntity) event.getDamager(), maybeTarget.get(), (int) event.getDamage());
-            event.setDamage(0);
-            event.setCancelled(maybeTarget.get().isProtected());
+            if (!maybeTarget.get().isProtected()) {
+                ((LivingEntity) event.getEntity()).damage(0);
+            }
+            event.setCancelled(true);
         }
     }
 

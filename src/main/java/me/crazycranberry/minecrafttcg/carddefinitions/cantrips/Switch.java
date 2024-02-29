@@ -52,7 +52,7 @@ public class Switch implements CantripCardDefinition, MultiTargetCard {
 
     @Override
     public List<TargetRules> targetRulesForExtraTargets() {
-        return List.of(new TargetRules(true, true, false, true));
+        return List.of(new TargetRules(true, true, false, true, true));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class Switch implements CantripCardDefinition, MultiTargetCard {
 
     @Override
     public TargetRules targetRules() {
-        return new TargetRules(true, true, false, false);
+        return new TargetRules(true, true, false, false, false);
     }
 
     @Override

@@ -221,8 +221,11 @@ public class Collection {
         if (targetRules.targetsPlayers()) {
             targets.add("Players");
         }
-        if (targetRules.targetsEmptySpots()) {
-            targets.add("Spots");
+        if (targetRules.targetsEmptyAllySpots()) {
+            targets.add("Ally Spots");
+        }
+        if (targetRules.targetsEnemyMinions()) {
+            targets.add("Enemy Spots");
         }
         return targets.isEmpty() ? "" : String.join(", ", targets);
     }

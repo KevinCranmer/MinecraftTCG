@@ -190,15 +190,15 @@ public class DuelActionsManager implements Listener {
     }
 
     private boolean validTarget(Player p, Stadium stadium, TargetRules targetRules) {
-        if (!targetRules.targetsEmptySpots() && !targetRules.targetsAllyMinions() && !targetRules.targetsEnemyMinions() && !targetRules.targetsPlayers()) {
+        if (!targetRules.targetsEmptyAllySpots() && !targetRules.targetsEmptyEnemySpots() && !targetRules.targetsAllyMinions() && !targetRules.targetsEnemyMinions() && !targetRules.targetsPlayers()) {
             return true;
         }
         Minion targetedMinion = stadium.targetedMinion(p);
         Spot spot = stadium.playerTargetSpot(p);
         if (stadium.allyMinionSpots(p).contains(spot)) {
-            return (targetRules.targetsAllyMinions() && targetedMinion != null) || (targetRules.targetsEmptySpots() && targetedMinion == null);
+            return (targetRules.targetsAllyMinions() && targetedMinion != null) || (targetRules.targetsEmptyAllySpots() && targetedMinion == null);
         } else if (stadium.enemyMinionSpots(p).contains(spot)) {
-            return (targetRules.targetsEnemyMinions() && targetedMinion != null) || (targetRules.targetsEmptySpots() && targetedMinion == null);
+            return (targetRules.targetsEnemyMinions() && targetedMinion != null) || (targetRules.targetsEmptyEnemySpots() && targetedMinion == null);
         } else if (spot.equals(Spot.PLAYER_1_OUTLOOK) || spot.equals(Spot.PLAYER_2_OUTLOOK)) {
             return targetRules.targetsPlayers();
         }

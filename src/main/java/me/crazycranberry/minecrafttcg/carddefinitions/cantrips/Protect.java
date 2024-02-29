@@ -36,7 +36,7 @@ public class Protect implements CantripCardDefinition {
 
     @Override
     public TargetRules targetRules() {
-        return new TargetRules(true, true, false, false);
+        return new TargetRules(true, true, false, false, false);
     }
 
     @Override

@@ -61,7 +61,7 @@ public class FlingSmallPoops implements SpellCardDefinition {
 
     @Override
     public TargetRules targetRules() {
-        return new TargetRules(false, false, false, false);
+        return new TargetRules(false, false, false, false, false);
     }
 
     private static class ThePoopTracker {

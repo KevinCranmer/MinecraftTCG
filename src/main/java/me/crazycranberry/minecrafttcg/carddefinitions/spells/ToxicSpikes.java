@@ -47,7 +47,7 @@ public class ToxicSpikes implements SpellCardDefinition {
 
     @Override
     public TargetRules targetRules() {
-        return new TargetRules(true, true, false, true);
+        return new TargetRules(true, true, false, true, true);
     }
 
     private static class ToxicTracker {
