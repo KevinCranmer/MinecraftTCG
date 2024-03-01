@@ -1,24 +1,26 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.abee;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMac;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
-public class NinjaMacDef implements MinionCardDefinition {
+public class ABeeDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 4;
+        return 3;
     }
 
     @Override
     public String cardName() {
-        return "Ninja Mac";
+        return "A Bee";
     }
 
     @Override
     public String cardDescription() {
-        return "When this minion deals damage to a player, you draw a card";
+        return String.format("%sLifesteal%s", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
@@ -28,7 +30,7 @@ public class NinjaMacDef implements MinionCardDefinition {
 
     @Override
     public Integer strength() {
-        return 3;
+        return 2;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class NinjaMacDef implements MinionCardDefinition {
 
     @Override
     public EntityType minionType() {
-        return EntityType.ALLAY;
+        return EntityType.BEE;
     }
 
     @Override
@@ -48,11 +50,11 @@ public class NinjaMacDef implements MinionCardDefinition {
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return NinjaMac.class;
+        return ABee.class;
     }
 
     @Override
     public String signDescription() {
-        return "Draws if it\nhits you";
+        return "Lifesteal";
     }
 }

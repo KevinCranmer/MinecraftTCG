@@ -4,6 +4,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Adrenaline;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Heal;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Protect;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Switch;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.abee.ABeeDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.aggressivebandit.AggressiveBanditDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDozerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
@@ -34,6 +35,7 @@ public enum CardEnum {
     SWITCH(new Switch()),
 
     // Minions
+    A_BEE(new ABeeDef()),
     AGGRESSIVE_BANDIT(new AggressiveBanditDef()),
     BULLDOZER(new BullDozerDef()),
     DINGY_SKELETON(new DingySkeletonDef()),

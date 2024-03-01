@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.managers;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
 import me.crazycranberry.minecrafttcg.model.Stadium;
+import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.Animal;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftAnimals;
@@ -55,7 +56,6 @@ public class MinionManager implements Listener {
 
     @EventHandler
     private void onDamage(EntityDamageByEntityEvent event) {
-        System.out.println("An entity was damaged!");
         Stadium stadium = StadiumManager.stadium(event.getDamager().getLocation());
         if (stadium == null || !(event.getDamager() instanceof LivingEntity)) {
             return;
@@ -109,7 +109,9 @@ public class MinionManager implements Listener {
         if (targetPlayer.isEmpty()) {
             return;
         }
-        stadium.pendingDamageForPlayer(targetPlayer.get(), damager.strength());
+        if (stadium.phase().equals(TurnPhase.COMBAT_PHASE)) {
+            stadium.pendingDamageForPlayer(targetPlayer.get(), damager.strength());
+        }
         damager.onDamageDealt(targetPlayer.get(), damager.strength(), true, false);
     }
 

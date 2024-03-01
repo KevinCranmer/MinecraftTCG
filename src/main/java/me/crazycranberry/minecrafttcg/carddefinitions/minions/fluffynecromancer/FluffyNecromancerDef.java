@@ -77,7 +77,6 @@ public class FluffyNecromancerDef implements MinionCardDefinition, MultiTargetCa
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets, Map<EquipmentSlot, ItemStack> equipment) {
-        System.out.println("Targets: " + targets);
         MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), null);
         MinionCardDefinition.summonMinion(targets.get(1), stadium, caster, ((MinionCardDefinition)DINGY_SKELETON.card()).minionClass(), ((MinionCardDefinition)DINGY_SKELETON.card()).minionType(), null);
     }

@@ -137,7 +137,6 @@ public class TurnManager implements Listener {
             return;
         }
         event.getStadium().updatePhase(POST_COMBAT_CLEANUP);
-        executeForAllMinions(event.getStadium(), Minion::removeAttackGoals);
         executeForAllMinions(event.getStadium(), Minion::onCombatEnd);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstPostCombatPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
     }

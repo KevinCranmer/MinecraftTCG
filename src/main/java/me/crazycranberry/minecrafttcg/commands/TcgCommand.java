@@ -40,6 +40,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         "multiAttack", multiAttackInfo(),
         "overkill", overkillInfo(),
         "pacifist", pacifistInfo(),
+        "lifesteal", lifestealInfo(),
         "ranked", rankedInfo()
     );
 
@@ -172,6 +173,13 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
     private static String pacifistInfo() {
         return String.format("""
             %sMinions with Pacifist do not attack during combat.%s""",
+            GRAY,
+            RESET);
+    }
+
+    private static String lifestealInfo() {
+        return String.format("""
+            %sMinions with Lifesteal heal their controller for any damage they deal.%s""",
             GRAY,
             RESET);
     }

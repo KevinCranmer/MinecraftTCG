@@ -11,6 +11,7 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.EntityType;
@@ -73,7 +74,11 @@ public class Stadium {
     private int player1Mana = 0;
     private int player2Mana = 0;
     private int player1PendingDamage = 0;
+    private int player1PendingHeal = 0;
+    private int player1PendingDraws = 0;
     private int player2PendingDamage = 0;
+    private int player2PendingHeal = 0;
+    private int player2PendingDraws = 0;
     private final Deck player1Deck;
     private final Deck player2Deck;
     private int player1MillDamage = 1;
@@ -142,19 +147,35 @@ public class Stadium {
         if (phase.equals(COMBAT_PHASE)) {
             doneAttacking();
         } else if (phase.equals(POST_COMBAT_CLEANUP)) {
-            // Is it a tie?
-            if (player1.getHealth() <= player1PendingDamage && player2.getHealth() <= player2PendingDamage) {
-                Bukkit.getPluginManager().callEvent(new DuelEndEvent(player1, true));
-            }
-            if (player1PendingDamage > 0) {
-                player1.damage(player1PendingDamage);
-            }
-            player1PendingDamage = 0;
-            if (player2PendingDamage > 0) {
-                player2.damage(player2PendingDamage);
-            }
-            player2PendingDamage = 0;
+            postCombatCleanUp();
         }
+    }
+
+    private void postCombatCleanUp() {
+        // Is it a tie?
+        if (player1.getHealth() <= player1PendingDamage && player2.getHealth() <= player2PendingDamage) {
+            Bukkit.getPluginManager().callEvent(new DuelEndEvent(player1, true));
+        }
+        if (player1PendingDamage - player1PendingHeal > 0) {
+            player1.damage(0); // In case it would kill the player, need to let the heal hit first
+        }
+        player1.setHealth(Math.min(player1.getHealth() + player1PendingHeal - player1PendingDamage, player1.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        for (int i = 0; i < player1PendingDraws; i++) {
+            draw(player1);
+        }
+        player1PendingDamage = 0;
+        player1PendingHeal = 0;
+        player1PendingDraws = 0;
+        if (player2PendingDamage - player2PendingHeal > 0) {
+            player2.damage(0); // In case it would kill the player, need to let the heal hit first
+        }
+        player2.setHealth(Math.min(player2.getHealth() + player2PendingHeal - player2PendingDamage, player2.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        for (int i = 0; i < player2PendingDraws; i++) {
+            draw(player2);
+        }
+        player2PendingDamage = 0;
+        player2PendingHeal = 0;
+        player2PendingDraws = 0;
     }
 
     public void draw(Player p) {
@@ -237,6 +258,22 @@ public class Stadium {
             player1PendingDamage += damage;
         } else {
             player2PendingDamage += damage;
+        }
+    }
+
+    public void pendingHealForPlayer(Player p, Integer damage) {
+        if (p.equals(player1)) {
+            player1PendingHeal += damage;
+        } else {
+            player2PendingHeal += damage;
+        }
+    }
+
+    public void pendingDrawsForPlayer(Player p, Integer damage) {
+        if (p.equals(player1)) {
+            player1PendingDraws += damage;
+        } else {
+            player2PendingDraws += damage;
         }
     }
 
@@ -328,9 +365,9 @@ public class Stadium {
 
     public LivingEntity getTargetInFront(Minion minion) {
         Minion opposingMinion = Spot.opposingFrontRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
-        if (opposingMinion == null || opposingMinion.hasFlying()) {
+        if (opposingMinion == null || (opposingMinion.hasFlying() && !minion.hasFlying())) {
             opposingMinion = Spot.opposingBackRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
-            if (opposingMinion == null || opposingMinion.hasFlying()) {
+            if (opposingMinion == null || (opposingMinion.hasFlying() && !minion.hasFlying())) {
                 return Spot.opposingChicken(minion.minionInfo().spot(), this);
             }
         }

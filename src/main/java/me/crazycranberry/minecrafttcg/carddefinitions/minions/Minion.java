@@ -14,6 +14,7 @@ import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
@@ -37,6 +38,8 @@ public abstract class Minion {
     private Integer numTurnsOverkill = 0;
     private Boolean isFlying = false;
     private Integer numTurnsFlying = 0;
+    private Boolean hasLifesteal = false;
+    private Integer numTurnsLifesteal = 0;
 
     public Minion(CardEnum cardEnum, MinionInfo minionInfo) {
         this.cardDef = (MinionCardDefinition) cardEnum.card();
@@ -92,6 +95,10 @@ public abstract class Minion {
         setupGoals();
     }
 
+    public void setPermanentLifesteal(Boolean giveLifesteal) {
+        this.hasLifesteal = giveLifesteal;
+    }
+
     public Integer attacksLeft() {
         return attacksLeft;
     }
@@ -136,11 +143,15 @@ public abstract class Minion {
         if (wasCombatAttack) {
             attacksLeft--;
             if (attacksLeft <= 0) {
-                removeAttackGoals();
+                setupGoals();
                 minionInfo.stadium().doneAttacking();
-                if (this.minionInfo().entity() instanceof Llama) { //idk llamas want to spit once they attack?
-                    setupGoals();
-                }
+            }
+        }
+        if (hasLifesteal) {
+            if (this.minionInfo().stadium().phase().equals(TurnPhase.COMBAT_PHASE)) {
+                this.minionInfo().stadium().pendingHealForPlayer(this.minionInfo().master(), damageDealt);
+            } else {
+                this.minionInfo().master().setHealth(Math.min(this.minionInfo().master().getHealth() + damageDealt, this.minionInfo().master().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
             }
         }
     }
@@ -229,11 +240,6 @@ public abstract class Minion {
         setAlterationParticlesGoal();
     }
 
-    public void removeAttackGoals() {
-        nmsMob.goalSelector.getRunningGoals().filter(g -> g.getGoal() instanceof MeleeAttackGoal || g.getGoal() instanceof ShootParticlesGoal).forEach(WrappedGoal::stop);
-        nmsMob.removeAllGoals(g -> g instanceof MeleeAttackGoal || g instanceof ShootParticlesGoal);
-    }
-
     private void removeGoals() {
         nmsMob.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         nmsMob.removeAllGoals(g -> true);
@@ -258,5 +264,9 @@ public abstract class Minion {
 
     public Boolean hasFlying() {
         return numTurnsFlying > 0 || isFlying;
+    }
+
+    public Boolean hasLifesteal() {
+        return numTurnsLifesteal > 0 || hasLifesteal;
     }
 }
