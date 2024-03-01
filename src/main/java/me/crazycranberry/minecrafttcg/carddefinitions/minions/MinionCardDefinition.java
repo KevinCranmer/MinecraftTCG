@@ -4,6 +4,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_20_R3.attribute.CraftAttribute;
@@ -48,6 +49,10 @@ public interface MinionCardDefinition extends Card {
     }
 
     static void summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, EntityType minionType, Map<EquipmentSlot, ItemStack> equipment) {
+        if (target.minionRef().apply(stadium) != null) {
+            caster.sendMessage(String.format("%sA minion tried to be summoned on a spot that already has a minion. The new minion was not summoned.%s", ChatColor.GRAY, ChatColor.RESET));
+            return;
+        }
         try {
             if (equipment == null) {
                 equipment = new HashMap<>();
@@ -67,7 +72,7 @@ public interface MinionCardDefinition extends Card {
                 registerGenericAttribute(((CraftLivingEntity)entity).getHandle(), Attributes.ATTACK_DAMAGE);
             }
             minion = c.newInstance(new MinionInfo(stadium, target, entity, caster));
-            target.minionSetRef().accept(stadium, minion);
+            target.minionSetRef().accept(stadium, minion, true);
             stadium.showName(target);
             minion.onEnter();
         } catch (NoSuchMethodException | NoSuchFieldException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {

@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.model;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -41,9 +42,9 @@ public enum Spot {
     private final Boolean isSummonableSpot;
     private final Boolean isTargetable;
     private final Function<Stadium, Minion> minionRef;
-    private final BiConsumer<Stadium, Minion> minionSetRef;
+    private final TriConsumer<Stadium, Minion, Boolean> minionSetRef;
 
-    Spot(Vector offset, Material material, Boolean isPlayer1Spot, Boolean isSummonableSpot, Boolean isTargetable, Function<Stadium, Minion> minionRef, BiConsumer<Stadium, Minion> minionSetRef) {
+    Spot(Vector offset, Material material, Boolean isPlayer1Spot, Boolean isSummonableSpot, Boolean isTargetable, Function<Stadium, Minion> minionRef, TriConsumer<Stadium, Minion, Boolean> minionSetRef) {
         this.offset = offset;
         this.material = material;
         this.isPlayer1Spot = isPlayer1Spot;
@@ -77,7 +78,7 @@ public enum Spot {
         return minionRef;
     }
 
-    public BiConsumer<Stadium, Minion> minionSetRef() {
+    public TriConsumer<Stadium, Minion, Boolean> minionSetRef() {
         return minionSetRef;
     }
 
@@ -176,51 +177,51 @@ public enum Spot {
         return stadium.player2();
     }
 
-    public static void setRed2BackMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setRed2BackMinion(minion);
+    public static void setRed2BackMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setRed2BackMinion(minion, triggerOnEnter);
     }
 
-    public static void setRed2FrontMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setRed2FrontMinion(minion);
+    public static void setRed2FrontMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setRed2FrontMinion(minion, triggerOnEnter);
     }
 
-    public static void setRed1FrontMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setRed1FrontMinion(minion);
+    public static void setRed1FrontMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setRed1FrontMinion(minion, triggerOnEnter);
     }
 
-    public static void setRed1BackMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setRed1BackMinion(minion);
+    public static void setRed1BackMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setRed1BackMinion(minion, triggerOnEnter);
     }
 
-    public static void setBlue2BackMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setBlue2BackMinion(minion);
+    public static void setBlue2BackMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setBlue2BackMinion(minion, triggerOnEnter);
     }
 
-    public static void setBlue2FrontMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setBlue2FrontMinion(minion);
+    public static void setBlue2FrontMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setBlue2FrontMinion(minion, triggerOnEnter);
     }
 
-    public static void setBlue1FrontMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setBlue1FrontMinion(minion);
+    public static void setBlue1FrontMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setBlue1FrontMinion(minion, triggerOnEnter);
     }
 
-    public static void setBlue1BackMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setBlue1BackMinion(minion);
+    public static void setBlue1BackMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setBlue1BackMinion(minion, triggerOnEnter);
     }
 
-    public static void setGreen2BackMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setGreen2BackMinion(minion);
+    public static void setGreen2BackMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setGreen2BackMinion(minion, triggerOnEnter);
     }
 
-    public static void setGreen2FrontMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setGreen2FrontMinion(minion);
+    public static void setGreen2FrontMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setGreen2FrontMinion(minion, triggerOnEnter);
     }
 
-    public static void setGreen1FrontMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setGreen1FrontMinion(minion);
+    public static void setGreen1FrontMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setGreen1FrontMinion(minion, triggerOnEnter);
     }
 
-    public static void setGreen1BackMinionStatic(Stadium stadium, Minion minion) {
-        stadium.setGreen1BackMinion(minion);
+    public static void setGreen1BackMinionStatic(Stadium stadium, Minion minion, boolean triggerOnEnter) {
+        stadium.setGreen1BackMinion(minion, triggerOnEnter);
     }
 }

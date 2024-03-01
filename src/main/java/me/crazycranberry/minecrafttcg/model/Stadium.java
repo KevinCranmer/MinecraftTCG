@@ -558,10 +558,10 @@ public class Stadium {
     }
 
     public void minionDied(Spot spot) {
-        spot.minionSetRef().accept(this, null);
+        spot.minionSetRef().accept(this, null, false);
     }
 
-    private void minionBeingSet(Minion minion) {
+    private void minionEnteredStadium(Minion minion) {
         if (minion == null) {
             // TODO: Might want to actually have a minion object here so that we can do like "When a zombie died..."
         } else {
@@ -740,63 +740,87 @@ public class Stadium {
         return p.equals(player1) ? player2 : player1;
     }
 
-    public void setRed2BackMinion(Minion minion) {
+    public void setRed2BackMinion(Minion minion, boolean triggerOnEnter) {
         red2BackMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setRed2FrontMinion(Minion minion) {
+    public void setRed2FrontMinion(Minion minion, boolean triggerOnEnter) {
         red2FrontMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setRed1FrontMinion(Minion minion) {
+    public void setRed1FrontMinion(Minion minion, boolean triggerOnEnter) {
         red1FrontMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setRed1BackMinion(Minion minion) {
+    public void setRed1BackMinion(Minion minion, boolean triggerOnEnter) {
         red1BackMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setBlue2BackMinion(Minion minion) {
+    public void setBlue2BackMinion(Minion minion, boolean triggerOnEnter) {
         blue2BackMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setBlue2FrontMinion(Minion minion) {
+    public void setBlue2FrontMinion(Minion minion, boolean triggerOnEnter) {
         blue2FrontMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setBlue1FrontMinion(Minion minion) {
+    public void setBlue1FrontMinion(Minion minion, boolean triggerOnEnter) {
         blue1FrontMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setBlue1BackMinion(Minion minion) {
+    public void setBlue1BackMinion(Minion minion, boolean triggerOnEnter) {
         blue1BackMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setGreen2BackMinion(Minion minion) {
+    public void setGreen2BackMinion(Minion minion, boolean triggerOnEnter) {
         green2BackMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setGreen2FrontMinion(Minion minion) {
+    public void setGreen2FrontMinion(Minion minion, boolean triggerOnEnter) {
         green2FrontMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setGreen1FrontMinion(Minion minion) {
+    public void setGreen1FrontMinion(Minion minion, boolean triggerOnEnter) {
         green1FrontMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 
-    public void setGreen1BackMinion(Minion minion) {
+    public void setGreen1BackMinion(Minion minion, boolean triggerOnEnter) {
         green1BackMinion = minion;
-        minionBeingSet(minion);
+        if (triggerOnEnter) {
+            minionEnteredStadium(minion);
+        }
     }
 }

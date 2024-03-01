@@ -89,7 +89,7 @@ public class TestCommands {
                 setup(p);
                 break;
             case "sound":
-                sound(p, command[1]);
+                sound(p, command);
                 break;
             case "particle":
                 particle(p, command[1]);
@@ -124,8 +124,12 @@ public class TestCommands {
         p.getInventory().addItem(createCard(CardEnum.fromString(s)));
     }
 
-    private static void sound(Player p, String s) {
-        p.getWorld().playSound(p, Sound.valueOf(s), 1,1);
+    private static void sound(Player p, String[] s) {
+        if (s.length >= 3) {
+            p.getWorld().playSound(p, Sound.valueOf(s[1]), 1,Float.parseFloat(s[2]));
+        } else {
+            p.getWorld().playSound(p, Sound.valueOf(s[1]), 1,1);
+        }
     }
 
     private static void particle(Player p, String s) {

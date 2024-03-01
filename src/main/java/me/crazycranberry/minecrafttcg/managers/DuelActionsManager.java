@@ -179,7 +179,7 @@ public class DuelActionsManager implements Listener {
                 return false;
             }
         } else if (card instanceof SpellOrCantripCardDefinition spellOrCantripCardDef) {
-            if (!validTarget(p, stadium, spellOrCantripCardDef.targetRules())) {
+            if (!validTarget(p, stadium, spellOrCantripCardDef.targetRules()) || !spellOrCantripCardDef.isValidInitialTarget(p, stadium, card, stadium.playerTargetSpot(p))) {
                 p.sendMessage(String.format("%s%sThat is not a valid target for this spell.%s", GRAY, ITALIC, RESET));
                 return false;
             }

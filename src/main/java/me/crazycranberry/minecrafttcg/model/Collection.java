@@ -224,7 +224,7 @@ public class Collection {
         if (targetRules.targetsEmptyAllySpots()) {
             targets.add("Ally Spots");
         }
-        if (targetRules.targetsEnemyMinions()) {
+        if (targetRules.targetsEmptyEnemySpots()) {
             targets.add("Enemy Spots");
         }
         return targets.isEmpty() ? "" : String.join(", ", targets);

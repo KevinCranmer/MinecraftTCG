@@ -176,7 +176,7 @@ public abstract class Minion {
     }
 
     public void unstuckify() {
-        if (attacksLeft > 0 && !minionInfo.stadium().isWalled(this) && nmsMob.getTarget() != null) {
+        if (attacksLeft > 0 && !minionInfo.stadium().isWalled(this) && nmsMob.getTarget() != null && nmsMob.getTarget().isAlive()) {
             minionInfo.entity().teleport(nmsMob.getTarget().getBukkitEntity());
         }
     }

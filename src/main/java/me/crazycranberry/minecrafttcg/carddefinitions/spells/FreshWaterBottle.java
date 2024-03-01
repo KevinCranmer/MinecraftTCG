@@ -12,7 +12,7 @@ import java.util.List;
 public class FreshWaterBottle implements SpellCardDefinition {
     @Override
     public Integer cost() {
-        return 2;
+        return 4;
     }
 
     @Override

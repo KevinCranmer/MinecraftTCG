@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Adrenaline;
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.GhettoWarArmy;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Heal;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Protect;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Switch;
@@ -23,6 +24,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FlingSmallPoops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FreshWaterBottle;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.KeepItSchwifty;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.SinfulSeduction;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.TheVoid;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ToxicSpikes;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.Unalive;
@@ -30,6 +32,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.Unalive;
 public enum CardEnum {
     // Cantrips
     ADRENALINE(new Adrenaline()),
+    GHETTO_WAR_ARMY(new GhettoWarArmy()),
     HEAL(new Heal()),
     PROTECT(new Protect()),
     SWITCH(new Switch()),
@@ -56,6 +59,7 @@ public enum CardEnum {
     FLING_SMALL_POOPS(new FlingSmallPoops()),
     FRESH_WATER_BOTTLE(new FreshWaterBottle()),
     KEEP_IT_SCHWIFTY(new KeepItSchwifty()),
+    SINFUL_SEDUCTION(new SinfulSeduction()),
     THE_VOID(new TheVoid()),
     TOXIC_SPIKES(new ToxicSpikes()),
     UNALIVE(new Unalive());

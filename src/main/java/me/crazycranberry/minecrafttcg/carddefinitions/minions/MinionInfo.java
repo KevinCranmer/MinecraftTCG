@@ -9,7 +9,7 @@ public class MinionInfo {
     private final Stadium stadium;
     private Spot spot;
     private final LivingEntity entity;
-    private final Player master;
+    private Player master;
 
     public MinionInfo(Stadium stadium, Spot spot, LivingEntity entity, Player master) {
         this.stadium = stadium;
@@ -36,5 +36,9 @@ public class MinionInfo {
 
     public void setSpot(Spot spot) {
         this.spot = spot;
+    }
+
+    public void setMaster(Player p) {
+        this.master = p;
     }
 }
