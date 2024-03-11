@@ -25,6 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -296,6 +297,17 @@ public class Stadium {
         else {
             return player2Target.equals(PLAYER_1_OUTLOOK) || player2Target.equals(PLAYER_2_OUTLOOK) ? null : player2Target.minionRef().apply(this);
         }
+    }
+
+    public List<Minion> allMinions() {
+        List<Minion> minions = new ArrayList<>();
+        for (Spot spot : List.of(RED_1_FRONT, RED_1_BACK, BLUE_1_FRONT, BLUE_1_BACK, GREEN_1_FRONT, GREEN_1_BACK, RED_2_FRONT, RED_2_BACK, BLUE_2_FRONT, BLUE_2_BACK, GREEN_2_FRONT, GREEN_2_BACK)) {
+            Minion m = spot.minionRef().apply(this);
+            if (m != null) {
+                minions.add(m);
+            }
+        }
+        return minions;
     }
 
     public List<Spot> targetedRow(Player p) {

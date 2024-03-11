@@ -25,7 +25,7 @@ public class ABeeDef implements MinionCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.LEGENDARY;
+        return CardRarity.UNCOMMON;
     }
 
     @Override

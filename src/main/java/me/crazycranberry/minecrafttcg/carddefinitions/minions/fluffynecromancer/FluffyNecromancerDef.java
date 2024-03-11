@@ -9,13 +9,17 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefiniti
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Breedable;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Llama;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.DINGY_SKELETON;
 
@@ -56,6 +60,14 @@ public class FluffyNecromancerDef implements MinionCardDefinition, MultiTargetCa
     }
 
     @Override
+    public Consumer<LivingEntity> entityAdjustment() {
+        return e -> {
+            ((Llama) e).setBaby();
+            ((Breedable) e).setAgeLock(true);
+        };
+    }
+
+    @Override
     public Class<? extends Minion> minionClass() {
         return FluffyNecromancer.class;
     }
@@ -77,7 +89,7 @@ public class FluffyNecromancerDef implements MinionCardDefinition, MultiTargetCa
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets, Map<EquipmentSlot, ItemStack> equipment) {
-        MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), null);
-        MinionCardDefinition.summonMinion(targets.get(1), stadium, caster, ((MinionCardDefinition)DINGY_SKELETON.card()).minionClass(), ((MinionCardDefinition)DINGY_SKELETON.card()).minionType(), null);
+        MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), null, entityAdjustment());
+        MinionCardDefinition.summonMinion(targets.get(1), stadium, caster, ((MinionCardDefinition)DINGY_SKELETON.card()).minionClass(), ((MinionCardDefinition)DINGY_SKELETON.card()).minionType(), null, ((MinionCardDefinition)DINGY_SKELETON.card()).entityAdjustment());
     }
 }

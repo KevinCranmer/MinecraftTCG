@@ -50,7 +50,7 @@ public class FlingSmallPoops implements SpellCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.LEGENDARY;
+        return CardRarity.RARE;
     }
 
     @Override

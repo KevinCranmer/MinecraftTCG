@@ -1,58 +1,53 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.billy;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import org.bukkit.entity.EntityType;
 
-public class NinjaMacDef implements MinionCardDefinition {
+public class BillyDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 4;
-    }
-
-    @Override
-    public String cardName() {
-        return "Ninja Mac";
-    }
-
-    @Override
-    public String cardDescription() {
-        return "When this minion deals damage to a player, you draw a card";
-    }
-
-    @Override
-    public CardRarity rarity() {
-        return CardRarity.RARE;
-    }
-
-    @Override
-    public Integer strength() {
         return 3;
     }
 
     @Override
-    public Integer maxHealth() {
+    public String cardName() {
+        return "Billy";
+    }
+
+    @Override
+    public String cardDescription() {
+        return "If this minion hits a front row minion, it knocks it back to the back row.";
+    }
+
+    @Override
+    public CardRarity rarity() {
+        return CardRarity.UNCOMMON;
+    }
+
+    @Override
+    public Integer strength() {
         return 2;
     }
 
     @Override
-    public EntityType minionType() {
-        return EntityType.ALLAY;
+    public Integer maxHealth() {
+        return 4;
     }
 
     @Override
-    public boolean isFlying() {
-        return true;
+    public EntityType minionType() {
+        return EntityType.GOAT;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return NinjaMac.class;
+        return Billy.class;
     }
 
     @Override
     public String signDescription() {
-        return "Draws if it\nhits you";
+        return "Can knock a\nfront row minion\ninto the back row";
     }
 }

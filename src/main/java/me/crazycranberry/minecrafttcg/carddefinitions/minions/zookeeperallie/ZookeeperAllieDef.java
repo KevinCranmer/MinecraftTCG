@@ -1,58 +1,54 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.zookeeperallie;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
-public class NinjaMacDef implements MinionCardDefinition {
+public class ZookeeperAllieDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 4;
-    }
-
-    @Override
-    public String cardName() {
-        return "Ninja Mac";
-    }
-
-    @Override
-    public String cardDescription() {
-        return "When this minion deals damage to a player, you draw a card";
-    }
-
-    @Override
-    public CardRarity rarity() {
-        return CardRarity.RARE;
-    }
-
-    @Override
-    public Integer strength() {
-        return 3;
-    }
-
-    @Override
-    public Integer maxHealth() {
         return 2;
     }
 
     @Override
-    public EntityType minionType() {
-        return EntityType.ALLAY;
+    public String cardName() {
+        return "Zookeeper Allie";
     }
 
     @Override
-    public boolean isFlying() {
-        return true;
+    public String cardDescription() {
+        return String.format("This card enters with +1/+1 for every %sanimal%s on the battlefield.", ChatColor.BOLD, ChatColor.RESET);
+    }
+
+    @Override
+    public CardRarity rarity() {
+        return CardRarity.UNCOMMON;
+    }
+
+    @Override
+    public Integer strength() {
+        return 0;
+    }
+
+    @Override
+    public Integer maxHealth() {
+        return 0;
+    }
+
+    @Override
+    public EntityType minionType() {
+        return EntityType.CAT;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return NinjaMac.class;
+        return ZookeeperAllie.class;
     }
 
     @Override
     public String signDescription() {
-        return "Draws if it\nhits you";
+        return "Gets +1/+1\nfor each animal\nwhen entering";
     }
 }

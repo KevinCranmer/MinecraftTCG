@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.registerGenericAttribute;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
@@ -29,11 +30,15 @@ public interface MinionCardDefinition extends Card {
     Integer strength();
     Integer maxHealth();
     EntityType minionType();
+    default Consumer<LivingEntity> entityAdjustment() {return e -> {};}
     default boolean isRanged() {
         return false;
     }
     default boolean isFlying() {
         return false;
+    }
+    default Map<EquipmentSlot, ItemStack> equipment() {
+        return null;
     }
     Class<? extends Minion> minionClass();
     /**
@@ -42,16 +47,20 @@ public interface MinionCardDefinition extends Card {
      */
     String signDescription();
     default void onCast(Stadium stadium, Player caster, List<Spot> targets) {
-        onCast(stadium, caster, targets, null);
+        onCast(stadium, caster, targets, equipment());
     }
     default void onCast(Stadium stadium, Player caster, List<Spot> targets, Map<EquipmentSlot, ItemStack> equipment) {
-        summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), equipment);
+        summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), equipment, entityAdjustment());
     }
 
-    static void summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, EntityType minionType, Map<EquipmentSlot, ItemStack> equipment) {
+    static void summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, EntityType minionType, Map<EquipmentSlot, ItemStack> equipment, Consumer<LivingEntity> entityAdjustment) {
+        summonMinion(target, stadium, caster, minionClass, minionType, equipment, entityAdjustment, true);
+    }
+
+    static Minion summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, EntityType minionType, Map<EquipmentSlot, ItemStack> equipment, Consumer<LivingEntity> entityAdjustment, boolean triggerOnEnter) {
         if (target.minionRef().apply(stadium) != null) {
             caster.sendMessage(String.format("%sA minion tried to be summoned on a spot that already has a minion. The new minion was not summoned.%s", ChatColor.GRAY, ChatColor.RESET));
-            return;
+            return null;
         }
         try {
             if (equipment == null) {
@@ -71,12 +80,17 @@ public interface MinionCardDefinition extends Card {
             if (entity.getAttribute(GENERIC_ATTACK_DAMAGE) == null) {
                 registerGenericAttribute(((CraftLivingEntity)entity).getHandle(), Attributes.ATTACK_DAMAGE);
             }
+            entityAdjustment.accept(entity);
             minion = c.newInstance(new MinionInfo(stadium, target, entity, caster));
-            target.minionSetRef().accept(stadium, minion, true);
+            target.minionSetRef().accept(stadium, minion, triggerOnEnter);
             stadium.showName(target);
-            minion.onEnter();
+            if (triggerOnEnter) {
+                minion.onEnter();
+            }
+            return minion;
         } catch (NoSuchMethodException | NoSuchFieldException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
             logger().severe(String.format("Unable to create a %s\nException: %s\n%s", minionClass, ex.getClass().getSimpleName(), ex.getMessage()));
+            return null;
         }
     }
 }

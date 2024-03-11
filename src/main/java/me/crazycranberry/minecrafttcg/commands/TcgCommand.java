@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.ANIMAL_TYPES;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
@@ -31,17 +33,18 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         "/ranks - View the top ranked players in the server",
         "/forfeit - Forfeit your current duel"
     );
-    private static final Map<String, String> infoOptions = Map.of(
-        "turns", turnInfo(),
-        "combat", combatInfo(),
-        "cards", cardsInfo(),
-        "deck", deckInfo(),
-        "collection", collectionInfo(),
-        "multiAttack", multiAttackInfo(),
-        "overkill", overkillInfo(),
-        "pacifist", pacifistInfo(),
-        "lifesteal", lifestealInfo(),
-        "ranked", rankedInfo()
+    private static final Map<String, String> infoOptions = Map.ofEntries(
+        Map.entry("turns", turnInfo()),
+        Map.entry("combat", combatInfo()),
+        Map.entry("cards", cardsInfo()),
+        Map.entry("deck", deckInfo()),
+        Map.entry("collection", collectionInfo()),
+        Map.entry("multiAttack", multiAttackInfo()),
+        Map.entry("overkill", overkillInfo()),
+        Map.entry("pacifist", pacifistInfo()),
+        Map.entry("lifesteal", lifestealInfo()),
+        Map.entry("ranked", rankedInfo()),
+        Map.entry("animal", animalInfo())
     );
 
     @Override
@@ -174,6 +177,14 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         return String.format("""
             %sMinions with Pacifist do not attack during combat.%s""",
             GRAY,
+            RESET);
+    }
+
+    private static String animalInfo() {
+        return String.format("""
+            %sThe following entities are considered animals: [%s]%n(It's very likely some of these don't have cards for them yet).%s""",
+            GRAY,
+            String.join(", ", ANIMAL_TYPES.stream().map(EntityType::name).toList()),
             RESET);
     }
 

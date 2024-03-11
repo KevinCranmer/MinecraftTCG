@@ -7,6 +7,9 @@ import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Protect;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Switch;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.abee.ABeeDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.aggressivebandit.AggressiveBanditDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.bacon.BaconDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.billy.BillyDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.brunswick.BrunswickDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDozerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.fluffynecromancer.FluffyNecromancerDef;
@@ -20,6 +23,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLea
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.theduke.TheDukeDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro.UnstablePyroDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.zookeeperallie.ZookeeperAllieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FlingSmallPoops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FreshWaterBottle;
@@ -28,6 +32,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.SinfulSeduction;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.TheVoid;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ToxicSpikes;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.Unalive;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.ZooExpedition;
 
 public enum CardEnum {
     // Cantrips
@@ -40,6 +45,9 @@ public enum CardEnum {
     // Minions
     A_BEE(new ABeeDef()),
     AGGRESSIVE_BANDIT(new AggressiveBanditDef()),
+    BACON(new BaconDef()),
+    BILLY(new BillyDef()),
+    BRUNSWICK(new BrunswickDef()),
     BULLDOZER(new BullDozerDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
     FLUFFY_NECROMANCER(new FluffyNecromancerDef()),
@@ -53,6 +61,7 @@ public enum CardEnum {
     SEWER_ZOMBIE(new SewerZombieDef()),
     THE_DUKE(new TheDukeDef()),
     UNSTABLE_PYRO(new UnstablePyroDef()),
+    ZOOKEEPER_ALLIE(new ZookeeperAllieDef()),
 
     // Spells
     DIG_DEEPER(new DigDeeper()),
@@ -62,7 +71,8 @@ public enum CardEnum {
     SINFUL_SEDUCTION(new SinfulSeduction()),
     THE_VOID(new TheVoid()),
     TOXIC_SPIKES(new ToxicSpikes()),
-    UNALIVE(new Unalive());
+    UNALIVE(new Unalive()),
+    ZOO_EXPEDITION(new ZooExpedition());
 
     final Card card;
 

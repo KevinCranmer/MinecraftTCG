@@ -13,7 +13,6 @@ public class FluffyNecromancer extends Minion {
 
     @Override
     public void onEnter() {
-        ((Llama) this.minionInfo().entity()).setBaby();
-        ((Breedable) this.minionInfo().entity()).setAgeLock(true);
+        super.onEnter();
     }
 }

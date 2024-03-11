@@ -82,6 +82,19 @@ public enum Spot {
         return minionSetRef;
     }
 
+    public static Spot spotBehind(Spot currentSpot) {
+        return switch (currentSpot) {
+            case RED_1_FRONT -> RED_1_BACK;
+            case RED_2_FRONT -> RED_2_BACK;
+            case BLUE_1_FRONT -> BLUE_1_BACK;
+            case BLUE_2_FRONT -> BLUE_2_BACK;
+            case GREEN_1_FRONT -> GREEN_1_BACK;
+            case GREEN_2_FRONT -> GREEN_2_BACK;
+            default ->
+                throw new IllegalArgumentException("You cannot try to get the spotBehind from " + currentSpot);
+        };
+    }
+
     public static Spot opposingBackRankSpot(Spot currentSpot) {
         return switch (currentSpot) {
             case RED_1_FRONT, RED_1_BACK -> RED_2_BACK;

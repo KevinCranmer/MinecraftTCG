@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.swapTwoSpots;
+
 public class Switch implements CantripCardDefinition, MultiTargetCard {
     @Override
     public Integer cost() {
@@ -34,20 +36,7 @@ public class Switch implements CantripCardDefinition, MultiTargetCard {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
-        Minion firstMinion = targets.get(0).minionRef().apply(stadium);
-        Minion secondMinion = targets.get(1).minionRef().apply(stadium);
-        targets.get(0).minionSetRef().accept(stadium, secondMinion, false);
-        targets.get(1).minionSetRef().accept(stadium, firstMinion, false);
-        if (firstMinion != null) {
-            firstMinion.minionInfo().entity().teleport(stadium.locOfSpot(targets.get(1)));
-            firstMinion.minionInfo().setSpot(targets.get(1));
-            firstMinion.setupGoals();
-        }
-        if (secondMinion != null) {
-            secondMinion.minionInfo().entity().teleport(stadium.locOfSpot(targets.get(0)));
-            secondMinion.minionInfo().setSpot(targets.get(0));
-            secondMinion.setupGoals();
-        }
+        swapTwoSpots(stadium, targets.get(0), targets.get(1));
     }
 
     @Override

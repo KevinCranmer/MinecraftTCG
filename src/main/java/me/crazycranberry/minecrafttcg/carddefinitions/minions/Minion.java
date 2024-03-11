@@ -8,6 +8,7 @@ import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import org.bukkit.Color;
@@ -21,7 +22,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Llama;
 import org.bukkit.event.entity.EntityTargetEvent;
 
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.Map;
+
+import static me.crazycranberry.minecrafttcg.CommonFunctions.registerGenericAttribute;
+import static org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE;
 
 public abstract class Minion {
     private Integer strength;
@@ -29,9 +37,9 @@ public abstract class Minion {
     private Integer maxHealth;
     private Integer attacksPerTurn = 1;
     private Integer attacksLeft = attacksPerTurn;
-    private final MinionCardDefinition cardDef;
+    private MinionCardDefinition cardDef;
     private final MinionInfo minionInfo;
-    private final PathfinderMob nmsMob;
+    private PathfinderMob nmsMob;
     private Integer numTurnsProtected = 0;
     private Integer temporaryBonusStrength = 0;
     private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
@@ -65,6 +73,11 @@ public abstract class Minion {
 
     public void setMaxHealth(int newMaxHealth) {
         maxHealth = newMaxHealth;
+        minionInfo.stadium().updateCustomName(this);
+    }
+
+    public void setHealthNoHealTrigger(int newHealth) {
+        health = newHealth;
         minionInfo.stadium().updateCustomName(this);
     }
 
@@ -126,7 +139,9 @@ public abstract class Minion {
     }
 
     public void onCombatStart() {
-
+        if (!this.cardDef().isRanged() && this.minionInfo().stadium().hasAllyMinionInFront(this.minionInfo().spot())) {
+            attacksLeft = 0;
+        }
     }
 
     // See PackLeader for an example
@@ -202,7 +217,7 @@ public abstract class Minion {
     }
 
     public boolean hasBonusStrength() {
-        return temporaryBonusStrength > 0 || strength > cardDef().strength();
+        return temporaryBonusStrength > 0;
     }
 
     public void onCombatEnd() {
@@ -268,5 +283,13 @@ public abstract class Minion {
 
     public Boolean hasLifesteal() {
         return numTurnsLifesteal > 0 || hasLifesteal;
+    }
+
+    public void loadTemporaryEffects(Minion minion) {
+        this.numTurnsLifesteal = minion.numTurnsLifesteal;
+        this.numTurnsFlying = minion.numTurnsFlying;
+        this.numTurnsOverkill = minion.numTurnsOverkill;
+        this.numTurnsProtected = minion.numTurnsProtected;
+        this.temporaryBonusStrength = minion.temporaryBonusStrength;
     }
 }

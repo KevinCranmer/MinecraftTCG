@@ -23,7 +23,7 @@ public class HeavySlammerDef implements MinionCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.LEGENDARY;
+        return CardRarity.RARE;
     }
 
     @Override

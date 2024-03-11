@@ -5,9 +5,12 @@ import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+
+import static org.bukkit.Sound.ENTITY_WANDERING_TRADER_DRINK_POTION;
 
 public class FreshWaterBottle implements SpellCardDefinition {
     @Override
@@ -27,7 +30,7 @@ public class FreshWaterBottle implements SpellCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.LEGENDARY;
+        return CardRarity.RARE;
     }
 
     @Override
@@ -36,6 +39,8 @@ public class FreshWaterBottle implements SpellCardDefinition {
         if (minion != null) {
             minion.setMaxHealth(minion.maxHealth() * 2);
             minion.onHeal(minion.maxHealth());
+            LivingEntity entity = minion.minionInfo().entity();
+            entity.getWorld().playSound(entity.getEyeLocation(), ENTITY_WANDERING_TRADER_DRINK_POTION, 1, 1);
         }
     }
 

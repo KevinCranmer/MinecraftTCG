@@ -26,7 +26,7 @@ public class GhettoWarArmy implements CantripCardDefinition {
 
     @Override
     public Integer cost() {
-        return 10;
+        return 9;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class GhettoWarArmy implements CantripCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.LEGENDARY;
+        return CardRarity.RARE;
     }
 
     @Override
@@ -61,9 +61,9 @@ public class GhettoWarArmy implements CantripCardDefinition {
             }
             if (tickProgress >= ticksTillStartSpawning && tickProgress % ticksBetweenSpawning == 0) {
                 if (spotsToSpawn.get(spotProgress).name().endsWith("FRONT") && spotsToSpawn.get(spotProgress).minionRef().apply(stadium) == null) { // Don't feel great about this i'll be honest...
-                    summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, ((MinionCardDefinition)SEWER_ZOMBIE.card()).minionClass(), ((MinionCardDefinition)SEWER_ZOMBIE.card()).minionType(), null);
+                    summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, ((MinionCardDefinition)SEWER_ZOMBIE.card()).minionClass(), ((MinionCardDefinition)SEWER_ZOMBIE.card()).minionType(), null, ((MinionCardDefinition)SEWER_ZOMBIE.card()).entityAdjustment());
                 } else if (spotsToSpawn.get(spotProgress).name().endsWith("BACK") && spotsToSpawn.get(spotProgress).minionRef().apply(stadium) == null) {
-                    summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, ((MinionCardDefinition)DINGY_SKELETON.card()).minionClass(), ((MinionCardDefinition)DINGY_SKELETON.card()).minionType(), null);
+                    summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, ((MinionCardDefinition)DINGY_SKELETON.card()).minionClass(), ((MinionCardDefinition)DINGY_SKELETON.card()).minionType(), null, ((MinionCardDefinition)DINGY_SKELETON.card()).entityAdjustment());
                 }
                 spotProgress++;
             }
