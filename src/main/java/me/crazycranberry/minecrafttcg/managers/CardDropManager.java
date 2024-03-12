@@ -55,7 +55,6 @@ public class CardDropManager implements Listener {
         String name = event.getBlockPlaced().getType().name().toLowerCase();
         double roll = Math.random();
         double dropRate = getDropRate("block_place", name);
-        System.out.println("The main roll for block_place." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
             Optional<CardEnum> card = getCardToDrop("block_place." + name);
             if (card.isPresent()) {
@@ -77,7 +76,6 @@ public class CardDropManager implements Listener {
             name = "default";
         }
         double dropRate = getDropRate("block_break", name);
-        System.out.println("The main roll for block_break." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
             Optional<CardEnum> card = getCardToDrop("block_break." + name);
             if (card.isPresent()) {
@@ -97,7 +95,6 @@ public class CardDropManager implements Listener {
             String name = event.getRecipe().getResult().getType().name().toLowerCase();
             double roll = Math.random();
             double dropRate = getDropRate("craft_item", name);
-            System.out.println("The main roll for craft_item." + name + ": " + roll + " / " + dropRate);
             if (roll < dropRate) {
                 Optional<CardEnum> card = getCardToDrop("craft_item." + name);
                 if (card.isPresent()) {
@@ -117,7 +114,6 @@ public class CardDropManager implements Listener {
         String name = event.getResult().getType().name().toLowerCase();
         double roll = Math.random();
         double dropRate = getDropRate("smelt_item", name);
-        System.out.println("The main roll for smelt_item." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
             Optional<CardEnum> card = getCardToDrop("smelt_item." + name);
             card.ifPresent(c -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), Collection.createCard(c)));
@@ -129,7 +125,6 @@ public class CardDropManager implements Listener {
         String name = String.format("level_%s", event.getExpLevelCost());
         double roll = Math.random();
         double dropRate = getDropRate("enchant_item", name);
-        System.out.println("The main roll for enchant_item." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
             Optional<CardEnum> card = getCardToDrop("enchant_item." + name);
             if (card.isPresent()) {
@@ -145,15 +140,12 @@ public class CardDropManager implements Listener {
 
     @EventHandler
     private void onFish(PlayerFishEvent event) {
-        System.out.println("Fishing state: " + event.getState());
-        System.out.println("exp dropped: " + event.getExpToDrop());
         if (event.getCaught() == null || !event.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {
             return;
         }
         String name = event.getCaught().getType().name().toLowerCase();
         double roll = Math.random();
         double dropRate = getDropRate("fishing", name);
-        System.out.println("The main roll for fishing." + name + ": " + roll + " / " + dropRate);
         if (roll < dropRate) {
             Optional<CardEnum> card = getCardToDrop("fishing." + name);
             if (card.isPresent()) {
@@ -176,7 +168,6 @@ public class CardDropManager implements Listener {
             String name = getTrueVictimName(event);
             double roll = Math.random();
             double dropRate = getDropRate("mob_kill", name);
-            System.out.println("The main roll for mob_kill." + name + ": " + roll + " / " + dropRate);
             if (roll < dropRate) {
                 Optional<CardEnum> card = getCardToDrop("mob_kill." + name);
                 if (card.isPresent()) {
@@ -219,13 +210,10 @@ public class CardDropManager implements Listener {
                 .map(c -> c.card().rarity())
                 .distinct()
                 .toList();
-        System.out.println("Rarity in droppable cards: " + raritiesInDroppableCards);
         double totalRarityOdds = raritiesInDroppableCards.stream()
                 .map(r -> getPlugin().config().dropOddsConfig().getDouble(r.name().toLowerCase(), 0))
                 .reduce(0.0, Double::sum);
-        System.out.println("Total rarity odds: " + totalRarityOdds);
         double roll = Math.random() * totalRarityOdds;
-        System.out.println("The rarity roll: " + roll);
         int rarityIndex = 0;
         while (roll > 0) {
             Double rarityOdds = getPlugin().config().dropOddsConfig().getDouble(raritiesInDroppableCards.get(rarityIndex).name().toLowerCase());
@@ -250,17 +238,14 @@ public class CardDropManager implements Listener {
                 .filter(c -> !c.card().rarity().equals(CardRarity.COMMON))
                 .filter(c -> isDroppableFromEvent(c, event))
                 .toList();
-        System.out.println("Droppable cards: " + droppableCards);
         return droppableCards;
     }
 
     private boolean isDroppableFromEvent(CardEnum cardEnum, String event) {
         List<String> eventsThatCanDropTheCard = (List<String>) getPlugin().config().cardDropRulesConfig().getList("only_dropped_by." + cardEnum.name());
         if (eventsThatCanDropTheCard == null || eventsThatCanDropTheCard.isEmpty()) {
-            System.out.println(String.format("%s is droppable because it wasn't found in the only_dropped_by", cardEnum.name()));
             return true;
         }
-        System.out.println(String.format("Is %s an allowed event for %s? %s", event, cardEnum.name(), eventsThatCanDropTheCard.contains(event)));
         return eventsThatCanDropTheCard.contains(event);
     }
 
@@ -268,7 +253,6 @@ public class CardDropManager implements Listener {
         List<String> eventExclusiveCardNames = (List<String>) getPlugin().config().cardDropRulesConfig().getList("event_exclusively_drops." + event);
         List<CardEnum> eventExclusiveCards = new ArrayList<>();
         if (eventExclusiveCardNames == null) {
-            System.out.println("No event exclusive cards for " + event);
             return eventExclusiveCards;
         }
         for (String cardName : eventExclusiveCardNames) {
@@ -277,7 +261,6 @@ public class CardDropManager implements Listener {
                 logger().warning(String.format("%s is not a valid card name in the card_drop_rules.yml file.", cardName));
             }
         }
-        System.out.println("Event exclusive cards: " + eventExclusiveCards);
         return eventExclusiveCards;
     }
 
@@ -287,7 +270,6 @@ public class CardDropManager implements Listener {
         if (dropRate < 0) {
             dropRate = getPlugin().config().dropOddsConfig().getDouble(prefix + ".default", 0);
         }
-        System.out.println("The drop rate: " + dropRate);
         return dropRate;
     }
 

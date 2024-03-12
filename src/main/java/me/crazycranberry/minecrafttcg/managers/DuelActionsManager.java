@@ -161,10 +161,10 @@ public class DuelActionsManager implements Listener {
     }
 
     private boolean castable(Player p, Stadium stadium, Card card) {
-        /*if (card.cost() > stadium.playerMana(p)) {
+        if (card.cost() > stadium.playerMana(p)) {
             p.sendMessage(String.format("%s%sYou only have %s mana, this card costs %s.%s", GRAY, ITALIC, stadium.playerMana(p), card.cost(), RESET));
             return false;
-        } else */ if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
+        } else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
             p.sendMessage(String.format("%s%sYou cannot cast this card while it's not your turn.%s", GRAY, ITALIC, RESET));
             return false;
         }  else if (card instanceof CantripCardDefinition cantripCardDefinition && ((stadium.phase().equals(TurnPhase.COMBAT_PHASE) || stadium.phase().equals(TurnPhase.POST_COMBAT_CLEANUP)) && !cantripCardDefinition.canCastDuringCombat())) {

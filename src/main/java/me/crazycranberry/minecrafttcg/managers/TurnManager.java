@@ -28,6 +28,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -39,6 +42,7 @@ import java.util.function.Consumer;
 import static me.crazycranberry.minecrafttcg.CommonFunctions.TICKS_PER_SECOND;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
+import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_COST_KEY;
 import static me.crazycranberry.minecrafttcg.commands.RanksCommand.MAX_RANK_GAIN_PER_MATCH;
 import static me.crazycranberry.minecrafttcg.commands.RanksCommand.MAX_RANK_GAIN_PER_TIE;
 import static me.crazycranberry.minecrafttcg.commands.RanksCommand.MIN_RANK_GAIN_PER_MATCH;
@@ -76,7 +80,6 @@ public class TurnManager implements Listener {
 
     @EventHandler
     private void onFirstPreCombatPhaseStarted(FirstPreCombatPhaseStartedEvent event) {
-        System.out.println("onFirstPreCombatPhaseStarted");
         if (event.getStadium().isDuelDone()) {
             return;
         }
@@ -90,11 +93,11 @@ public class TurnManager implements Listener {
         String title = String.format("%s%s's Pre-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
         startTurnPhaseTimers(turn, FIRST_PRECOMBAT_PHASE, event.getStadium());
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> maybeAutoSkipPhase(event.getStadium(), turn, FIRST_PRECOMBAT_PHASE), 40);
     }
 
     @EventHandler
     private void onSecondPreCombatPhaseStarted(SecondPreCombatPhaseStartedEvent event) {
-        System.out.println("onSecondPreCombatPhaseStarted");
         if (event.getStadium().isDuelDone()) {
             return;
         }
@@ -105,11 +108,11 @@ public class TurnManager implements Listener {
         String title = String.format("%s%s's Pre-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
         startTurnPhaseTimers(turn, SECOND_PRECOMBAT_PHASE, event.getStadium());
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> maybeAutoSkipPhase(event.getStadium(), turn, SECOND_PRECOMBAT_PHASE), 40);
     }
 
     @EventHandler
     private void onCombatStart(CombatStartEvent event) {
-        System.out.println("onCombatStart");
         if (event.getStadium().isDuelDone()) {
             return;
         }
@@ -121,7 +124,6 @@ public class TurnManager implements Listener {
 
     @EventHandler
     private void onCombatStartAttacking(CombatStartAttackingEvent event) {
-        System.out.println("onCombatStartAttacking");
         if (event.getStadium().isDuelDone()) {
             return;
         }
@@ -132,7 +134,6 @@ public class TurnManager implements Listener {
 
     @EventHandler
     private void onCombatEnd(CombatEndEvent event) {
-        System.out.println("onCombatEnd");
         if (event.getStadium().isDuelDone()) {
             return;
         }
@@ -143,7 +144,6 @@ public class TurnManager implements Listener {
 
     @EventHandler
     private void onFirstPostCombatPhaseStarted(FirstPostCombatPhaseStartedEvent event) {
-        System.out.println("onFirstPostCombatPhaseStarted");
         if (event.getStadium().isDuelDone()) {
             return;
         }
@@ -154,11 +154,11 @@ public class TurnManager implements Listener {
         String title = String.format("%s%s's Post-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
         startTurnPhaseTimers(turn, FIRST_POSTCOMBAT_PHASE, event.getStadium());
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> maybeAutoSkipPhase(event.getStadium(), turn, FIRST_POSTCOMBAT_PHASE), 40);
     }
 
     @EventHandler
     private void onSecondPostCombatPhaseStarted(SecondPostCombatPhaseStartedEvent event) {
-        System.out.println("onSecondPostCombatPhaseStarted");
         if (event.getStadium().isDuelDone()) {
             return;
         }
@@ -169,11 +169,11 @@ public class TurnManager implements Listener {
         String title = String.format("%s%s's Post-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
         startTurnPhaseTimers(turn, SECOND_POSTCOMBAT_PHASE, event.getStadium());
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> maybeAutoSkipPhase(event.getStadium(), turn, SECOND_POSTCOMBAT_PHASE), 40);
     }
 
     @EventHandler
     private void onTurnEnd(TurnEndEvent event) {
-        System.out.println("onTurnEnd");
         if (event.getStadium().isDuelDone()) {
             return;
         }
@@ -235,17 +235,7 @@ public class TurnManager implements Listener {
         startTurnPhaseTimer(turn, turnPhase, stadium, 2);
         startTurnPhaseTimer(turn, turnPhase, stadium, 1);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            if (turn == stadium.turn() && turnPhase.equals(stadium.phase()) && !stadium.isDuelDone()) {
-                try {
-                    Constructor<? extends Event> c = turnPhase.nextPhaseRequestEventClass().getConstructor(Stadium.class);
-                    c.setAccessible(true);
-                    Event nextPhaseEvent = c.newInstance(stadium);
-                    Bukkit.getPluginManager().callEvent(nextPhaseEvent);
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                         InvocationTargetException e) {
-                    logger().severe("Exception trying to create the next phases event: " + e.getMessage());
-                }
-            }
+            maybeNextPhase(turn, turnPhase, stadium);
         }, (long) getPlugin().config().duelSecondsPerRound() * TICKS_PER_SECOND);
     }
 
@@ -270,6 +260,44 @@ public class TurnManager implements Listener {
                 .map(mr -> mr.apply(stadium))
                 .filter(Objects::nonNull)
                 .forEach(trigger);
+    }
+
+    private void maybeAutoSkipPhase(Stadium stadium, int turn, TurnPhase turnPhase) {
+        if (!getPlugin().config().duelAutoSkipPhasesWithoutAvailableActions()) {
+            return;
+        }
+        Player currentPlayer = stadium.currentPlayersTurn();
+        int availableMana = stadium.playerMana(currentPlayer);
+        boolean hasPlayableCards = false;
+        for (ItemStack itemStack : currentPlayer.getInventory().getContents()) {
+            if (itemStack != null) {
+                ItemMeta meta = itemStack.getItemMeta();
+                if (meta != null) {
+                    Integer cardCost = meta.getPersistentDataContainer().get(CARD_COST_KEY, PersistentDataType.INTEGER);
+                    if (cardCost != null && cardCost <= availableMana) {
+                        hasPlayableCards = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (!hasPlayableCards) {
+            maybeNextPhase(turn, turnPhase, stadium);
+        }
+    }
+
+    private void maybeNextPhase(int turn, TurnPhase turnPhase, Stadium stadium) {
+        if (turn == stadium.turn() && turnPhase.equals(stadium.phase()) && !stadium.isDuelDone()) {
+            try {
+                Constructor<? extends Event> c = turnPhase.nextPhaseRequestEventClass().getConstructor(Stadium.class);
+                c.setAccessible(true);
+                Event nextPhaseEvent = c.newInstance(stadium);
+                Bukkit.getPluginManager().callEvent(nextPhaseEvent);
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException e) {
+                logger().severe("Exception trying to create the next phases event: " + e.getMessage());
+            }
+        }
     }
 
     private void executeForMinionsThatCanAttack(Stadium stadium, Consumer<? super Minion> trigger) {

@@ -99,6 +99,11 @@ public abstract class Minion {
         minionInfo.stadium().updateCustomName(this);
     }
 
+    public void setStrength(Integer newStrength) {
+        this.strength = newStrength;
+        minionInfo.stadium().updateCustomName(this);
+    }
+
     public void setPermanentOverkill(Boolean giveOverkill) {
         this.hasOverkill = giveOverkill;
     }

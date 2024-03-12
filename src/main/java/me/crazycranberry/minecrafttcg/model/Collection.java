@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.nthSuffix;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_COST_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
@@ -206,6 +207,7 @@ public class Collection {
         bookMeta.getPersistentDataContainer().set(IS_CARD_KEY, PersistentDataType.BOOLEAN, true);
         bookMeta.getPersistentDataContainer().set(CARD_NAME_KEY, PersistentDataType.STRING, cardEnum.name());
         bookMeta.getPersistentDataContainer().set(RANDOM_UUID_KEY, PersistentDataType.STRING, UUID.randomUUID().toString());
+        bookMeta.getPersistentDataContainer().set(CARD_COST_KEY, PersistentDataType.INTEGER, cardDef.cost());
         book.setItemMeta(bookMeta);
         return book;
     }

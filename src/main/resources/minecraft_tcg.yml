@@ -1,3 +1,4 @@
 duel:
   seconds_per_round: 45
   show_all_minion_names: false
+  auto_skip_phases_with_no_available_actions: true

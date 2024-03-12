@@ -1,14 +1,17 @@
 package me.crazycranberry.minecrafttcg.carddefinitions;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Adrenaline;
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.BaronsGrind;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.GhettoWarArmy;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Heal;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Protect;
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.RadicalShift;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Switch;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.abee.ABeeDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.aggressivebandit.AggressiveBanditDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bacon.BaconDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.billy.BillyDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.borsharak.BorsharakDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.brunswick.BrunswickDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDozerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
@@ -21,7 +24,9 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLeaderDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.skiturtle.SkiTurtleDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.theduke.TheDukeDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.theknapper.TheKnapperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro.UnstablePyroDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.zookeeperallie.ZookeeperAllieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
@@ -37,9 +42,11 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.ZooExpedition;
 public enum CardEnum {
     // Cantrips
     ADRENALINE(new Adrenaline()),
+    BARONS_GRIND(new BaronsGrind()),
     GHETTO_WAR_ARMY(new GhettoWarArmy()),
     HEAL(new Heal()),
     PROTECT(new Protect()),
+    RADICAL_SHIFT(new RadicalShift()),
     SWITCH(new Switch()),
 
     // Minions
@@ -47,6 +54,7 @@ public enum CardEnum {
     AGGRESSIVE_BANDIT(new AggressiveBanditDef()),
     BACON(new BaconDef()),
     BILLY(new BillyDef()),
+    BORSHARAK(new BorsharakDef()),
     BRUNSWICK(new BrunswickDef()),
     BULLDOZER(new BullDozerDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
@@ -59,7 +67,9 @@ public enum CardEnum {
     NINJA_MAC(new NinjaMacDef()),
     PACK_LEADER(new PackLeaderDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),
+    SKI_TURTLE(new SkiTurtleDef()),
     THE_DUKE(new TheDukeDef()),
+    THE_KNAPPER(new TheKnapperDef()),
     UNSTABLE_PYRO(new UnstablePyroDef()),
     ZOOKEEPER_ALLIE(new ZookeeperAllieDef()),
 

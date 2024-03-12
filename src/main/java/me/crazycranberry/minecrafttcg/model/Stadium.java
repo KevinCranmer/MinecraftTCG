@@ -160,7 +160,7 @@ public class Stadium {
         if (player1PendingDamage - player1PendingHeal > 0) {
             player1.damage(0); // In case it would kill the player, need to let the heal hit first
         }
-        player1.setHealth(Math.min(player1.getHealth() + player1PendingHeal - player1PendingDamage, player1.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        player1.setHealth(Math.max(Math.min(player1.getHealth() + player1PendingHeal - player1PendingDamage, player1.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
         for (int i = 0; i < player1PendingDraws; i++) {
             draw(player1);
         }
@@ -451,7 +451,6 @@ public class Stadium {
                 Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
                 Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
                 Player targetedPlayer = player.equals(player1) ? player2 : player1;
-                System.out.println("Players health " + targetedPlayer.getName() + targetedPlayer.getHealth());
                 sign1.getSide(Side.FRONT).setLine(0, targetedPlayer.getName());
                 sign1.getSide(Side.FRONT).setLine(1, String.format("%s❤%s: %s", RED, RESET, targetedPlayer.getHealth()));
                 sign1.getSide(Side.FRONT).setLine(2, String.format("Cards in Hand: %s", numCardsInHand(targetedPlayer)));
@@ -493,7 +492,6 @@ public class Stadium {
             if (spot.isSummonableSpot()) {
                 Minion minion = spot.minionRef().apply(this);
                 if (minion != null && minion.attacksLeft() > 0 && !(!minion.cardDef().isRanged() && hasAllyMinionInFront(spot))) {
-                    System.out.println(minion.cardDef().cardName() + " still has this many attacks left: " + minion.attacksLeft());
                     everyoneDone = false;
                 }
             }
@@ -523,6 +521,18 @@ public class Stadium {
             case BLUE_1_FRONT -> BLUE_1_BACK.minionRef().apply(this);
             case GREEN_2_FRONT -> GREEN_2_BACK.minionRef().apply(this);
             case GREEN_1_FRONT -> GREEN_1_BACK.minionRef().apply(this);
+            default -> null;
+        };
+    }
+
+    public Minion getAllyMinionInFront(Spot spot) {
+        return switch (spot) {
+            case RED_2_BACK -> RED_2_FRONT.minionRef().apply(this);
+            case RED_1_BACK -> RED_1_FRONT.minionRef().apply(this);
+            case BLUE_2_BACK -> BLUE_2_FRONT.minionRef().apply(this);
+            case BLUE_1_BACK -> BLUE_1_FRONT.minionRef().apply(this);
+            case GREEN_2_BACK -> GREEN_2_FRONT.minionRef().apply(this);
+            case GREEN_1_BACK -> GREEN_1_FRONT.minionRef().apply(this);
             default -> null;
         };
     }

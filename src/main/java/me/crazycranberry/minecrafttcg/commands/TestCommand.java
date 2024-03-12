@@ -11,6 +11,10 @@ import static me.crazycranberry.minecrafttcg.TestCommands.executeTestCommand;
 public class TestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (!sender.hasPermission("tcgop")) {
+            sender.sendMessage("You do not have permission for this command");
+            return true;
+        }
         if (command.getName().equalsIgnoreCase("tc")) {
             executeTestCommand(args, (Player) sender);
         }
