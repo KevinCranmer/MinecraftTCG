@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.config;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
+import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -94,6 +95,15 @@ public class CollectionConfigs {
 
         // Fill in cards if below 27
         for (CardEnum cardEnum : CardEnum.values()) {
+            if (totalCards == 27) {
+                break;
+            } else if (totalCards > 27) {
+                logger().severe("My Deck Cleaning algorithm is broke. Somehow I filled in more than 27 cards. Please contact Crazy_Cranberry to resolve this.");
+                break;
+            }
+            if (!cardEnum.card().rarity().equals(CardRarity.COMMON)) {
+                continue;
+            }
             if (deckCs.contains(cardEnum.name())) {
                 int existingCopies = deckCs.getInt(cardEnum.name());
                 int numAllowedPerDeck = cardEnum.card().rarity().numAllowedPerDeck();
@@ -105,11 +115,6 @@ public class CollectionConfigs {
                 int amountToAdd = numAllowedPerDeck + totalCards > 27 ? 27 - totalCards : numAllowedPerDeck;
                 deckCs.set(cardEnum.name(), amountToAdd);
                 totalCards += amountToAdd;
-            }
-            if (totalCards == 27) {
-                break;
-            } else if (totalCards > 27) {
-                logger().severe("My Deck Cleaning algorithm is broke. Somehow I filled in more than 27 cards. Please contact Crazy_Cranberry to resolve this.");
             }
         }
     }

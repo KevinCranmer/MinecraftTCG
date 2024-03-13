@@ -4,20 +4,20 @@ legendary: 0.15
 # Following are chance percent settings for different minecraft actions
 # 0.001 = 1/10 of 1 percent, 0.01 = 1 percent, 1.00 = 100 percent
 block_place:
-  default: 0.005
+  default: 0.001
   melon_stem: 0.01
 craft_item:
-  default: 0.01
+  default: 0.005
   diamond_pickaxe: 0.05
 smelt_item:
-  default: 0.0075
+  default: 0.0025
   netherite_scrap: 0.15
 enchant_item:
   default: 0.05
   level_30: 0.075
 # If broken with a silk touch pick, it uses default odds, so I'd only specify blocks like Diamond Ore or something
 block_break:
-  default: 0.002
+  default: 0.0005
   copper_ore: 0.003
   deepslate_copper_ore: 0.003
   iron_ore: 0.004

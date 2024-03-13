@@ -15,7 +15,7 @@ public class TestCommand implements CommandExecutor {
             sender.sendMessage("You do not have permission for this command");
             return true;
         }
-        if (command.getName().equalsIgnoreCase("tc")) {
+        if (command.getName().equalsIgnoreCase("tcgtc")) {
             executeTestCommand(args, (Player) sender);
         }
         return true;

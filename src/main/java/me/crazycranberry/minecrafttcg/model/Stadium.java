@@ -170,7 +170,7 @@ public class Stadium {
         if (player2PendingDamage - player2PendingHeal > 0) {
             player2.damage(0); // In case it would kill the player, need to let the heal hit first
         }
-        player2.setHealth(Math.min(player2.getHealth() + player2PendingHeal - player2PendingDamage, player2.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+        player2.setHealth(Math.max(Math.min(player2.getHealth() + player2PendingHeal - player2PendingDamage, player2.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
         for (int i = 0; i < player2PendingDraws; i++) {
             draw(player2);
         }

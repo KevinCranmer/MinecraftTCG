@@ -65,6 +65,9 @@ public class DeckManager implements Listener {
     private void onDeckOrCollectionSave(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
         if ((!playersLookingAtDecks.containsKey(p) && !playersLookingAtCollection.containsKey(p)) || (StadiumManager.stadium(p.getLocation()) != null && StadiumManager.stadium(p.getLocation()).isPlayerParticipating(p))) {
+            if (playersLookingAtDecks.containsKey(p)) {
+                playersLookingAtDecks.remove(p);
+            }
             return;
         }
         if (playersLookingAtDecks.containsKey(p)) {

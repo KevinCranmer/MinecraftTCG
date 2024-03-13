@@ -217,13 +217,11 @@ public class CardDropManager implements Listener {
         int rarityIndex = 0;
         while (roll > 0) {
             Double rarityOdds = getPlugin().config().dropOddsConfig().getDouble(raritiesInDroppableCards.get(rarityIndex).name().toLowerCase());
-            System.out.printf("RarityOdds for %s is %s%n", raritiesInDroppableCards.get(rarityIndex).name().toLowerCase(), rarityOdds);
             if (rarityOdds != 0.0 && roll < rarityOdds) {
                 break;
             }
             roll -= rarityOdds;
             rarityIndex++;
-            System.out.printf("Now the roll is %s and the index is %s%n", roll, rarityIndex);
         }
         int finalRarityIndex = rarityIndex;
         return randomFromList(

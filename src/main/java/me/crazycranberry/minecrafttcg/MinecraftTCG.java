@@ -81,7 +81,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
         setCommandManager("rankedduel", new RankedDuelCommand());
         setCommandManager("ranks", new RanksCommand());
         setCommandManager("refresh", new RefreshCommand());
-        setCommandManager("tc", new TestCommand());
+        setCommandManager("tcgtc", new TestCommand());
         setCommandManager("tcg", new TcgCommand());
     }
 
@@ -121,11 +121,12 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
             logger().info("Duel crash recovery initiated for " + event.getPlayer().getName());
             restoreStartingWorldConfig(event.getPlayer(), null);
         }
-        config().playerRank(event.getPlayer()); // Just to make sure everyone that's logged in has a rank
+        //TODO: Don't set name unless they've played a match
         if (event.getPlayer().getName().equals(config().topRankedPlayerName())) {
             event.getPlayer().setDisplayName(ChatColor.AQUA + event.getPlayer().getName());
             event.getPlayer().setPlayerListName(ChatColor.AQUA + event.getPlayer().getName());
         }
+        config().playerRank(event.getPlayer()); // Just to make sure everyone that's logged in has a rank
     }
 
     @EventHandler

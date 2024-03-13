@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.BookMeta;
@@ -136,6 +137,13 @@ public class DuelActionsManager implements Listener {
         sendCastMessage(event.caster(), event.stadium(), event.card());
         event.stadium().reduceMana(event.caster(), event.card().cost());
         castsInProgressMap.remove(event.caster().getUniqueId());
+    }
+
+    @EventHandler
+    private void onTryingToDropCard(PlayerDropItemEvent event) {
+        if (StadiumManager.stadium(event.getPlayer().getLocation()) != null) {
+            event.setCancelled(true);
+        }
     }
 
     private void cast(Player player, Stadium stadium, Card card, List<Spot> targets) {
@@ -278,7 +286,7 @@ public class DuelActionsManager implements Listener {
         }
     }
 
-    private static class CastInProgress {
+    public static class CastInProgress {
         private final String cardUuid;
         private final List<Spot> targets;
 

@@ -7,6 +7,7 @@ import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
 import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
 import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
+import me.crazycranberry.minecrafttcg.events.EndOfTurnPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPostCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPostCombatPhaseStartedEvent;
@@ -49,6 +50,7 @@ import static me.crazycranberry.minecrafttcg.commands.RanksCommand.MIN_RANK_GAIN
 import static me.crazycranberry.minecrafttcg.commands.RanksCommand.MIN_RANK_GAIN_PER_TIE;
 import static me.crazycranberry.minecrafttcg.commands.RanksCommand.UPPER_LIMIT_OF_RANK_DIFFERENTIAL_WEIGHTING;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
+import static me.crazycranberry.minecrafttcg.model.TurnPhase.END_OF_TURN;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_POSTCOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
@@ -173,13 +175,22 @@ public class TurnManager implements Listener {
     }
 
     @EventHandler
+    private void onEndOfTurnPhaseStarted(EndOfTurnPhaseStartedEvent event) {
+        if (event.getStadium().isDuelDone()) {
+            return;
+        }
+        event.getStadium().updatePhase(END_OF_TURN);
+        sendTitles(String.format("%sEnd of Turn %s", AQUA, event.getStadium().turn()), event.getStadium());
+        executeForAllMinions(event.getStadium(), Minion::onTurnEnd);
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new TurnEndEvent(event.getStadium())), TITLE_DURATION);
+    }
+
+    @EventHandler
     private void onTurnEnd(TurnEndEvent event) {
         if (event.getStadium().isDuelDone()) {
             return;
         }
-        sendTitles(String.format("%sEnd of Turn %s", AQUA, event.getStadium().turn()), event.getStadium());
-        executeForAllMinions(event.getStadium(), Minion::onTurnEnd);
-        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstPreCombatPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
+        Bukkit.getPluginManager().callEvent(new FirstPreCombatPhaseStartedEvent(event.getStadium()));
     }
 
     @EventHandler
