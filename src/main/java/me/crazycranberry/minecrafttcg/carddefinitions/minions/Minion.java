@@ -57,6 +57,7 @@ public abstract class Minion {
         this.minionInfo = minionInfo;
         CraftMob mob = (CraftMob) minionInfo.entity();
         this.nmsMob = (PathfinderMob) mob.getHandle();
+        setupGoals();
     }
 
     public Integer strength() {
@@ -125,9 +126,7 @@ public abstract class Minion {
         this.attacksLeft = attacksLeft;
     }
 
-    public void onEnter() {
-        setupGoals();
-    }
+    public void onEnter() {}
 
     public void onDeath() {
         minionInfo.entity().setHealth(0);
@@ -261,11 +260,12 @@ public abstract class Minion {
     }
 
     private void removeGoals() {
+        nmsMob.targetSelector.getRunningGoals().forEach(WrappedGoal::stop);
         nmsMob.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         nmsMob.removeAllGoals(g -> true);
     }
 
-    private void setGoalOfStayingOnSpot() {
+    public void setGoalOfStayingOnSpot() {
         Vector flyingModifier = this.cardDef().isFlying() ? new Vector(0, 3, 0) : new Vector(0, 0, 0);
         nmsMob.goalSelector.addGoal(5, new WalkToLocationGoal(nmsMob, minionInfo().stadium().locOfSpot(minionInfo().spot()).add(flyingModifier)));
     }
@@ -296,5 +296,9 @@ public abstract class Minion {
         this.numTurnsOverkill = minion.numTurnsOverkill;
         this.numTurnsProtected = minion.numTurnsProtected;
         this.temporaryBonusStrength = minion.temporaryBonusStrength;
+    }
+
+    public PathfinderMob nmsMob() {
+        return nmsMob;
     }
 }

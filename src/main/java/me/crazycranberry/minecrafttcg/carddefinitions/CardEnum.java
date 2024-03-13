@@ -16,6 +16,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.brunswick.Brunswic
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDozerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.fluffynecromancer.FluffyNecromancerDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.happynarwhale.HappyNarwhaleDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch.HealWitchDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.heavyslammer.HeavySlammerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie.HungryZombieDef;
@@ -59,6 +60,7 @@ public enum CardEnum {
     BULLDOZER(new BullDozerDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
     FLUFFY_NECROMANCER(new FluffyNecromancerDef()),
+    HAPPY_NARWHALE(new HappyNarwhaleDef()),
     HEAL_WITCH(new HealWitchDef()),
     HEAVY_SLAMMER(new HeavySlammerDef()),
     HUNGRY_ZOMBIE(new HungryZombieDef()),

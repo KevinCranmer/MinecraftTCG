@@ -6,14 +6,17 @@ import me.crazycranberry.minecrafttcg.model.Stadium;
 import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.Animal;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftAnimals;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
@@ -38,6 +41,13 @@ public class MinionManager implements Listener {
     }
 
     @EventHandler
+    public void onWaterFlow(BlockFromToEvent event) {
+        if (StadiumManager.stadium(event.getBlock().getLocation()) != null && event.getBlock().getBlockData() instanceof Levelled) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     private void onSpawn(CreatureSpawnEvent event) {
         if (StadiumManager.stadium(event.getEntity().getLocation()) != null && !event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)) {
             event.setCancelled(true);
@@ -56,14 +66,18 @@ public class MinionManager implements Listener {
 
     @EventHandler
     private void onDamage(EntityDamageByEntityEvent event) {
+        if (event.getCause().equals(EntityDamageEvent.DamageCause.DROWNING)) {
+            event.setCancelled(true);
+            return;
+        }
         Stadium stadium = StadiumManager.stadium(event.getDamager().getLocation());
         if (stadium == null || !(event.getDamager() instanceof LivingEntity)) {
             return;
         }
         Optional<Minion> maybeMinion = stadium.minionFromEntity((LivingEntity) event.getDamager());
         Optional<Minion> maybeTarget = stadium.minionFromEntity((LivingEntity) event.getEntity());
-        if (maybeMinion.isPresent() && event.getEntity().getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
-            handleChickenAttacked(stadium, maybeMinion.get(), (LivingEntity) event.getEntity());
+        if (event.getEntity().getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
+            maybeMinion.ifPresent(minion -> handleChickenAttacked(stadium, minion, (LivingEntity) event.getEntity()));
             ((LivingEntity) event.getEntity()).damage(0);
             event.setCancelled(true);
         } else if (maybeMinion.isPresent() && maybeTarget.isPresent()){

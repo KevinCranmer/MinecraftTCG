@@ -13,7 +13,7 @@ public class SkiTurtle extends Minion {
     public void onCombatEnd() {
         super.onCombatEnd();
         Minion ally = this.minionInfo().stadium().getAllyMinionInFront(this.minionInfo().spot());
-        if (ally.health() < ally.maxHealth()) {
+        if (ally != null && ally.health() < ally.maxHealth()) {
             ally.onHeal(ally.maxHealth() - ally.health());
         }
     }

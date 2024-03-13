@@ -376,10 +376,14 @@ public class Stadium {
     }
 
     public LivingEntity getTargetInFront(Minion minion) {
+        return getTargetInFront(minion, minion.hasFlying());
+    }
+
+    public LivingEntity getTargetInFront(Minion minion, boolean canTargetFlying) {
         Minion opposingMinion = Spot.opposingFrontRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
-        if (opposingMinion == null || (opposingMinion.hasFlying() && !minion.hasFlying())) {
+        if (opposingMinion == null || (opposingMinion.hasFlying() && !canTargetFlying)) {
             opposingMinion = Spot.opposingBackRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
-            if (opposingMinion == null || (opposingMinion.hasFlying() && !minion.hasFlying())) {
+            if (opposingMinion == null || (opposingMinion.hasFlying() && !canTargetFlying)) {
                 return Spot.opposingChicken(minion.minionInfo().spot(), this);
             }
         }
