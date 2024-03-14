@@ -21,7 +21,7 @@ public class Borsharak extends Minion {
         super.onDamageDealt(target, damageDealt, wasCombatAttack, wasProtected);
         Stadium stadium = this.minionInfo().stadium();
         Optional<Minion> targetMinion = stadium.minionFromEntity(target);
-        if (!wasCombatAttack || targetMinion.isEmpty()) {
+        if (!wasCombatAttack || targetMinion.isEmpty() || targetMinion.get().isProtected()) {
             return;
         }
         List<Spot> adjacentSpots = stadium.adjacentSpots(targetMinion.get().minionInfo().spot());

@@ -15,7 +15,7 @@ import static org.bukkit.Sound.ENTITY_WANDERING_TRADER_DRINK_POTION;
 public class FreshWaterBottle implements SpellCardDefinition {
     @Override
     public Integer cost() {
-        return 4;
+        return 3;
     }
 
     @Override
