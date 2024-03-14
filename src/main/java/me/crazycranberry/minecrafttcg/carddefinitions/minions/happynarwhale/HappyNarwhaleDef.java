@@ -18,7 +18,7 @@ public class HappyNarwhaleDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return "This minion can jump over the front row minion.";
+        return "This minion can jump and hit flying minions.";
     }
 
     @Override
@@ -48,6 +48,6 @@ public class HappyNarwhaleDef implements MinionCardDefinition {
 
     @Override
     public String signDescription() {
-        return "Jumps over\nfront row\nminions.";
+        return "Can hit Flying";
     }
 }

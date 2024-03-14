@@ -128,6 +128,9 @@ public class CollectionConfigs {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playersCollectionFile);
         ConfigurationSection deckCs = config.getConfigurationSection("deck");
         ConfigurationSection collectionCs = config.getConfigurationSection("collection");
+        for (String key : deckCs.getKeys(false)) {
+            deckCs.set(key, null);
+        }
         for (Map.Entry<CardEnum, Integer> cardWithCount : cardConfigMapFromInventory(inventory).entrySet()) {
             deckCs.set(cardWithCount.getKey().name(), cardWithCount.getValue());
         }

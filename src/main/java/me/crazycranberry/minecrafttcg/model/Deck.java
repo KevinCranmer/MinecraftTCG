@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
+import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.COST;
+import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.NAME;
+import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.RARITY;
 import static me.crazycranberry.minecrafttcg.model.Collection.createCard;
 
 public class Deck {
@@ -48,9 +51,15 @@ public class Deck {
         Inventory deckInv = Bukkit.createInventory(null, 27, "My Deck");
         YamlConfiguration collectionConfig = CollectionConfigs.collectionConfigOrCreateDefault(p);
         ConfigurationSection deckCs = collectionConfig.getConfigurationSection("deck");
-        for (String key : deckCs.getKeys(false)) {
-            for (int i = 0; i < deckCs.getInt(key); i++) {
-                deckInv.addItem(createCard(CardEnum.fromString(key)));
+        for (CardEnum cardEnum : deckCs.getKeys(false)
+                .stream()
+                .map(CardEnum::fromString)
+                .sorted(
+                    RARITY.comparator()
+                        .thenComparing(COST.comparator())
+                        .thenComparing(NAME.comparator())).toList()) {
+            for (int i = 0; i < deckCs.getInt(cardEnum.name()); i++) {
+                deckInv.addItem(createCard(cardEnum));
             }
         }
         return new Deck(deckInv);

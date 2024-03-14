@@ -300,7 +300,7 @@ public class Collection {
         }
 
         private static Comparator<CardEnum> compareRarity() {
-            return Comparator.comparing((CardEnum card) -> card.card().rarity()).reversed();
+            return Comparator.comparing((CardEnum card) -> card.card().rarity());
         }
 
         public static SortBy fromString(String s) {
