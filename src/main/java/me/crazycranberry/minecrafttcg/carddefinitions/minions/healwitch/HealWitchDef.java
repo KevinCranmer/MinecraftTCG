@@ -43,7 +43,7 @@ public class HealWitchDef implements MinionCardDefinition {
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return HealthWitch.class;
+        return HealWitch.class;
     }
 
     @Override

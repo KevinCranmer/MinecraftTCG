@@ -11,8 +11,8 @@ import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 
-public class HealthWitch extends Minion {
-    public HealthWitch(MinionInfo minionInfo) {
+public class HealWitch extends Minion {
+    public HealWitch(MinionInfo minionInfo) {
         super(CardEnum.HEAL_WITCH, minionInfo);
     }
 

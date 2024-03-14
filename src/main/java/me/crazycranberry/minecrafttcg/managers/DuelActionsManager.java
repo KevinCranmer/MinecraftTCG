@@ -11,6 +11,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefiniti
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
 import me.crazycranberry.minecrafttcg.events.CastCardEvent;
 import me.crazycranberry.minecrafttcg.events.CastCardTargetEvent;
+import me.crazycranberry.minecrafttcg.managers.utils.CastInProgress;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import me.crazycranberry.minecrafttcg.model.TurnPhase;
@@ -283,28 +284,6 @@ public class DuelActionsManager implements Listener {
             }
         } else {
             player.sendMessage(String.format("%sYou cannot change the turn phase, it's not your turn.%s", GRAY, RESET));
-        }
-    }
-
-    public static class CastInProgress {
-        private final String cardUuid;
-        private final List<Spot> targets;
-
-        public CastInProgress(String cardUuid) {
-            this.cardUuid = cardUuid;
-            this.targets = new ArrayList<>();
-        }
-
-        public String cardUuid() {
-            return cardUuid;
-        }
-
-        public List<Spot> targets() {
-            return targets;
-        }
-
-        public void addTarget(Spot newTarget) {
-            targets.add(newTarget);
         }
     }
 }

@@ -66,6 +66,7 @@ public class ZooExpedition implements SpellCardDefinition {
         taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             if (progressIndex >= minionsToTransform.size()) {
                 Bukkit.getScheduler().cancelTask(taskId);
+                return;
             }
             if (tickProgress % ticksBetweenTransformation == 0) {
                 transformMinion(minionsToTransform.get(progressIndex));

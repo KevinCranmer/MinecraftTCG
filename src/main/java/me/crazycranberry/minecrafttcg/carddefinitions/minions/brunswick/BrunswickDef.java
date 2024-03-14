@@ -8,7 +8,7 @@ import org.bukkit.entity.EntityType;
 public class BrunswickDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 3;
+        return 4;
     }
 
     @Override
