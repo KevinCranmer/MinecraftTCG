@@ -60,6 +60,10 @@ public abstract class Minion {
         setupGoals();
     }
 
+    public Integer baseStrength() {
+        return strength;
+    }
+
     public Integer strength() {
         return strength + temporaryBonusStrength;
     }
@@ -182,6 +186,7 @@ public abstract class Minion {
         }
         health = health - damageReceived;
         minionInfo.stadium().updateCustomName(this);
+        this.minionInfo().entity().damage(0);
         if (!minionInfo.stadium().phase().equals(TurnPhase.COMBAT_PHASE)) { // Minions don't die during combat until they get their hits off
             shouldIBeDead();
         }

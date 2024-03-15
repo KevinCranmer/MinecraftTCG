@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -28,7 +29,7 @@ public class ParticleBeamTracker {
     private final double blocksTraveledPerTick;
     private final int particlesPerTick;
 
-    public ParticleBeamTracker(Stadium stadium, Player caster, List<Minion> minionsToBeam, Particle particle, List<Particle.DustOptions> dustOptions, double blocksTraveledPerTick, int particlesPerTick, TriConsumer<Stadium, Player, ParticleBeamInfo> doThisWhenBeamHits) {
+    public ParticleBeamTracker(Stadium stadium, Player caster, List<LivingEntity> targetsToBeam, Particle particle, List<Particle.DustOptions> dustOptions, double blocksTraveledPerTick, int particlesPerTick, TriConsumer<Stadium, Player, ParticleBeamInfo> doThisWhenBeamHits) {
         this.stadium = stadium;
         this.particle = particle;
         this.dustOptions = dustOptions == null ? List.of() : dustOptions;
@@ -36,9 +37,9 @@ public class ParticleBeamTracker {
         this.particlesPerTick = particlesPerTick;
         this.doThisWhenBeamHits = doThisWhenBeamHits;
         this.minionsToBeam = new ArrayList<>();
-        for (Minion minion : minionsToBeam) {
-            if (minion != null) {
-                this.minionsToBeam.add(new ParticleBeamInfo(caster.getLocation().clone(), minion));
+        for (LivingEntity target : targetsToBeam) {
+            if (target != null && !target.isDead()) {
+                this.minionsToBeam.add(new ParticleBeamInfo(caster.getLocation().clone(), target));
             }
         }
         startLoop(caster);
@@ -47,13 +48,13 @@ public class ParticleBeamTracker {
     public void startLoop(Player caster) {
         taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             for (ParticleBeamInfo beam : minionsToBeam) {
-                Vector direction = beam.target().minionInfo().entity().getEyeLocation().toVector().subtract(beam.particleLoc().toVector()).normalize().multiply(blocksTraveledPerTick / (double) particlesPerTick);
+                Vector direction = beam.target().getEyeLocation().toVector().subtract(beam.particleLoc().toVector()).normalize().multiply(blocksTraveledPerTick / (double) particlesPerTick);
                 for (int i = 0; i < particlesPerTick; i++) {
                     if (beam.alreadyHit()) {
                         continue;
                     }
                     spawnParticles(beam.particleLoc());
-                    if (beam.particleLoc().distanceSquared(beam.target().minionInfo().entity().getEyeLocation()) < 0.5) {
+                    if (beam.particleLoc().distanceSquared(beam.target().getEyeLocation()) < 0.5) {
                         doThisWhenBeamHits.accept(stadium, caster, beam);
                         beam.hit();
                         break;

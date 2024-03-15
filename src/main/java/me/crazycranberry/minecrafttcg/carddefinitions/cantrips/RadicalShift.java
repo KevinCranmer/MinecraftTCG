@@ -8,10 +8,12 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Particle;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class RadicalShift implements CantripCardDefinition {
     private final static Integer particleBeamNumParticles = 2;
@@ -40,15 +42,15 @@ public class RadicalShift implements CantripCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
-        new ParticleBeamTracker(stadium, caster, List.of(targets.get(0).minionRef().apply(stadium)), Particle.LAVA, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, RadicalShift::onDamageBeamCollided);
-        List<Minion> minionsToHeal = new ArrayList<>();
+        new ParticleBeamTracker(stadium, caster, List.of(targets.get(0).minionRef().apply(stadium).minionInfo().entity()), Particle.LAVA, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, RadicalShift::onDamageBeamCollided);
+        List<LivingEntity> alliesToHeal = new ArrayList<>();
         for (Spot spot : stadium.allyMinionSpots(caster)) {
-            Minion minion = spot.minionRef().apply(stadium);
-            if (minion != null) {
-                minionsToHeal.add(minion);
+            LivingEntity ally = spot.minionRef().apply(stadium).minionInfo().entity();
+            if (ally != null && !ally.isDead()) {
+                alliesToHeal.add(ally);
             }
         }
-        new ParticleBeamTracker(stadium, caster, minionsToHeal, Particle.WAX_ON, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, RadicalShift::onHealBeamCollided);
+        new ParticleBeamTracker(stadium, caster, alliesToHeal, Particle.WAX_ON, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, RadicalShift::onHealBeamCollided);
     }
 
     @Override
@@ -62,13 +64,14 @@ public class RadicalShift implements CantripCardDefinition {
     }
 
     public static void onDamageBeamCollided(Stadium stadium, Player caster, ParticleBeamInfo beam) {
-        beam.target().onDamageReceived(caster, damage, beam.target().isProtected());
-        beam.target().minionInfo().entity().damage(0);
+        Optional<Minion> targetMinion = stadium.minionFromEntity(beam.target());
+        targetMinion.ifPresent(minion -> minion.onDamageReceived(caster, damage, targetMinion.get().isProtected()));
     }
 
     public static void onHealBeamCollided(Stadium stadium, Player caster, ParticleBeamInfo beam) {
-        if (beam.target().health() < beam.target().maxHealth()) {
-            beam.target().onHeal(beam.target().maxHealth() - beam.target().health());
+        Optional<Minion> targetMinion = stadium.minionFromEntity(beam.target());
+        if (targetMinion.isPresent() && targetMinion.get().health() < targetMinion.get().maxHealth()) {
+            targetMinion.get().onHeal(targetMinion.get().maxHealth() - targetMinion.get().health());
         }
     }
 }

@@ -32,7 +32,6 @@ public class Borsharak extends Minion {
             .forEach(m -> {
                 this.onDamageDealt(m.minionInfo().entity(), damageDealt, false, m.isProtected());
                 m.onDamageReceived(this.minionInfo().entity(), damageDealt, m.isProtected());
-                m.minionInfo().entity().damage(0);
             });
     }
 }

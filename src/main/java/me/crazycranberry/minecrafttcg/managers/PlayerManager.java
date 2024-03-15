@@ -33,6 +33,7 @@ public class PlayerManager implements Listener {
 
     @EventHandler
     private void onPlayerTakeDamage(EntityDamageEvent event) {
+        // There are some damage types being ignored in MinionManager.onDamage() just an fyi
         if (event.getEntity() instanceof Player && StadiumManager.stadium(event.getEntity().getLocation()) != null && !event.getCause().equals(EntityDamageEvent.DamageCause.CUSTOM)) {
             event.setCancelled(true);
         }

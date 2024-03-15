@@ -13,11 +13,13 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
@@ -55,11 +57,11 @@ public class FlingSmallPoops implements SpellCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
-        List<Minion> minionsToPoopOn = new ArrayList<>();
+        List<LivingEntity> minionsToPoopOn = new ArrayList<>();
         for (Spot spot : stadium.enemyMinionSpots(caster)) {
             Minion minion = spot.minionRef().apply(stadium);
-            if (minion != null) {
-                minionsToPoopOn.add(minion);
+            if (minion != null && !minion.minionInfo().entity().isDead()) {
+                minionsToPoopOn.add(minion.minionInfo().entity());
             }
         }
         List<Particle.DustOptions> dustOptions = List.of(
@@ -73,9 +75,11 @@ public class FlingSmallPoops implements SpellCardDefinition {
     }
 
     public static void poopCollided(Stadium stadium, Player caster, ParticleBeamInfo beam) {
-        caster.getWorld().playSound(beam.target().minionInfo().entity().getEyeLocation(), randomFromList(poopSounds).get(), 1, 1);
-        beam.target().onDamageReceived(caster, damage, beam.target().isProtected());
-        beam.target().minionInfo().entity().damage(0);
+        Optional<Minion> targetMinion = stadium.minionFromEntity(beam.target());
+        if (targetMinion.isPresent()) {
+            caster.getWorld().playSound(beam.target().getEyeLocation(), randomFromList(poopSounds).get(), 1, 1);
+            targetMinion.get().onDamageReceived(caster, damage, targetMinion.get().isProtected());
+        }
     }
 
     @Override

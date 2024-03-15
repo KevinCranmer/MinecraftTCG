@@ -402,6 +402,16 @@ public class Stadium {
         return Optional.empty();
     }
 
+    public Optional<LivingEntity> livingEntityFromSpot(Spot spot) {
+        if (spot.equals(PLAYER_1_OUTLOOK)) {
+            return Optional.of(player1);
+        } else if (spot.equals(PLAYER_2_OUTLOOK)) {
+            return Optional.of(player2);
+        } else {
+            return Optional.ofNullable(spot.minionRef().apply(this)).map(m -> m.minionInfo().entity());
+        }
+    }
+
     public boolean isDuelDone() {
         return duelDone;
     }

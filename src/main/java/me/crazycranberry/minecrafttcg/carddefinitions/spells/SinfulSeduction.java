@@ -20,6 +20,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
@@ -61,7 +62,7 @@ public class SinfulSeduction implements SpellCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
-        new ParticleBeamTracker(stadium, caster, List.of(targets.get(0).minionRef().apply(stadium)), Particle.HEART, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, SinfulSeduction::onParticleBeamCollided);
+        new ParticleBeamTracker(stadium, caster, List.of(targets.get(0).minionRef().apply(stadium).minionInfo().entity()), Particle.HEART, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, SinfulSeduction::onParticleBeamCollided);
         playHarpScale(caster);
     }
 
@@ -82,16 +83,21 @@ public class SinfulSeduction implements SpellCardDefinition {
     }
 
     public static void onParticleBeamCollided(Stadium stadium, Player caster, ParticleBeamInfo beam) {
-        Spot oldHome = beam.target().minionInfo().spot();
+        Optional<Minion> targetMinion = stadium.minionFromEntity(beam.target());
+        if (targetMinion.isEmpty()) {
+            return;
+        }
+        Minion target = targetMinion.get();
+        Spot oldHome = target.minionInfo().spot();
         Spot newHome = getNewHome(stadium, oldHome);
-        beam.target().minionInfo().setSpot(newHome);
-        beam.target().minionInfo().setMaster(caster);
-        newHome.minionSetRef().accept(stadium, beam.target(), false);
+        target.minionInfo().setSpot(newHome);
+        target.minionInfo().setMaster(caster);
+        newHome.minionSetRef().accept(stadium, target, false);
         oldHome.minionSetRef().accept(stadium, null, false);
-        beam.target().setupGoals();
-        stadium.updateCustomName(beam.target());
-        if (stadium.isWalled(beam.target())) {
-            beam.target().minionInfo().entity().teleport(stadium.locOfSpot(beam.target().minionInfo().spot()));
+        target.setupGoals();
+        stadium.updateCustomName(target);
+        if (stadium.isWalled(target)) {
+            target.minionInfo().entity().teleport(stadium.locOfSpot(target.minionInfo().spot()));
         }
     }
 

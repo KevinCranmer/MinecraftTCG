@@ -25,9 +25,9 @@ public class TheKnapper extends Minion {
             return;
         }
         Optional<Minion> targetMinion = stadium.minionFromEntity(targetEntity);
-        if (targetMinion.isPresent()) {
-            int currentStrength = this.strength();
-            this.setStrength(targetMinion.get().strength());
+        if (targetMinion.isPresent() && targetMinion.get().strength() > this.strength()) {
+            int currentStrength = this.baseStrength();
+            this.setStrength(targetMinion.get().baseStrength());
             targetMinion.get().setStrength(currentStrength);
             this.minionInfo().entity().getWorld().spawnParticle(Particle.NOTE, this.minionInfo().entity().getEyeLocation(), 3, 0.75, 0.5, 0.75);
             this.minionInfo().entity().getWorld().spawnParticle(Particle.NOTE, targetEntity.getEyeLocation(), 3, 0.75, 0.5, 0.75);

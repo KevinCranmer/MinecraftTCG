@@ -25,6 +25,5 @@ public class HeavySlammer extends Minion {
         }
         minionBehind.onDamageReceived(minionInfo().entity(), this.strength(), minionBehind.isProtected());
         this.onDamageDealt(minionBehind.minionInfo().entity(), this.strength(), wasCombatAttack, minionBehind.isProtected());
-        minionBehind.minionInfo().entity().damage(0);
     }
 }

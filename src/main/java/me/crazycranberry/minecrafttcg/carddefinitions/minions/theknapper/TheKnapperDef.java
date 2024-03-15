@@ -18,7 +18,7 @@ public class TheKnapperDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return "At the start of combat, swap strength with the enemy minion in front of this minion";
+        return "At the start of combat, swap strength with the enemy minion in front of this minion if it has higher strength";
     }
 
     @Override
@@ -48,6 +48,6 @@ public class TheKnapperDef implements MinionCardDefinition {
 
     @Override
     public String signDescription() {
-        return "Swaps strength\nwith enemy in\nfront";
+        return "Swaps strength\nwith stronger\nenemies in\nfront";
     }
 }

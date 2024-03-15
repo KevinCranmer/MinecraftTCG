@@ -21,11 +21,18 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 
+import java.util.List;
 import java.util.Optional;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.handleOverkillDamage;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_PROXY_ENTITY_TYPE;
 
 public class MinionManager implements Listener {
+    private static final List<EntityDamageEvent.DamageCause> damageTypesToIgnore = List.of(
+        EntityDamageEvent.DamageCause.DROWNING,
+        EntityDamageEvent.DamageCause.LIGHTNING
+    );
+
     @EventHandler
     private void onBurn(EntityCombustEvent event) {
         if (StadiumManager.stadium(event.getEntity().getLocation()) != null) {
@@ -66,7 +73,7 @@ public class MinionManager implements Listener {
 
     @EventHandler
     private void onDamage(EntityDamageByEntityEvent event) {
-        if (event.getCause().equals(EntityDamageEvent.DamageCause.DROWNING)) {
+        if (damageTypesToIgnore.contains(event.getCause())) {
             event.setCancelled(true);
             return;
         }
@@ -78,7 +85,6 @@ public class MinionManager implements Listener {
         Optional<Minion> maybeTarget = stadium.minionFromEntity((LivingEntity) event.getEntity());
         if (event.getEntity().getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
             maybeMinion.ifPresent(minion -> handleChickenAttacked(stadium, minion, (LivingEntity) event.getEntity()));
-            ((LivingEntity) event.getEntity()).damage(0);
             event.setCancelled(true);
         } else if (maybeMinion.isPresent() && maybeTarget.isPresent()){
             handleMinionAttacked(maybeMinion.get(), maybeTarget.get());
@@ -88,9 +94,6 @@ public class MinionManager implements Listener {
             event.setCancelled(true);
         } else if (maybeTarget.isPresent()) {
             handleMinionAttackedByPlayer((LivingEntity) event.getDamager(), maybeTarget.get(), (int) event.getDamage());
-            if (!maybeTarget.get().isProtected()) {
-                ((LivingEntity) event.getEntity()).damage(0);
-            }
             event.setCancelled(true);
         }
     }
@@ -110,8 +113,8 @@ public class MinionManager implements Listener {
     }
 
     private void handleMinionAttacked(Minion damager, Minion damagee) {
-        if (damager.hasOverkill() && !damagee.isProtected() && damager.strength() > damagee.health()) {
-            handleOverkillDamage(damager, damagee, true, damager.strength(), false);
+        if (damager.hasOverkill() && !damagee.isProtected()) {
+            handleOverkillDamage(damagee, damager.strength(), damager.minionInfo().entity(), true);
         } else {
             damagee.onDamageReceived(damager.minionInfo().entity(), damager.strength(), damagee.isProtected());
             damager.onDamageDealt(damagee.minionInfo().entity(), damager.strength(), true, damagee.isProtected());
@@ -127,41 +130,5 @@ public class MinionManager implements Listener {
             stadium.pendingDamageForPlayer(targetPlayer.get(), damager.strength());
         }
         damager.onDamageDealt(targetPlayer.get(), damager.strength(), true, false);
-    }
-
-    private void handleOverkillDamage(Minion damager, Minion damagee, boolean wasCombatAttack, int damagerStrengthRemaining, boolean doDamageAnimation) {
-        if (damagerStrengthRemaining <= 0) {
-            return;
-        }
-        int damageToOriginal = damagee.health();
-        damagerStrengthRemaining = damagerStrengthRemaining - damagee.health();
-        //Deal normal damage
-        damagee.onDamageReceived(damager.minionInfo().entity(), damageToOriginal, damagee.isProtected());
-        damager.onDamageDealt(damagee.minionInfo().entity(), damageToOriginal, wasCombatAttack, damagee.isProtected());
-        if (doDamageAnimation) {
-            damagee.minionInfo().entity().damage(0);
-        }
-        //Get what's behind to do damage to them too
-        Stadium stadium = damager.minionInfo().stadium();
-        LivingEntity targetBehindEntity = stadium.getEntityBehind(damagee.minionInfo().spot());
-        if (targetBehindEntity == null) {
-            return;
-        }
-        Optional<Minion> targetBehind = stadium.minionFromEntity(targetBehindEntity);
-        if (targetBehind.isEmpty() && targetBehindEntity.getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
-            //Damage to player
-            Optional<Player> targetPlayer = stadium.getPlayerFromChicken(targetBehindEntity);
-            if (targetPlayer.isEmpty()) {
-                return;
-            }
-            stadium.pendingDamageForPlayer(targetPlayer.get(), damagerStrengthRemaining);
-            damager.onDamageDealt(targetPlayer.get(), damagerStrengthRemaining, wasCombatAttack, false);
-            if (doDamageAnimation) {
-                targetBehindEntity.damage(0);
-            }
-        } else if (!targetBehind.get().isProtected()) {
-            //Damage to minion (might have excess damage once again)
-            handleOverkillDamage(damager, targetBehind.get(), wasCombatAttack, damagerStrengthRemaining, true);
-        }
     }
 }

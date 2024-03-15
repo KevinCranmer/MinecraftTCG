@@ -23,6 +23,7 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -339,7 +340,7 @@ public class TurnManager implements Listener {
         playerConnection1.send(new ClientboundSetTitleTextPacket(Component.literal(title1)));
         playerConnection1.send(new ClientboundSetSubtitleTextPacket(Component.literal(title1Line2)));
         playerConnection1.send(new ClientboundSetTitlesAnimationPacket(10, TITLE_DURATION - 30, 20));
-        player1.sendMessage(String.format("%s%s", title1, title1Line2.isEmpty() ? "" : " - " + title1Line2));
+        player1.sendMessage(String.format("---%s%s%s---", title1, title1Line2.isEmpty() ? "" : ChatColor.GRAY + " - " + title1Line2, ChatColor.WHITE));
 
         Player player2 = stadium.player2();
         CraftPlayer craftPlayer2 = (CraftPlayer) player2;
@@ -348,6 +349,6 @@ public class TurnManager implements Listener {
         playerConnection2.send(new ClientboundSetTitleTextPacket(Component.literal(title2)));
         playerConnection2.send(new ClientboundSetSubtitleTextPacket(Component.literal(title2Line2)));
         playerConnection2.send(new ClientboundSetTitlesAnimationPacket(10, TITLE_DURATION - 30, 20));
-        player2.sendMessage(String.format("%s%s", title2, title2Line2.isEmpty() ? "" : " - " + title2Line2));
+        player2.sendMessage(String.format("---%s%s%s---", title2, title2Line2.isEmpty() ? "" : ChatColor.GRAY + " - " + title2Line2, ChatColor.WHITE));
     }
 }

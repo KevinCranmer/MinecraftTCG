@@ -25,7 +25,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -51,6 +53,7 @@ import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.save
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.BIRCH_BUTTON;
 import static org.bukkit.Material.BIRCH_WALL_SIGN;
+import static org.bukkit.Material.FIRE;
 import static org.bukkit.Material.OAK_WALL_SIGN;
 import static org.bukkit.Material.REDSTONE_LAMP;
 import static org.bukkit.Material.STONE_BUTTON;

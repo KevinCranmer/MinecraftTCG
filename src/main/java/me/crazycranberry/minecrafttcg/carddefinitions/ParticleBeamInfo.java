@@ -2,13 +2,14 @@ package me.crazycranberry.minecrafttcg.carddefinitions;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 
 public class ParticleBeamInfo {
-    private final Minion target;
+    private final LivingEntity target;
     private Location particleLoc;
     private boolean alreadyHit;
 
-    public ParticleBeamInfo(Location particleLoc, Minion target) {
+    public ParticleBeamInfo(Location particleLoc, LivingEntity target) {
         this.particleLoc = particleLoc;
         this.target = target;
         this.alreadyHit = false;
@@ -22,7 +23,7 @@ public class ParticleBeamInfo {
         this.particleLoc = particleLoc;
     }
 
-    public Minion target() {
+    public LivingEntity target() {
         return target;
     }
 

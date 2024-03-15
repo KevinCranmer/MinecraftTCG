@@ -3,11 +3,72 @@ package me.crazycranberry.minecrafttcg.carddefinitions;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
+import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_PROXY_ENTITY_TYPE;
+import static me.crazycranberry.minecrafttcg.managers.StadiumManager.stadium;
 
 public class CardUtils {
+    public static List<Minion> minionsFromSpots(List<Spot> spots, Stadium stadium) {
+        return spots.stream()
+            .map(s -> s.minionRef().apply(stadium))
+            .filter(Objects::nonNull)
+            .toList();
+    }
+
+    public static void handleOverkillDamage(Minion damageReceiver, int damageRemaining, LivingEntity damager, boolean wasCombatAttack) {
+        if (damageRemaining <= 0) {
+            return;
+        }
+        int damageToOriginal = Math.min(damageRemaining, damageReceiver.health());
+        damageRemaining = damageRemaining - damageToOriginal;
+        Stadium stadium = damageReceiver.minionInfo().stadium();
+        //Deal normal damage
+        damageReceiver.onDamageReceived(damager, damageToOriginal, damageReceiver.isProtected());
+        Optional<Minion> maybeDamagerMinion = stadium.minionFromEntity(damager);
+        maybeDamagerMinion.ifPresent(minion -> minion.onDamageDealt(damageReceiver.minionInfo().entity(), damageToOriginal, wasCombatAttack, damageReceiver.isProtected()));
+        //Get what's behind to do damage to them too
+        LivingEntity targetBehindEntity = stadium.getEntityBehind(damageReceiver.minionInfo().spot());
+        if (targetBehindEntity == null) {
+            return;
+        }
+        Optional<Minion> targetBehind = stadium.minionFromEntity(targetBehindEntity);
+        if (targetBehind.isEmpty() && targetBehindEntity.getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
+            //Damage to player (a base case)
+            Optional<Player> targetPlayer = stadium.getPlayerFromChicken(targetBehindEntity);
+            if (targetPlayer.isEmpty() || damageRemaining <= 0) {
+                return;
+            }
+            if (stadium.phase().equals(TurnPhase.COMBAT_PHASE)) {
+                stadium.pendingDamageForPlayer(targetPlayer.get(), damageRemaining);
+            } else {
+                targetPlayer.get().damage(damageRemaining);
+            }
+            if (maybeDamagerMinion.isPresent()) {
+                maybeDamagerMinion.get().onDamageDealt(targetPlayer.get(), damageRemaining, wasCombatAttack, false);
+            }
+            targetBehindEntity.damage(0);
+        } else if (targetBehind.isPresent() && !targetBehind.get().isProtected()) {
+            //Damage to minion (might have excess damage once again)
+            handleOverkillDamage(targetBehind.get(), damageRemaining, damager, wasCombatAttack);
+        }
+    }
+
+    public static void dealDamage(LivingEntity target, LivingEntity source, Stadium stadium, int damage) {
+        if (target instanceof Player) {
+            target.damage(3);
+        } else {
+            stadium.minionFromEntity(target).ifPresent(m -> m.onDamageReceived(source, damage, m.isProtected()));
+        }
+    }
+
     public static void swapTwoSpots(Stadium stadium, Spot spot1, Spot spot2) {
         Minion firstMinion = spot1.minionRef().apply(stadium);
         Minion secondMinion = spot2.minionRef().apply(stadium);
