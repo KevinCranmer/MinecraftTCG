@@ -182,7 +182,8 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
 
     private static String animalInfo() {
         return String.format("""
-            %sThe following entities are considered animals: [%s]%n(It's very likely some of these don't have cards for them yet).%s""",
+            %sThe following entities are considered animals: [%s]
+            (It's very likely some of these don't have cards for them yet).%s""",
             GRAY,
             String.join(", ", ANIMAL_TYPES.stream().map(EntityType::name).toList()),
             RESET);

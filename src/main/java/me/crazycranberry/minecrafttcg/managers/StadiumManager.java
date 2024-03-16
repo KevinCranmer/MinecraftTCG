@@ -25,9 +25,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -36,6 +34,7 @@ import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_BLUE_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_GREEN_CHICKEN;
@@ -72,14 +71,15 @@ public class StadiumManager implements Listener {
     public static final EntityType PLAYER_PROXY_ENTITY_TYPE = EntityType.COW;
     private static final Material FILL_BLOCK = Material.WHITE_TERRACOTTA;
     private static final Map<Location, Stadium> stadiums = new HashMap<>();
+    private static final Map<UUID, Scoreboard> playerOldScoreboards = new HashMap<>();
 
     @EventHandler
     private void onDuelClose(DuelCloseEvent event) {
         if (event.stadium().player1().getWorld().equals(event.stadium().startingCorner().getWorld()) && !event.stadium().player1().isDead()) {
-            restoreStartingWorldConfig(event.stadium().player1(), event.stadium().playerOriginalScoreboard(event.stadium().player1()));
+            restoreStartingWorldConfig(event.stadium().player1());
         }
         if (event.stadium().player2().getWorld().equals(event.stadium().startingCorner().getWorld()) && !event.stadium().player2().isDead()) {
-            restoreStartingWorldConfig(event.stadium().player2(), event.stadium().playerOriginalScoreboard(event.stadium().player2()));
+            restoreStartingWorldConfig(event.stadium().player2());
         }
         stadiums.remove(event.stadium().startingCorner());
         if (stadiums.isEmpty()) {
@@ -99,6 +99,10 @@ public class StadiumManager implements Listener {
                 summonChicken(PLAYER_2_RED_CHICKEN, startingCorner),
                 summonChicken(PLAYER_2_BLUE_CHICKEN, startingCorner),
                 summonChicken(PLAYER_2_GREEN_CHICKEN, startingCorner));
+    }
+
+    public static Scoreboard getOriginalScoreboardAndRemoveIt(Player p) {
+        return playerOldScoreboards.remove(p.getUniqueId());
     }
 
     @EventHandler
@@ -188,7 +192,9 @@ public class StadiumManager implements Listener {
         Bukkit.getPluginManager().callEvent(new RegisterListenersEvent(true));
         Location nextStartingCorner = getNextAvailableStartingCorner(w);
         saveStartingWorldConfig(new Participant(requester));
+        playerOldScoreboards.put(requester.getUniqueId(), requester.getScoreboard());
         saveStartingWorldConfig(new Participant(accepter));
+        playerOldScoreboards.put(accepter.getUniqueId(), accepter.getScoreboard());
         Stadium stadium;
         if (Math.random() < 0.5) {
             setupStadium(nextStartingCorner, requester, accepter, ranked);

@@ -21,18 +21,17 @@ import me.crazycranberry.minecrafttcg.managers.ScoreboardManager;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import me.crazycranberry.minecrafttcg.managers.TurnManager;
 import me.crazycranberry.minecrafttcg.managers.WorldManager;
-import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -119,7 +118,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
         if (startingWorldConfigExists(event.getPlayer())) {
             //Server crashed mid-duel, or they left during duel, and they're startingWorldConfig still exists, gotta load it up for them
             logger().info("Duel crash recovery initiated for " + event.getPlayer().getName());
-            restoreStartingWorldConfig(event.getPlayer(), null);
+            restoreStartingWorldConfig(event.getPlayer());
         }
         //TODO: Don't set name unless they've played a match
         if (event.getPlayer().getName().equals(config().topRankedPlayerName())) {
@@ -132,12 +131,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
     @EventHandler
     private void onPlayerRespawn(PlayerRespawnEvent event) {
         if (startingWorldConfigExists(event.getPlayer())) {
-            Stadium maybeStadium = StadiumManager.stadium(event.getPlayer().getLocation());
-            Scoreboard scoreboard = null;
-            if (maybeStadium != null) {
-                scoreboard = maybeStadium.playerOriginalScoreboard(event.getPlayer());
-            }
-            restoreStartingWorldConfig(event.getPlayer(), scoreboard);
+            restoreStartingWorldConfig(event.getPlayer());
         }
     }
 

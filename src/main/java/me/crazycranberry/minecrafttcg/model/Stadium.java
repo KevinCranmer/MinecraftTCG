@@ -69,8 +69,6 @@ public class Stadium {
     private final Boolean isRanked;
     private final Player player1;
     private final Player player2;
-    private final Scoreboard player1OriginalScoreboard; // Scoreboards are to be reloaded after the match
-    private final Scoreboard player2OriginalScoreboard;
     private final int currentPlayerTurnParticlesTaskId;
     private int player1Mana = 0;
     private int player2Mana = 0;
@@ -116,10 +114,8 @@ public class Stadium {
         this.startingCorner = startingCorner;
         this.player1 = player1;
         this.player1Deck = player1Deck;
-        this.player1OriginalScoreboard = player1.getScoreboard();
         this.player2 = player2;
         this.player2Deck = player2Deck;
-        this.player2OriginalScoreboard = player2.getScoreboard();
         this.isRanked = ranked;
         this.currentPlayerTurnParticlesTaskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), this::generateParticlesForCurrentPlayersTurn, 0 /*<-- the initial delay */, 8 /*<-- the interval */).getTaskId();
     }
@@ -686,10 +682,6 @@ public class Stadium {
     private void sendMessageToBothPlayers(String message) {
         player1.sendMessage(message);
         player2.sendMessage(message);
-    }
-
-    public Scoreboard playerOriginalScoreboard(Player p) {
-        return p.equals(player1) ? player1OriginalScoreboard : player2OriginalScoreboard;
     }
 
     public Minion red2BackMinion() {
