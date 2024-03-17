@@ -11,7 +11,7 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.PACK_LEADE
 
 public class PackLeader extends Minion {
     public PackLeader(MinionInfo minionInfo) {
-        super(PACK_LEADER, minionInfo);
+        super(PACK_LEADER.card(), minionInfo);
     }
 
     @Override

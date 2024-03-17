@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class Borsharak extends Minion {
     public Borsharak(MinionInfo minionInfo) {
-        super(CardEnum.BORSHARAK, minionInfo);
+        super(CardEnum.BORSHARAK.card(), minionInfo);
     }
 
     @Override

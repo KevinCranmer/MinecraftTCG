@@ -16,7 +16,7 @@ import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 
 public class UnstablePyro extends Minion {
     public UnstablePyro(MinionInfo minionInfo) {
-        super(CardEnum.UNSTABLE_PYRO, minionInfo);
+        super(CardEnum.UNSTABLE_PYRO.card(), minionInfo);
     }
 
     @Override

@@ -23,6 +23,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch.HealWitc
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.heavyslammer.HeavySlammerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie.HungryZombieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.kevinthesmith.KevinTheSmithDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.liljim.LilJimDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTellerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLeaderDef;
@@ -42,6 +43,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.TheVoid;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ToxicSpikes;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.Unalive;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ZooExpedition;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.awakenthealpha.AwakenTheAlpha;
 
 public enum CardEnum {
     // Cantrips
@@ -70,6 +72,7 @@ public enum CardEnum {
     HEAVY_SLAMMER(new HeavySlammerDef()),
     HUNGRY_ZOMBIE(new HungryZombieDef()),
     KEVIN_THE_SMITH(new KevinTheSmithDef()),
+    LIL_JIM(new LilJimDef()),
     MIKE_THE_STORY_TELLER(new MikeTheStoryTellerDef()),
     NINJA_MAC(new NinjaMacDef()),
     PACK_LEADER(new PackLeaderDef()),
@@ -81,6 +84,7 @@ public enum CardEnum {
     ZOOKEEPER_ALLIE(new ZookeeperAllieDef()),
 
     // Spells
+    AWAKEN_THE_ALPHA(new AwakenTheAlpha()),
     DIG_DEEPER(new DigDeeper()),
     DOUBLE_KILL(new DoubleKill()),
     FLING_SMALL_POOPS(new FlingSmallPoops()),

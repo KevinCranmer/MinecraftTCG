@@ -7,6 +7,6 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
 public class SewerZombie extends Minion {
     public SewerZombie(MinionInfo minionInfo) {
-        super(CardEnum.SEWER_ZOMBIE, minionInfo);
+        super(CardEnum.SEWER_ZOMBIE.card(), minionInfo);
     }
 }

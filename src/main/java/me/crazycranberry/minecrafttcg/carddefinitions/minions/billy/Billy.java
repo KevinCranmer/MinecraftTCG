@@ -16,7 +16,7 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.swapTwoSp
 public class Billy extends Minion {
     private final List<Minion> minionsIHit = new ArrayList<>();
     public Billy(MinionInfo minionInfo) {
-        super(CardEnum.BILLY, minionInfo);
+        super(CardEnum.BILLY.card(), minionInfo);
     }
 
     @Override

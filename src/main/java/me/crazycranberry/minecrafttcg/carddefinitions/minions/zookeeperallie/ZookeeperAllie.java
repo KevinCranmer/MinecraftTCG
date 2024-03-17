@@ -10,7 +10,7 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.ANIMAL_TY
 
 public class ZookeeperAllie extends Minion {
     public ZookeeperAllie(MinionInfo minionInfo) {
-        super(CardEnum.ZOOKEEPER_ALLIE, minionInfo);
+        super(CardEnum.ZOOKEEPER_ALLIE.card(), minionInfo);
     }
 
     @Override

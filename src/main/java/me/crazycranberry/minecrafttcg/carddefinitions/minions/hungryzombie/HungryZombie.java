@@ -7,6 +7,6 @@ import org.bukkit.entity.Zombie;
 
 public class HungryZombie extends Minion {
     public HungryZombie(MinionInfo minionInfo) {
-        super(CardEnum.HUNGRY_ZOMBIE, minionInfo);
+        super(CardEnum.HUNGRY_ZOMBIE.card(), minionInfo);
     }
 }

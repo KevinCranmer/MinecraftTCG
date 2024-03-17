@@ -6,6 +6,6 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
 public class MikeTheStoryTeller extends Minion {
     public MikeTheStoryTeller(MinionInfo minionInfo) {
-        super(CardEnum.MIKE_THE_STORY_TELLER, minionInfo);
+        super(CardEnum.MIKE_THE_STORY_TELLER.card(), minionInfo);
     }
 }

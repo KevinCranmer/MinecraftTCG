@@ -6,6 +6,6 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
 public class Brunswick extends Minion {
     public Brunswick(MinionInfo minionInfo) {
-        super(CardEnum.BRUNSWICK, minionInfo);
+        super(CardEnum.BRUNSWICK.card(), minionInfo);
     }
 }

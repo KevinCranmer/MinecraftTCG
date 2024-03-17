@@ -13,7 +13,7 @@ import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_PROX
 
 public class TheKnapper extends Minion {
     public TheKnapper(MinionInfo minionInfo) {
-        super(CardEnum.THE_KNAPPER, minionInfo);
+        super(CardEnum.THE_KNAPPER.card(), minionInfo);
     }
 
     @Override

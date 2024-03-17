@@ -6,7 +6,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
 public class SkiTurtle extends Minion {
     public SkiTurtle(MinionInfo minionInfo) {
-        super(CardEnum.SKI_TURTLE, minionInfo);
+        super(CardEnum.SKI_TURTLE.card(), minionInfo);
     }
 
     @Override

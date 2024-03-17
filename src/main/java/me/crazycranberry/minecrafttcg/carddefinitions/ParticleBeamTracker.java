@@ -45,6 +45,22 @@ public class ParticleBeamTracker {
         startLoop(caster);
     }
 
+    public ParticleBeamTracker(Stadium stadium, Player caster, List<LivingEntity> targetsToBeam, Particle particle, List<Particle.DustOptions> dustOptions, double blocksTraveledPerTick, int particlesPerTick, TriConsumer<Stadium, Player, ParticleBeamInfo> doThisWhenBeamHits, Location beamStartingLocation) {
+        this.stadium = stadium;
+        this.particle = particle;
+        this.dustOptions = dustOptions == null ? List.of() : dustOptions;
+        this.blocksTraveledPerTick = blocksTraveledPerTick;
+        this.particlesPerTick = particlesPerTick;
+        this.doThisWhenBeamHits = doThisWhenBeamHits;
+        this.minionsToBeam = new ArrayList<>();
+        for (LivingEntity target : targetsToBeam) {
+            if (target != null && !target.isDead()) {
+                this.minionsToBeam.add(new ParticleBeamInfo(beamStartingLocation.clone(), target));
+            }
+        }
+        startLoop(caster);
+    }
+
     public void startLoop(Player caster) {
         taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             for (ParticleBeamInfo beam : minionsToBeam) {

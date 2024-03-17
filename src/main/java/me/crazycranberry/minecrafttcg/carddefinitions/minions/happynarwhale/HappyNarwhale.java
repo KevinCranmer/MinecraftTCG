@@ -34,7 +34,7 @@ public class HappyNarwhale extends Minion {
     private final double dolphinRestingY;
 
     public HappyNarwhale(MinionInfo minionInfo) {
-        super(CardEnum.HAPPY_NARWHALE, minionInfo);
+        super(CardEnum.HAPPY_NARWHALE.card(), minionInfo);
         this.minionInfo().entity().teleport(this.minionInfo().entity().getLocation().add(0, 1, 0));
         dolphinRestingY = this.minionInfo().stadium().locOfSpot(RED_1_BACK).getY();
         Location loc = this.minionInfo().entity().getLocation().clone();

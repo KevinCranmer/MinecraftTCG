@@ -22,7 +22,7 @@ import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 
 public class TheDuke extends Minion {
     public TheDuke(MinionInfo minionInfo) {
-        super(CardEnum.THE_DUKE, minionInfo);
+        super(CardEnum.THE_DUKE.card(), minionInfo);
         this.setAttacksPerTurn(0);
     }
 

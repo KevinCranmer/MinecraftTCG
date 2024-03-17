@@ -6,6 +6,6 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
 public class DingySkeleton extends Minion {
     public DingySkeleton(MinionInfo minionInfo) {
-        super(CardEnum.DINGY_SKELETON, minionInfo);
+        super(CardEnum.DINGY_SKELETON.card(), minionInfo);
     }
 }

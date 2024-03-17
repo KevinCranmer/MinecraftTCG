@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class HeavySlammer extends Minion {
     public HeavySlammer(MinionInfo minionInfo) {
-        super(CardEnum.HEAVY_SLAMMER, minionInfo);
+        super(CardEnum.HEAVY_SLAMMER.card(), minionInfo);
     }
 
     @Override

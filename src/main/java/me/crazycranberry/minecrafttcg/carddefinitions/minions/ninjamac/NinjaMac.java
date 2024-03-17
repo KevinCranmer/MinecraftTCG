@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class NinjaMac extends Minion {
     public NinjaMac(MinionInfo minionInfo) {
-        super(CardEnum.NINJA_MAC, minionInfo);
+        super(CardEnum.NINJA_MAC.card(), minionInfo);
         this.setPermanentFlying(true);
     }
 

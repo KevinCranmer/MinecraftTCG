@@ -13,7 +13,7 @@ import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 
 public class HealWitch extends Minion {
     public HealWitch(MinionInfo minionInfo) {
-        super(CardEnum.HEAL_WITCH, minionInfo);
+        super(CardEnum.HEAL_WITCH.card(), minionInfo);
     }
 
     @Override

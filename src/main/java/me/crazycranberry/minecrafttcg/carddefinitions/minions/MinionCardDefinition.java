@@ -53,8 +53,8 @@ public interface MinionCardDefinition extends Card {
         summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), equipment, entityAdjustment());
     }
 
-    static void summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, EntityType minionType, Map<EquipmentSlot, ItemStack> equipment, Consumer<LivingEntity> entityAdjustment) {
-        summonMinion(target, stadium, caster, minionClass, minionType, equipment, entityAdjustment, true);
+    static Minion summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, EntityType minionType, Map<EquipmentSlot, ItemStack> equipment, Consumer<LivingEntity> entityAdjustment) {
+        return summonMinion(target, stadium, caster, minionClass, minionType, equipment, entityAdjustment, true);
     }
 
     static Minion summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, EntityType minionType, Map<EquipmentSlot, ItemStack> equipment, Consumer<LivingEntity> entityAdjustment, boolean triggerOnEnter) {

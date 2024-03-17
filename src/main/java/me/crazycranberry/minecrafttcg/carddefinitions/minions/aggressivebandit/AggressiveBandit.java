@@ -6,7 +6,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
 public class AggressiveBandit extends Minion {
     public AggressiveBandit(MinionInfo minionInfo) {
-        super(CardEnum.AGGRESSIVE_BANDIT, minionInfo);
+        super(CardEnum.AGGRESSIVE_BANDIT.card(), minionInfo);
         setAttacksPerTurn(2);
     }
 }

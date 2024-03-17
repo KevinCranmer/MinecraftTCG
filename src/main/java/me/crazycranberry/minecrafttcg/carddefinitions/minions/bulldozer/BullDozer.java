@@ -6,7 +6,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
 public class BullDozer extends Minion {
     public BullDozer(MinionInfo minionInfo) {
-        super(CardEnum.BULLDOZER, minionInfo);
+        super(CardEnum.BULLDOZER.card(), minionInfo);
         this.setPermanentOverkill(true);
     }
 }

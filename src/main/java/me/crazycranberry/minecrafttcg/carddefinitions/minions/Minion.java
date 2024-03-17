@@ -1,6 +1,6 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
+import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.goals.LookForwardGoal;
 import me.crazycranberry.minecrafttcg.goals.ShootParticlesGoal;
 import me.crazycranberry.minecrafttcg.goals.ShowTemporaryEffectParticlesGoal;
@@ -8,7 +8,6 @@ import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import org.bukkit.Color;
@@ -19,17 +18,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Llama;
 import org.bukkit.event.entity.EntityTargetEvent;
-
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.Map;
-
-import static me.crazycranberry.minecrafttcg.CommonFunctions.registerGenericAttribute;
-import static org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE;
 
 public abstract class Minion {
     private Integer strength;
@@ -49,8 +39,8 @@ public abstract class Minion {
     private Boolean hasLifesteal = false;
     private Integer numTurnsLifesteal = 0;
 
-    public Minion(CardEnum cardEnum, MinionInfo minionInfo) {
-        this.cardDef = (MinionCardDefinition) cardEnum.card();
+    public Minion(Card card, MinionInfo minionInfo) {
+        this.cardDef = (MinionCardDefinition) card;
         this.strength = cardDef.strength();
         this.maxHealth = cardDef.maxHealth();
         this.health = cardDef.maxHealth();

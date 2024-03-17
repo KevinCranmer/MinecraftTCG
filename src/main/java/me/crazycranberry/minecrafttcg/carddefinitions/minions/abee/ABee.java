@@ -6,7 +6,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
 public class ABee extends Minion {
     public ABee(MinionInfo minionInfo) {
-        super(CardEnum.A_BEE, minionInfo);
+        super(CardEnum.A_BEE.card(), minionInfo);
         this.setPermanentLifesteal(true);
         this.setPermanentFlying(true);
     }
