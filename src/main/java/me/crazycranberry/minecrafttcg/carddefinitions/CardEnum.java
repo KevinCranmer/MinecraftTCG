@@ -11,6 +11,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.RadicalShift;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Switch;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.abee.ABeeDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.aggressivebandit.AggressiveBanditDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.apprenticearcher.ApprenticeArcherDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bacon.BaconDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.billy.BillyDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.borsharak.BorsharakDef;
@@ -60,6 +61,7 @@ public enum CardEnum {
     // Minions
     A_BEE(new ABeeDef()),
     AGGRESSIVE_BANDIT(new AggressiveBanditDef()),
+    APPRENTICE_ARCHER(new ApprenticeArcherDef()),
     BACON(new BaconDef()),
     BILLY(new BillyDef()),
     BORSHARAK(new BorsharakDef()),
