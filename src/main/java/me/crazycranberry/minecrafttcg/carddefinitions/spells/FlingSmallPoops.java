@@ -37,7 +37,7 @@ public class FlingSmallPoops implements SpellCardDefinition {
     private final static List<Sound> poopSounds = List.of(BLOCK_SLIME_BLOCK_HIT, BLOCK_SLIME_BLOCK_PLACE, BLOCK_SLIME_BLOCK_STEP);
     @Override
     public Integer cost() {
-        return 5;
+        return 6;
     }
 
     @Override

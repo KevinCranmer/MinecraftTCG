@@ -415,6 +415,7 @@ public class Stadium {
     public void duelEnded(Player winner, Boolean isTie) {
         Bukkit.getScheduler().cancelTask(currentPlayerTurnParticlesTaskId);
         duelDone = true;
+        killAllMinions();
         fireworkTaskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             int numFireworksAtATime = (int) (Math.random() * 4);
             for (int i = 0; i < numFireworksAtATime; i++) {
@@ -433,6 +434,19 @@ public class Stadium {
                 Bukkit.getScheduler().cancelTask(fireworkTaskId);
             }
         }, 5 /*<-- the initial delay */, fireworkInterval /*<-- the interval */).getTaskId();
+    }
+
+    private void killAllMinions() {
+        allyMinionSpots(player1).stream()
+            .map(Spot::minionRef)
+            .map(mr -> mr.apply(this))
+            .filter(Objects::nonNull)
+            .forEach(Minion::onDeath);
+        allyMinionSpots(player2).stream()
+            .map(Spot::minionRef)
+            .map(mr -> mr.apply(this))
+            .filter(Objects::nonNull)
+            .forEach(Minion::onDeath);
     }
 
     public int fireworkDuration() {

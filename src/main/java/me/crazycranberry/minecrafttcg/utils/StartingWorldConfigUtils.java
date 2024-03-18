@@ -55,7 +55,7 @@ public class StartingWorldConfigUtils {
         }
         p.addPotionEffects((List<PotionEffect>) c.get("activePotionEffects"));
         p.setBedSpawnLocation(findNearbyBed(c.getLocation("bedSpawnLocation")));
-        p.setScoreboard(StadiumManager.getOriginalScoreboardAndRemoveIt(p));
+        StadiumManager.getOriginalScoreboardAndRemoveIt(p).ifPresent(p::setScoreboard);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
             p.setLevel(c.getInt("level"));
             p.setExp((float) c.getDouble("exp"));

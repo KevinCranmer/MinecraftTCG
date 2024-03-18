@@ -34,6 +34,7 @@ import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_BLUE_CHICKEN;
@@ -101,8 +102,8 @@ public class StadiumManager implements Listener {
                 summonChicken(PLAYER_2_GREEN_CHICKEN, startingCorner));
     }
 
-    public static Scoreboard getOriginalScoreboardAndRemoveIt(Player p) {
-        return playerOldScoreboards.remove(p.getUniqueId());
+    public static Optional<Scoreboard> getOriginalScoreboardAndRemoveIt(Player p) {
+        return Optional.ofNullable(playerOldScoreboards.remove(p.getUniqueId()));
     }
 
     @EventHandler

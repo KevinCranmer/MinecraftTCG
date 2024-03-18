@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -72,11 +73,18 @@ public class MinionManager implements Listener {
     }
 
     @EventHandler
-    private void onDamage(EntityDamageByEntityEvent event) {
-        if (damageTypesToIgnore.contains(event.getCause())) {
-            event.setCancelled(true);
+    private void onDamage(EntityDamageEvent event) {
+        Stadium stadium = StadiumManager.stadium(event.getEntity().getLocation());
+        if (stadium == null) {
             return;
         }
+        if (damageTypesToIgnore.contains(event.getCause())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onDamageByEntity(EntityDamageByEntityEvent event) {
         Stadium stadium = StadiumManager.stadium(event.getDamager().getLocation());
         if (stadium == null || !(event.getDamager() instanceof LivingEntity)) {
             return;
@@ -99,6 +107,15 @@ public class MinionManager implements Listener {
     }
 
     @EventHandler
+    private void onBreathDeplete(EntityAirChangeEvent event) {
+        Stadium stadium = StadiumManager.stadium(event.getEntity().getLocation());
+        if (stadium == null) {
+            return;
+        }
+        event.setCancelled(true);
+    }
+
+    @EventHandler
     private void onDeath(EntityDeathEvent event) {
         Stadium stadium = StadiumManager.stadium(event.getEntity().getLocation());
         if (stadium == null) {
@@ -106,6 +123,7 @@ public class MinionManager implements Listener {
         }
         event.setDroppedExp(0);
         event.getDrops().removeAll(event.getDrops());
+        stadium.minionFromEntity(event.getEntity()).ifPresent(Minion::onDeath);
     }
 
     private void handleMinionAttackedByPlayer(LivingEntity p, Minion damagee, int damage) {

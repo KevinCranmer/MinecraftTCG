@@ -47,7 +47,7 @@ public class DolphinAttackTargetGoal extends Goal {
             mob.doHurtTarget(target);
             attackCooldown = 20;
         }
-        if (targetIsFlying && !jumpStarted && mob.distanceTo(target) < 8) {
+        if (targetIsFlying && !jumpStarted && mob.distanceTo(target) < 6.5) {
             jumpStarted = true;
             Direction var0 = this.mob.getMotionDirection();
             this.mob.setDeltaMovement(this.mob.getDeltaMovement().add((double)var0.getStepX() * 0.6, 0.7, (double)var0.getStepZ() * 0.6));

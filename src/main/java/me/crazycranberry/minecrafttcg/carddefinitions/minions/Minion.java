@@ -221,6 +221,7 @@ public abstract class Minion {
 
     public void onCombatEnd() {
         shouldIBeDead();
+        setupGoals();
     }
 
     private void shouldIBeDead() {
