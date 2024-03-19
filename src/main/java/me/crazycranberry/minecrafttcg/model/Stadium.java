@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.model;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
+import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,11 +22,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -70,6 +73,8 @@ public class Stadium {
     private final Player player1;
     private final Player player2;
     private final int currentPlayerTurnParticlesTaskId;
+    private boolean player1DoneMulliganing = false;
+    private boolean player2DoneMulliganing = false;
     private int player1Mana = 0;
     private int player2Mana = 0;
     private int player1PendingDamage = 0;
@@ -135,8 +140,9 @@ public class Stadium {
             player1Mana = Math.min(10, turn);
             player2Mana = Math.min(10, turn);
             StadiumManager.updateManaForANewTurn(this, turn);
-        } else if (phase.ordinal() + 1 != turnPhase.ordinal()) {
+        } else if (phase != null && phase.ordinal() + 1 != turnPhase.ordinal()) {
             System.out.println("What the hell, the turn phases are out of order!!!");
+            System.out.println("We tried going from " + phase + " to " + turnPhase);
         }
         phase = turnPhase;
 
@@ -405,6 +411,34 @@ public class Stadium {
             return Optional.of(player2);
         } else {
             return Optional.ofNullable(spot.minionRef().apply(this)).map(m -> m.minionInfo().entity());
+        }
+    }
+
+    public void playerFinishedMulliganing(Player p, Inventory mulliganInv) {
+        if (player1DoneMulliganing && player2DoneMulliganing) {
+            return;
+        }
+        if (p.equals(player1)) {
+            player1DoneMulliganing = true;
+            List<ItemStack> mulliganedCards = Arrays.stream(mulliganInv.getContents())
+                .filter(i -> Optional.ofNullable(i).map(ItemStack::getItemMeta).map(ItemMeta::getPersistentDataContainer).map(pdc -> pdc.has(IS_CARD_KEY)).orElse(false))
+                .toList();
+            for (int i = 0; i < mulliganedCards.size(); i++) {
+                draw(player1);
+            }
+            mulliganedCards.forEach(i -> deck(player1).addCard(i));
+        } else {
+            player2DoneMulliganing = true;
+            List<ItemStack> mulliganedCards = Arrays.stream(mulliganInv.getContents())
+                .filter(i -> Optional.ofNullable(i).map(ItemStack::getItemMeta).map(ItemMeta::getPersistentDataContainer).map(pdc -> pdc.has(IS_CARD_KEY)).orElse(false))
+                .toList();
+            for (int i = 0; i < mulliganedCards.size(); i++) {
+                draw(player2);
+            }
+            mulliganedCards.forEach(i -> deck(player2).addCard(i));
+        }
+        if (player1DoneMulliganing && player2DoneMulliganing) {
+            Bukkit.getPluginManager().callEvent(new FirstPreCombatPhaseStartedEvent(this));
         }
     }
 

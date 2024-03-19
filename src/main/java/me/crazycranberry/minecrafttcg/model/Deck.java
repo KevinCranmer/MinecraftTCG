@@ -47,6 +47,10 @@ public class Deck {
         return drawnCard;
     }
 
+    public void addCard(ItemStack card) {
+        deck.addItem(card);
+    }
+
     public static Deck fromConfig(Player p) {
         Inventory deckInv = Bukkit.createInventory(null, 27, "My Deck");
         YamlConfiguration collectionConfig = CollectionConfigs.collectionConfigOrCreateDefault(p);

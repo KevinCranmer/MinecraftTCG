@@ -10,6 +10,7 @@ import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.events.EndOfTurnPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPostCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
+import me.crazycranberry.minecrafttcg.events.MulliganPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPostCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.TurnEndEvent;
@@ -30,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -54,6 +56,7 @@ import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.END_OF_TURN;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_POSTCOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
+import static me.crazycranberry.minecrafttcg.model.TurnPhase.MULLIGAN_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_POSTCOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_PRECOMBAT_PHASE;
@@ -61,12 +64,20 @@ import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.GREEN;
+import static org.bukkit.ChatColor.LIGHT_PURPLE;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
+import static org.bukkit.Material.BOOK;
+import static org.bukkit.Material.BOOKSHELF;
+import static org.bukkit.Material.DIAMOND;
+import static org.bukkit.Material.DIAMOND_AXE;
+import static org.bukkit.Material.IRON_AXE;
+import static org.bukkit.Material.PAPER;
 
 public class TurnManager implements Listener {
     public static final int TITLE_DURATION = 80; // In ticks
-    private static final int numCardsToStart = 2;
+    private static final int numCardsToStart = 3;
+    public static final String MULLIGAN_INV_NAME = "Mulligan unwanted cards here";
 
     @EventHandler
     private void onDuelStart(DuelStartEvent event) {
@@ -78,7 +89,17 @@ public class TurnManager implements Listener {
             event.getStadium().draw(event.getStadium().player1());
             event.getStadium().draw(event.getStadium().player2());
         }
-        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstPreCombatPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new MulliganPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
+    }
+
+    @EventHandler
+    private void onMulliganStart(MulliganPhaseStartedEvent event) {
+        event.getStadium().updatePhase(MULLIGAN_PHASE);
+        Inventory mulliganInv1 = Bukkit.createInventory(null, 9, MULLIGAN_INV_NAME);
+        event.getStadium().player1().openInventory(mulliganInv1);
+        Inventory mulliganInv2 = Bukkit.createInventory(null, 9, MULLIGAN_INV_NAME);
+        event.getStadium().player2().openInventory(mulliganInv2);
+        startTurnPhaseTimers(event.getStadium().turn(), MULLIGAN_PHASE, event.getStadium());
     }
 
     @EventHandler
@@ -90,8 +111,10 @@ public class TurnManager implements Listener {
         int turn = event.getStadium().turn();
         Player p = event.getStadium().currentPlayersTurn();
         makeSoundForPlayerTurnStart(p);
-        event.getStadium().draw(event.getStadium().player1());
-        event.getStadium().draw(event.getStadium().player2());
+        if (turn > 1) {
+            event.getStadium().draw(event.getStadium().player1());
+            event.getStadium().draw(event.getStadium().player2());
+        }
         executeForAllMinions(event.getStadium(), Minion::onTurnStart);
         String title = String.format("%s%s's Pre-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
@@ -255,8 +278,8 @@ public class TurnManager implements Listener {
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
             if (turn == stadium.turn() && turnPhase.equals(stadium.phase()) && !stadium.isDuelDone()) {
                 Player p = stadium.currentPlayersTurn();
-                stadium.player1().sendMessage(String.format("%s%s turn will end in %s seconds.%s", GRAY, p == null ? "The current" : p.getName() + "'s", secondsLeft, RESET));
-                stadium.player2().sendMessage(String.format("%s%s turn will end in %s seconds.%s", GRAY, p == null ? "The current" : p.getName() + "'s", secondsLeft, RESET));
+                stadium.player1().sendMessage(String.format("%s%s phase will end in %s seconds.%s", GRAY, p == null ? "The current" : p.getName() + "'s", secondsLeft, RESET));
+                stadium.player2().sendMessage(String.format("%s%s phase will end in %s seconds.%s", GRAY, p == null ? "The current" : p.getName() + "'s", secondsLeft, RESET));
             }
         }, (long) (getPlugin().config().duelSecondsPerRound() - secondsLeft) * TICKS_PER_SECOND);
     }
@@ -301,12 +324,16 @@ public class TurnManager implements Listener {
     private void maybeNextPhase(int turn, TurnPhase turnPhase, Stadium stadium) {
         if (turn == stadium.turn() && turnPhase.equals(stadium.phase()) && !stadium.isDuelDone()) {
             try {
+                if (turnPhase.equals(MULLIGAN_PHASE)) {
+                    stadium.player1().closeInventory();
+                    stadium.player2().closeInventory();
+                    return;
+                }
                 Constructor<? extends Event> c = turnPhase.nextPhaseRequestEventClass().getConstructor(Stadium.class);
                 c.setAccessible(true);
                 Event nextPhaseEvent = c.newInstance(stadium);
                 Bukkit.getPluginManager().callEvent(nextPhaseEvent);
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                     InvocationTargetException e) {
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 logger().severe("Exception trying to create the next phases event: " + e.getMessage());
             }
         }

@@ -43,6 +43,7 @@ public class MenuManager implements Listener {
                     maybePdc
                         .map(c -> c.get(MENU_KEY, PersistentDataType.STRING))
                         .ifPresent(c -> ((Player) event.getWhoClicked()).performCommand(c));
+                    event.getWhoClicked().closeInventory();
                 }
             }
         }

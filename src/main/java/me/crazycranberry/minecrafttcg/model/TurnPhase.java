@@ -4,12 +4,14 @@ import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
 import me.crazycranberry.minecrafttcg.events.EndOfTurnPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPostCombatPhaseStartedEvent;
+import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPostCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.TurnEndEvent;
 import org.bukkit.event.Event;
 
 public enum TurnPhase {
+    MULLIGAN_PHASE(FirstPreCombatPhaseStartedEvent.class),
     FIRST_PRECOMBAT_PHASE(SecondPreCombatPhaseStartedEvent.class),
     SECOND_PRECOMBAT_PHASE(CombatStartEvent.class),
     COMBAT_PHASE(CombatEndEvent.class),

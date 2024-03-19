@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -34,6 +35,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +49,7 @@ import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
+import static me.crazycranberry.minecrafttcg.managers.TurnManager.MULLIGAN_INV_NAME;
 import static me.crazycranberry.minecrafttcg.model.Collection.targetsString;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
@@ -144,6 +147,14 @@ public class DuelActionsManager implements Listener {
     private void onTryingToDropCard(PlayerDropItemEvent event) {
         if (StadiumManager.stadium(event.getPlayer().getLocation()) != null) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onFinishMulliganing(InventoryCloseEvent event) {
+        Stadium stadium = StadiumManager.stadium(event.getPlayer().getLocation());
+        if (event.getView().getTitle().equals(MULLIGAN_INV_NAME) && stadium != null) {
+            stadium.playerFinishedMulliganing((Player) event.getPlayer(), event.getInventory());
         }
     }
 
