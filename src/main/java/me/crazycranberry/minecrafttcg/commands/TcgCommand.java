@@ -1,20 +1,34 @@
 package me.crazycranberry.minecrafttcg.commands;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.ANIMAL_TYPES;
+import static me.crazycranberry.minecrafttcg.commands.DuelCommand.getOpponentFromChallengeRequest;
+import static me.crazycranberry.minecrafttcg.commands.RankedDuelCommand.getOpponentFromRankedChallengeRequest;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
@@ -22,16 +36,37 @@ import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.LIGHT_PURPLE;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
+import static org.bukkit.ChatColor.WHITE;
+import static org.bukkit.Material.BLUE_DYE;
+import static org.bukkit.Material.BOOK;
+import static org.bukkit.Material.BOOKSHELF;
+import static org.bukkit.Material.CYAN_DYE;
+import static org.bukkit.Material.DIAMOND;
+import static org.bukkit.Material.DIAMOND_AXE;
+import static org.bukkit.Material.GREEN_DYE;
+import static org.bukkit.Material.IRON_AXE;
+import static org.bukkit.Material.LIME_DYE;
+import static org.bukkit.Material.PAPER;
+import static org.bukkit.Material.RED_DYE;
+import static org.bukkit.Material.SUGAR;
+import static org.bukkit.Material.WHITE_DYE;
 
 public class TcgCommand implements CommandExecutor, TabCompleter {
-    private static final List<String> commands = List.of(
-        "/autocollect - Toggle whether or not card drops should automatically go to your collection",
-        "/collection - View, add to, or take from your card collection",
-        "/deck - View and edit your deck",
-        "/duel - Challenge someone to a duel",
-        "/rankedduel - Challenge someone to a ranked duel",
-        "/ranks - View the top ranked players in the server",
-        "/forfeit - Forfeit your current duel"
+    public static final NamespacedKey MENU_KEY = new NamespacedKey(getPlugin(), "menu_item");
+    public static final String TCG_MENU_NAME = "MinecraftTCG";
+    public static final String TCG_INFO_MENU_NAME = "MinecraftTCG Information";
+
+    private static final Map<String, String> commands = Map.ofEntries(
+        Map.entry("/autocollect", "Toggle whether or not card drops should automatically go to your collection"),
+        Map.entry("/collection", "View, add to, or take from your card collection"),
+        Map.entry("/deck", "View and edit your deck"),
+        Map.entry("/duel", "Challenge someone to a duel"),
+        Map.entry("/rankedduel", "Challenge someone to a ranked duel"),
+        Map.entry("/ranks", "View the top ranked players in the server"),
+        Map.entry("/forfeit", "Forfeit your current duel"),
+        Map.entry("/tcg info", "Get information about a particular piece of the TCG"),
+        Map.entry("/duel requests", "View current requests of people that want to duel you"),
+        Map.entry("/rankedduel requests", "View current requests of people that want to ranked duel you")
     );
     private static final Map<String, String> infoOptions = Map.ofEntries(
         Map.entry("turns", turnInfo()),
@@ -56,13 +91,109 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
                 if (args.length > 1 && infoOptions.containsKey(args[1])) {
                     sender.sendMessage(infoOptions.get(args[1]));
                 } else {
-                    sender.sendMessage(String.format("%sAvailable info subjects:%s\n%s", AQUA, GRAY, String.join("\n", infoOptions.keySet()), RESET));
+                    if (sender instanceof Player p) {
+                        p.openInventory(createInfoInventory());
+                    } else {
+                        sender.sendMessage(String.format("%sAvailable info subjects:%s\n%s", GRAY, String.join("\n", infoOptions.keySet()), RESET));
+                    }
                 }
             } else {
-                sender.sendMessage(tcgWelcomeMessage());
+                if (sender instanceof Player p) {
+                    p.openInventory(createTcgInventory(p));
+                } else {
+                    sender.sendMessage(tcgWelcomeMessage());
+                }
             }
         }
         return true;
+    }
+
+    private Inventory createInfoInventory() {
+        Inventory infoInv = Bukkit.createInventory(null, 54, TCG_INFO_MENU_NAME);
+        for (Map.Entry<String, String> e : infoOptions.entrySet()) {
+            infoInv.addItem(createMenuItem(PAPER, "/tcg info " + e.getKey(), WHITE, e.getKey(), false));
+        }
+        return infoInv;
+    }
+
+    private Inventory createTcgInventory(Player p) {
+        Inventory tcgInv = Bukkit.createInventory(null, 45, TCG_MENU_NAME);
+        tcgInv.setItem(3, createMenuItem(IRON_AXE, "/duel", GREEN));
+        tcgInv.setItem(4, createMenuItem(DIAMOND_AXE, "/rankedduel", AQUA));
+        tcgInv.setItem(5, createMenuItem(DIAMOND, "/ranks", AQUA));
+        tcgInv.setItem(12, createDuelAcceptItem(p, false));
+        tcgInv.setItem(13, createDuelAcceptItem(p, true));
+        tcgInv.setItem(30, createMenuItem(BOOK, "/deck", GOLD));
+        tcgInv.setItem(31, createMenuItem(BOOKSHELF, "/collection", LIGHT_PURPLE));
+        tcgInv.setItem(32, createAutoCollectItem(p));
+        tcgInv.setItem(40, createMenuItem(PAPER, "/tcg info", GRAY));
+        return tcgInv;
+    }
+
+    private ItemStack createDuelAcceptItem(Player p, boolean isRanked) {
+        Optional<Player> opponent = isRanked ? getOpponentFromRankedChallengeRequest(p) : getOpponentFromChallengeRequest(p);
+        if (opponent.isEmpty()) {
+            return null;
+        }
+        Material mat = WHITE_DYE;
+        ChatColor color = GREEN;
+        String command = "/duel accept";
+        if (isRanked) {
+            mat = CYAN_DYE;
+            color = AQUA;
+            command = "/rankedduel accept";
+        }
+        ItemStack item = new ItemStack(mat);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(color + command);
+        meta.setLore(List.of(String.format("%sAgainst %s", GRAY, opponent.map(Player::getName).orElse("%MISSING%"))));
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.getPersistentDataContainer().set(MENU_KEY, PersistentDataType.STRING, command.replace("/", ""));
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    private ItemStack createAutoCollectItem(Player p) {
+        boolean hasAutoCollect = getPlugin().config().shouldAutoCollect(p.getName());
+        Material mat = RED_DYE;
+        ChatColor color = RED;
+        String onOrOff = "OFF";
+        if (hasAutoCollect) {
+            mat = LIME_DYE;
+            color = GREEN;
+            onOrOff = "ON";
+        }
+        return createMenuItem(mat, "/autocollect", color, "Toggle /autocollect - Currently: " + onOrOff, true);
+    }
+
+    private ItemStack createMenuItem(Material material, String command, ChatColor color, String display, boolean displayLore) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(color + display);
+        if (displayLore) {
+            List<String> lore = new ArrayList<>();
+            String commandDesc = commands.get(command);
+            while(true) {
+                if (commandDesc.length() < 25) {
+                    lore.add(GRAY + commandDesc);
+                    break;
+                }
+                String laterChunk = commandDesc.substring(24);
+                commandDesc = commandDesc.replace(laterChunk, laterChunk.replaceFirst(" ", "\n"));
+                String[] commandPieces = commandDesc.split("\n");
+                lore.add(GRAY + commandPieces[0]);
+                commandDesc = commandPieces.length > 1 ? commandPieces[1] : "";
+            }
+            meta.setLore(lore);
+        }
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.getPersistentDataContainer().set(MENU_KEY, PersistentDataType.STRING, command.replace("/", ""));
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    private ItemStack createMenuItem(Material material, String command, ChatColor color) {
+        return createMenuItem(material, command, color, command, true);
     }
 
     @Override
@@ -95,7 +226,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
     }
 
     private static String commandsMessage() {
-        return String.format("%sCommands:%s\n%s%s", AQUA, GRAY, String.join("\n", commands), RESET);
+        return String.format("%sCommands:%s\n%s%s", AQUA, GRAY, String.join("\n", commands.entrySet().stream().map(e -> String.format("%s - %s", e.getKey(), e.getValue())).toList()), RESET);
     }
 
     private static String turnInfo() {

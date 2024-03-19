@@ -4,6 +4,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.attribute.CraftAttributeMap;
 
 import java.lang.reflect.Field;
@@ -11,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 
 public class CommonFunctions {
     public static final int TICKS_PER_SECOND = 20;

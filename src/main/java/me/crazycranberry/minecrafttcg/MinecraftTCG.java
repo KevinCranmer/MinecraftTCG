@@ -15,6 +15,7 @@ import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
 import me.crazycranberry.minecrafttcg.managers.CardDropManager;
 import me.crazycranberry.minecrafttcg.managers.DeckManager;
 import me.crazycranberry.minecrafttcg.managers.DuelActionsManager;
+import me.crazycranberry.minecrafttcg.managers.MenuManager;
 import me.crazycranberry.minecrafttcg.managers.PlayerManager;
 import me.crazycranberry.minecrafttcg.managers.MinionManager;
 import me.crazycranberry.minecrafttcg.managers.ScoreboardManager;
@@ -68,6 +69,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new DeckManager(), this);
         getServer().getPluginManager().registerEvents(new StadiumManager(), this);
         getServer().getPluginManager().registerEvents(new TurnManager(), this);
+        getServer().getPluginManager().registerEvents(new MenuManager(), this);
         getServer().getPluginManager().registerEvents(new WorldManager(), this);
     }
 

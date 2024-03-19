@@ -20,10 +20,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.commands.DuelCommand.createDuelChallengeInventory;
 
 public class RankedDuelCommand implements CommandExecutor, TabCompleter {
     /** Key: person challenged. Value: person who sent the challenge */
-    private Map<Player, Player> playerDuelChallenges = new HashMap<>();
+    private static final Map<Player, Player> playerDuelChallenges = new HashMap<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -33,8 +34,8 @@ public class RankedDuelCommand implements CommandExecutor, TabCompleter {
         Player p = (Player) sender;
         if (command.getName().equalsIgnoreCase("rankedduel")) {
             if (args.length == 0) {
-                sender.sendMessage(String.format("%sType \"/rankedduel <player_name>\" to challenge someone to a rankedduel.", ChatColor.GRAY));
-                return false;
+                p.openInventory(createDuelChallengeInventory(p, 0, true));
+                return true;
             } else if ("accept".equals(args[0])) {
                 if (playerDuelChallenges.containsKey(p)) {
                     Player opponent = playerDuelChallenges.get(p);
@@ -96,5 +97,9 @@ public class RankedDuelCommand implements CommandExecutor, TabCompleter {
             return possibleValues.stream().filter(n -> n.toLowerCase().startsWith(args[0].toLowerCase())).toList();
         }
         return null;
+    }
+
+    public static Optional<Player> getOpponentFromRankedChallengeRequest(Player p) {
+        return Optional.ofNullable(playerDuelChallenges.get(p));
     }
 }
