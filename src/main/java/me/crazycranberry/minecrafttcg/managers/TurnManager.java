@@ -302,6 +302,9 @@ public class TurnManager implements Listener {
             return;
         }
         Player currentPlayer = stadium.currentPlayersTurn();
+        if (currentPlayer == null) {
+            return;
+        }
         int availableMana = stadium.playerMana(currentPlayer);
         boolean hasPlayableCards = false;
         for (ItemStack itemStack : currentPlayer.getInventory().getContents()) {
