@@ -115,7 +115,6 @@ public class TurnManager implements Listener {
             event.getStadium().draw(event.getStadium().player1());
             event.getStadium().draw(event.getStadium().player2());
         }
-        executeForAllMinions(event.getStadium(), Minion::onTurnStart);
         String title = String.format("%s%s's Pre-Combat Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
         startTurnPhaseTimers(turn, FIRST_PRECOMBAT_PHASE, event.getStadium());
@@ -144,7 +143,6 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(COMBAT_PHASE);
         sendTitles(String.format("%sCombat Phase", RED), event.getStadium());
-        executeForAllMinions(event.getStadium(), Minion::onCombatStart);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new CombatStartAttackingEvent(event.getStadium())), 40);
     }
 
@@ -153,7 +151,6 @@ public class TurnManager implements Listener {
         if (event.getStadium().isDuelDone()) {
             return;
         }
-        executeForMinionsThatCanAttack(event.getStadium(), Minion::attackInFront);
         startMinionUnstuckTimers(event.getStadium().turn(), COMBAT_PHASE, event.getStadium());
         startTurnPhaseTimers(event.getStadium().turn(), COMBAT_PHASE, event.getStadium());
     }
@@ -164,7 +161,6 @@ public class TurnManager implements Listener {
             return;
         }
         event.getStadium().updatePhase(POST_COMBAT_CLEANUP);
-        executeForAllMinions(event.getStadium(), Minion::onCombatEnd);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstPostCombatPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
     }
 
@@ -205,7 +201,6 @@ public class TurnManager implements Listener {
         }
         event.getStadium().updatePhase(END_OF_TURN);
         sendTitles(String.format("%sEnd of Turn %s", AQUA, event.getStadium().turn()), event.getStadium());
-        executeForAllMinions(event.getStadium(), Minion::onTurnEnd);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new TurnEndEvent(event.getStadium())), TITLE_DURATION);
     }
 
@@ -257,7 +252,12 @@ public class TurnManager implements Listener {
     private void startMinionUnstuckTimers(int turn, TurnPhase turnPhase, Stadium stadium) {
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
             if (turn == stadium.turn() && turnPhase.equals(stadium.phase())) {
-                executeForAllMinions(stadium, Minion::unstuckify);
+                Arrays.stream(Spot.values())
+                    .map(Spot::minionRef)
+                    .filter(Objects::nonNull)
+                    .map(mr -> mr.apply(stadium))
+                    .filter(Objects::nonNull)
+                    .forEach(Minion::unstuckify);
             }
         }, (long) (getPlugin().config().duelSecondsPerRound() * 0.75) * TICKS_PER_SECOND);
     }
@@ -286,15 +286,6 @@ public class TurnManager implements Listener {
 
     private void makeSoundForPlayerTurnStart(Player player) {
         player.playSound(player, Sound.BLOCK_BEACON_POWER_SELECT, 1, 1);
-    }
-
-    private void executeForAllMinions(Stadium stadium, Consumer<? super Minion> trigger) {
-        Arrays.stream(Spot.values())
-                .map(Spot::minionRef)
-                .filter(Objects::nonNull)
-                .map(mr -> mr.apply(stadium))
-                .filter(Objects::nonNull)
-                .forEach(trigger);
     }
 
     private void maybeAutoSkipPhase(Stadium stadium, int turn, TurnPhase turnPhase) {
@@ -340,17 +331,6 @@ public class TurnManager implements Listener {
                 logger().severe("Exception trying to create the next phases event: " + e.getMessage());
             }
         }
-    }
-
-    private void executeForMinionsThatCanAttack(Stadium stadium, Consumer<? super Minion> trigger) {
-        Arrays.stream(Spot.values())
-                .map(Spot::minionRef)
-                .filter(Objects::nonNull)
-                .map(mr -> mr.apply(stadium))
-                .filter(Objects::nonNull)
-                .filter(m -> m.attacksLeft() > 0)
-                .filter(m -> !(!m.cardDef().isRanged() && stadium.hasAllyMinionInFront(m.minionInfo().spot())))
-                .forEach(trigger);
     }
 
 

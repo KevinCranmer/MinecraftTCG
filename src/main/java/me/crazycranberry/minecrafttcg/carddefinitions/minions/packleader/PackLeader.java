@@ -2,6 +2,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
+import me.crazycranberry.minecrafttcg.events.MinionEnteredEvent;
 import me.crazycranberry.minecrafttcg.model.Spot;
 
 import java.util.List;

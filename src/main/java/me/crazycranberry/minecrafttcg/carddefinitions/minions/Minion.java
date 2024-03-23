@@ -1,6 +1,8 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.Card;
+import me.crazycranberry.minecrafttcg.events.MinionDiedEvent;
+import me.crazycranberry.minecrafttcg.events.MinionEnteredEvent;
 import me.crazycranberry.minecrafttcg.goals.LookForwardGoal;
 import me.crazycranberry.minecrafttcg.goals.ShootParticlesGoal;
 import me.crazycranberry.minecrafttcg.goals.ShowTemporaryEffectParticlesGoal;
@@ -10,6 +12,7 @@ import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
@@ -18,8 +21,11 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.util.Vector;
+
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 
 public abstract class Minion {
     private Integer strength;
@@ -38,6 +44,7 @@ public abstract class Minion {
     private Integer numTurnsFlying = 0;
     private Boolean hasLifesteal = false;
     private Integer numTurnsLifesteal = 0;
+    private final ListenerForIndividualMinion listener;
 
     public Minion(Card card, MinionInfo minionInfo) {
         this.cardDef = (MinionCardDefinition) card;
@@ -48,6 +55,8 @@ public abstract class Minion {
         CraftMob mob = (CraftMob) minionInfo.entity();
         this.nmsMob = (PathfinderMob) mob.getHandle();
         setupGoals();
+        listener = new ListenerForIndividualMinion(this);
+        Bukkit.getPluginManager().registerEvents(listener, getPlugin());
     }
 
     public Integer baseStrength() {
@@ -120,12 +129,16 @@ public abstract class Minion {
         this.attacksLeft = attacksLeft;
     }
 
-    public void onEnter() {}
+    public void onEnter() {
+        Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(this));
+    }
 
     public void onDeath() {
+        HandlerList.unregisterAll(listener);
         minionInfo.entity().setHealth(0);
         minionInfo.stadium().updateCustomName(this);
         minionInfo.stadium().minionDied(minionInfo.spot());
+        Bukkit.getPluginManager().callEvent(new MinionDiedEvent(this));
     }
 
     public void onTurnStart() {
@@ -140,6 +153,29 @@ public abstract class Minion {
         if (!this.cardDef().isRanged() && this.minionInfo().stadium().hasAllyMinionInFront(this.minionInfo().spot())) {
             attacksLeft = 0;
         }
+    }
+
+    public void attackInFront() {
+        if (attacksLeft <= 0) {
+            return;
+        }
+        LivingEntity target = minionInfo.stadium().getTargetInFront(this);
+        nmsMob.setTarget(((CraftLivingEntity) target).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
+        if (cardDef().isRanged()) {
+            DustOptions dustOptions = new DustOptions(minionInfo().master().equals(minionInfo().stadium().player1()) ? Color.GREEN : Color.ORANGE, 1);
+            nmsMob.goalSelector.addGoal(1, new ShootParticlesGoal<>(this, target, Particle.REDSTONE, strength(), dustOptions));
+        } else {
+            nmsMob.goalSelector.addGoal(1, new MeleeAttackGoal(nmsMob, 1, true));
+        }
+    }
+
+    public void onCombatEnd() {
+        shouldIBeDead();
+        setupGoals();
+    }
+
+    public void onTurnEnd() {
+
     }
 
     // See PackLeader for an example
@@ -219,32 +255,9 @@ public abstract class Minion {
         return temporaryBonusStrength > 0;
     }
 
-    public void onCombatEnd() {
-        shouldIBeDead();
-        setupGoals();
-    }
-
     private void shouldIBeDead() {
         if (health <= 0) {
             this.onDeath();
-        }
-    }
-
-    public void onTurnEnd() {
-
-    }
-
-    public void attackInFront() {
-        if (attacksLeft <= 0) {
-            return;
-        }
-        LivingEntity target = minionInfo.stadium().getTargetInFront(this);
-        nmsMob.setTarget(((CraftLivingEntity) target).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
-        if (cardDef().isRanged()) {
-            DustOptions dustOptions = new DustOptions(minionInfo().master().equals(minionInfo().stadium().player1()) ? Color.GREEN : Color.ORANGE, 1);
-            nmsMob.goalSelector.addGoal(1, new ShootParticlesGoal<>(this, target, Particle.REDSTONE, strength(), dustOptions));
-        } else {
-            nmsMob.goalSelector.addGoal(1, new MeleeAttackGoal(nmsMob, 1, true));
         }
     }
 

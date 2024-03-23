@@ -40,7 +40,7 @@ public class ScoreboardManager implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler (priority = EventPriority.HIGH)
     private void onCombatEnd(CombatEndEvent event) {
         updateObjective(event.getStadium().player1(), event.getStadium().player2());
         updateObjective(event.getStadium().player2(), event.getStadium().player1());

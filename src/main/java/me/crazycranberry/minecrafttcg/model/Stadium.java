@@ -4,6 +4,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
+import me.crazycranberry.minecrafttcg.events.MinionEnteredEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -667,27 +668,6 @@ public class Stadium {
         spot.minionSetRef().accept(this, null, false);
     }
 
-    private void minionEnteredStadium(Minion minion) {
-        if (minion == null) {
-            // TODO: Might want to actually have a minion object here so that we can do like "When a zombie died..."
-        } else {
-            allyMinionSpots(minion.minionInfo().master()).stream()
-                .filter(s -> !s.equals(minion.minionInfo().spot()))
-                .map(Spot::minionRef)
-                .filter(Objects::nonNull)
-                .map(mr -> mr.apply(this))
-                .filter(Objects::nonNull)
-                .forEach(m -> m.onAllyMinionEntered(minion));
-            enemyMinionSpots(minion.minionInfo().master()).stream()
-                .filter(s -> !s.equals(minion.minionInfo().spot()))
-                .map(Spot::minionRef)
-                .filter(Objects::nonNull)
-                .map(mr -> mr.apply(this))
-                .filter(Objects::nonNull)
-                .forEach(m -> m.onEnemyMinionEntered(minion));
-        }
-    }
-
     public int turn() {
         return turn;
     }
@@ -845,84 +825,84 @@ public class Stadium {
     public void setRed2BackMinion(Minion minion, boolean triggerOnEnter) {
         red2BackMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setRed2FrontMinion(Minion minion, boolean triggerOnEnter) {
         red2FrontMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setRed1FrontMinion(Minion minion, boolean triggerOnEnter) {
         red1FrontMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setRed1BackMinion(Minion minion, boolean triggerOnEnter) {
         red1BackMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setBlue2BackMinion(Minion minion, boolean triggerOnEnter) {
         blue2BackMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setBlue2FrontMinion(Minion minion, boolean triggerOnEnter) {
         blue2FrontMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setBlue1FrontMinion(Minion minion, boolean triggerOnEnter) {
         blue1FrontMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setBlue1BackMinion(Minion minion, boolean triggerOnEnter) {
         blue1BackMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setGreen2BackMinion(Minion minion, boolean triggerOnEnter) {
         green2BackMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setGreen2FrontMinion(Minion minion, boolean triggerOnEnter) {
         green2FrontMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setGreen1FrontMinion(Minion minion, boolean triggerOnEnter) {
         green1FrontMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 
     public void setGreen1BackMinion(Minion minion, boolean triggerOnEnter) {
         green1BackMinion = minion;
         if (triggerOnEnter) {
-            minionEnteredStadium(minion);
+            Bukkit.getPluginManager().callEvent(new MinionEnteredEvent(minion));
         }
     }
 }

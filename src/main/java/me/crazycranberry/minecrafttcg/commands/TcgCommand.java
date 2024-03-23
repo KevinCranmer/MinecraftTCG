@@ -117,16 +117,16 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
     }
 
     private Inventory createTcgInventory(Player p) {
-        Inventory tcgInv = Bukkit.createInventory(null, 45, TCG_MENU_NAME);
-        tcgInv.setItem(3, createMenuItem(IRON_AXE, "/duel", GREEN));
+        Inventory tcgInv = Bukkit.createInventory(null, 36, TCG_MENU_NAME);
+        tcgInv.setItem(2, createMenuItem(IRON_AXE, "/duel", GREEN));
         tcgInv.setItem(4, createMenuItem(DIAMOND_AXE, "/rankedduel", AQUA));
-        tcgInv.setItem(5, createMenuItem(DIAMOND, "/ranks", AQUA));
-        tcgInv.setItem(12, createDuelAcceptItem(p, false));
-        tcgInv.setItem(13, createDuelAcceptItem(p, true));
-        tcgInv.setItem(30, createMenuItem(BOOK, "/deck", GOLD));
-        tcgInv.setItem(31, createMenuItem(BOOKSHELF, "/collection", LIGHT_PURPLE));
-        tcgInv.setItem(32, createAutoCollectItem(p));
-        tcgInv.setItem(40, createMenuItem(PAPER, "/tcg info", GRAY));
+        tcgInv.setItem(6, createMenuItem(DIAMOND, "/ranks", AQUA));
+        tcgInv.setItem(3, createDuelAcceptItem(p, false));
+        tcgInv.setItem(5, createDuelAcceptItem(p, true));
+        tcgInv.setItem(21, createMenuItem(BOOK, "/deck", GOLD));
+        tcgInv.setItem(22, createMenuItem(BOOKSHELF, "/collection", LIGHT_PURPLE));
+        tcgInv.setItem(23, createAutoCollectItem(p));
+        tcgInv.setItem(31, createMenuItem(PAPER, "/tcg info", GRAY));
         return tcgInv;
     }
 

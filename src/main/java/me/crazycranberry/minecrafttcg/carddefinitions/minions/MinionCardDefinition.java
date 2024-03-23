@@ -4,6 +4,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.registerGenericAttribute;
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE;
 
