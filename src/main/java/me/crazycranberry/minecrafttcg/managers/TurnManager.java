@@ -231,8 +231,8 @@ public class TurnManager implements Listener {
         if (event.isTie()) {
             sendTitles(String.format("%sIt's a tie!%s", RED, RESET), event.stadium());
             rankChange = (int) ((proportionalDiff * (MAX_RANK_GAIN_PER_TIE - MIN_RANK_GAIN_PER_TIE)) + MIN_RANK_GAIN_PER_TIE);
-            playerGainingRank = winnerRank > loserRank ? event.winner() : event.loser();
-            playerLosingRank = winnerRank > loserRank ? event.loser() : event.winner();
+            playerGainingRank = winnerRank > loserRank ? event.loser() : event.winner();
+            playerLosingRank = winnerRank > loserRank ? event.winner() : event.loser();
         } else {
             sendTitles(String.format("%s%s is the winner!%s", event.winner().equals(event.stadium().player1()) ? GREEN : GOLD, event.winner().getName(), RESET), event.stadium());
             playerGainingRank = event.winner();
@@ -335,7 +335,7 @@ public class TurnManager implements Listener {
                 Constructor<? extends Event> c = turnPhase.nextPhaseRequestEventClass().getConstructor(Stadium.class);
                 c.setAccessible(true);
                 Event nextPhaseEvent = c.newInstance(stadium);
-                Bukkit.getPluginManager().callEvent(nextPhaseEvent);
+                stadium.callThisPhaseEvent(nextPhaseEvent);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 logger().severe("Exception trying to create the next phases event: " + e.getMessage());
             }

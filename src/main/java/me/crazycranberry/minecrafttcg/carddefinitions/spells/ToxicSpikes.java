@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 
 public class ToxicSpikes implements SpellCardDefinition {
     private final static Integer numTicks = 20;
@@ -42,6 +44,7 @@ public class ToxicSpikes implements SpellCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
+        newAnimationStarted(stadium, caster, 1);
         new ToxicTracker(stadium.targetedRow(caster), stadium, caster);
     }
 
@@ -64,6 +67,8 @@ public class ToxicSpikes implements SpellCardDefinition {
             taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
                 if (progressInTicks >= numTicks) {
                     Bukkit.getScheduler().cancelTask(taskId);
+                    oneAnimationFinished(stadium, caster);
+                    return;
                 } else if (progressInTicks == (numTicks / 2)) {
                     spots.stream()
                             .map(s -> s.minionRef().apply(stadium))

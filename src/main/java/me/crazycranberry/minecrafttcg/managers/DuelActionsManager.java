@@ -9,6 +9,8 @@ import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.CantripCardDefini
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
+import me.crazycranberry.minecrafttcg.events.CardAnimationFinishedEvent;
+import me.crazycranberry.minecrafttcg.events.CardAnimationStartedEvent;
 import me.crazycranberry.minecrafttcg.events.CastCardEvent;
 import me.crazycranberry.minecrafttcg.events.CastCardTargetEvent;
 import me.crazycranberry.minecrafttcg.managers.utils.CastInProgress;
@@ -144,6 +146,16 @@ public class DuelActionsManager implements Listener {
     }
 
     @EventHandler
+    private void onCardAnimationStarted(CardAnimationStartedEvent event) {
+        event.stadium().cardAnimationStarted();
+    }
+
+    @EventHandler
+    private void onCardAnimationFinished(CardAnimationFinishedEvent event) {
+        event.stadium().cardAnimationFinished();
+    }
+
+    @EventHandler
     private void onTryingToDropCard(PlayerDropItemEvent event) {
         if (StadiumManager.stadium(event.getPlayer().getLocation()) != null) {
             event.setCancelled(true);
@@ -169,19 +181,22 @@ public class DuelActionsManager implements Listener {
     }
 
     private void castMinion(Player player, Stadium stadium, MinionCardDefinition minionCard, List<Spot> targets) {
-        minionCard.onCast(stadium, player, targets);
+        minionCard.onCast(stadium, player, targets, minionCard);
     }
 
     private void castCantrip(Player player, Stadium stadium, CantripCardDefinition cantripCard, List<Spot> targets) {
-        cantripCard.onCast(stadium, player, targets);
+        cantripCard.onCast(stadium, player, targets, cantripCard);
     }
 
     private void castSpell(Player player, Stadium stadium, SpellCardDefinition spellCard, List<Spot> targets) {
-        spellCard.onCast(stadium, player, targets);
+        spellCard.onCast(stadium, player, targets, spellCard);
     }
 
     private boolean castable(Player p, Stadium stadium, Card card) {
-        if (card.cost() > stadium.playerMana(p)) {
+        if (stadium.isCardAnimationInProgress()) {
+            p.sendMessage(String.format("%s%sCannot cast cards while other card animations are playing.%s", GRAY, ITALIC, RESET));
+            return false;
+        } else if (card.cost() > stadium.playerMana(p)) {
             p.sendMessage(String.format("%s%sYou only have %s mana, this card costs %s.%s", GRAY, ITALIC, stadium.playerMana(p), card.cost(), RESET));
             return false;
         } else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {

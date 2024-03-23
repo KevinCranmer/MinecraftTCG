@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 import static org.bukkit.Sound.ENTITY_WARDEN_SONIC_CHARGE;
 
 public class TheVoid implements SpellCardDefinition {
@@ -44,6 +46,7 @@ public class TheVoid implements SpellCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
+        newAnimationStarted(stadium, caster, 1);
         new TheVoidTracker(stadium, caster);
     }
 
@@ -78,7 +81,9 @@ public class TheVoid implements SpellCardDefinition {
         public void startLoop(Stadium stadium, Player caster) {
             taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
                 if (progressInTicks >= numTicks) {
+                    oneAnimationFinished(stadium, caster);
                     Bukkit.getScheduler().cancelTask(taskId);
+                    return;
                 } else if (progressInTicks == (numTicks / 2)) {
                     stadium.allyMinionSpots(caster).stream()
                         .map(s -> s.minionRef().apply(stadium))

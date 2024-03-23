@@ -19,12 +19,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -88,6 +88,8 @@ public class Stadium {
     private int player1MillDamage = 1;
     private int player2MillDamage = 1;
     public int turn = 0; //TODO: MAKE NOT PUBLIC
+    private boolean cardAnimationInProgress = false;
+    private Event phaseEventToCallAfterAnimationFinishes = null;
     private TurnPhase phase;
     private Minion red2BackMinion;
     private Minion red2FrontMinion;
@@ -152,6 +154,7 @@ public class Stadium {
         } else if (phase.equals(POST_COMBAT_CLEANUP)) {
             postCombatCleanUp();
         }
+        phaseEventToCallAfterAnimationFinishes = null;
     }
 
     private void postCombatCleanUp() {
@@ -439,6 +442,29 @@ public class Stadium {
         }
         if (player1DoneMulliganing && player2DoneMulliganing) {
             Bukkit.getPluginManager().callEvent(new FirstPreCombatPhaseStartedEvent(this));
+        }
+    }
+
+    public boolean isCardAnimationInProgress() {
+        return cardAnimationInProgress;
+    }
+
+    public void cardAnimationStarted() {
+        cardAnimationInProgress = true;
+    }
+
+    public void cardAnimationFinished() {
+        cardAnimationInProgress = false;
+        if (phaseEventToCallAfterAnimationFinishes != null) {
+            Bukkit.getPluginManager().callEvent(phaseEventToCallAfterAnimationFinishes);
+        }
+    }
+
+    public void callThisPhaseEvent(Event phaseEvent) {
+        if (cardAnimationInProgress) {
+            phaseEventToCallAfterAnimationFinishes = phaseEvent;
+        } else {
+            Bukkit.getPluginManager().callEvent(phaseEvent);
         }
     }
 

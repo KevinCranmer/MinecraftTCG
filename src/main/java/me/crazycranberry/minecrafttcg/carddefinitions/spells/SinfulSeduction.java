@@ -24,6 +24,8 @@ import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 import static org.bukkit.Color.BLACK;
 import static org.bukkit.Color.MAROON;
 import static org.bukkit.Color.OLIVE;
@@ -62,6 +64,7 @@ public class SinfulSeduction implements SpellCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
+        newAnimationStarted(stadium, caster, 1);
         new ParticleBeamTracker(stadium, caster, List.of(targets.get(0).minionRef().apply(stadium).minionInfo().entity()), Particle.HEART, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, SinfulSeduction::onParticleBeamCollided);
         playHarpScale(caster);
     }
@@ -99,6 +102,7 @@ public class SinfulSeduction implements SpellCardDefinition {
         if (stadium.isWalled(target)) {
             target.minionInfo().entity().teleport(stadium.locOfSpot(target.minionInfo().spot()));
         }
+        oneAnimationFinished(stadium, caster);
     }
 
     @Override

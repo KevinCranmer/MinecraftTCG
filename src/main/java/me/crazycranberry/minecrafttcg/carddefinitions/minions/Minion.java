@@ -174,7 +174,7 @@ public abstract class Minion {
         if (wasProtected) {
             return;
         }
-        health = health - damageReceived;
+        health = Math.min(health - damageReceived, maxHealth);
         minionInfo.stadium().updateCustomName(this);
         this.minionInfo().entity().damage(0);
         if (!minionInfo.stadium().phase().equals(TurnPhase.COMBAT_PHASE)) { // Minions don't die during combat until they get their hits off

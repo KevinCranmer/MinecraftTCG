@@ -1,0 +1,36 @@
+package me.crazycranberry.minecrafttcg.events;
+
+import me.crazycranberry.minecrafttcg.model.Stadium;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+
+public class CardAnimationFinishedEvent extends Event {
+    private static final HandlerList HANDLERS = new HandlerList();
+
+    private final Stadium stadium;
+    private final Player caster;
+
+    public CardAnimationFinishedEvent(Stadium stadium, Player caster) {
+        this.stadium = stadium;
+        this.caster = caster;
+    }
+
+    public Stadium stadium() {
+        return stadium;
+    }
+
+    public Player caster() {
+        return caster;
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
+    }
+}

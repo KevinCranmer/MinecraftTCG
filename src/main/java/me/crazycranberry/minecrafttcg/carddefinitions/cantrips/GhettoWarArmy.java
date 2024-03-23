@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.DINGY_SKELETON;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.SEWER_ZOMBIE;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition.summonMinion;
@@ -46,6 +48,7 @@ public class GhettoWarArmy implements CantripCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
+        newAnimationStarted(stadium, caster, 1);
         caster.getWorld().playSound(caster.getLocation(), ENTITY_WARDEN_DIG, 0.7f, 1);
         startSpawningTheseBoys(stadium, caster);
     }
@@ -56,6 +59,7 @@ public class GhettoWarArmy implements CantripCardDefinition {
         spotProgress = 0;
         taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             if (spotProgress >= spotsToSpawn.size()) {
+                oneAnimationFinished(stadium, caster);
                 Bukkit.getScheduler().cancelTask(taskId);
                 return;
             }

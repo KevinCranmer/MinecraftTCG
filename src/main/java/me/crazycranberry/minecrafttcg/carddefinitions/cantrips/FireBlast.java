@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Optional;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.handleOverkillDamage;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_PROXY_ENTITY_TYPE;
 
@@ -43,6 +45,7 @@ public class FireBlast implements CantripCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
+        newAnimationStarted(stadium, caster, 1);
         new ParticleBeamTracker(stadium, caster, List.of(targets.get(0).minionRef().apply(stadium).minionInfo().entity()), Particle.LAVA, null, 0.8, 3, FireBlast::beamCollided);
     }
 
@@ -59,5 +62,6 @@ public class FireBlast implements CantripCardDefinition {
     public static void beamCollided(Stadium stadium, Player caster, ParticleBeamInfo beam) {
         Optional<Minion> maybeTarget = stadium.minionFromEntity(beam.target());
         maybeTarget.ifPresent(minion -> handleOverkillDamage(minion, damage, null, false));
+        oneAnimationFinished(stadium, caster);
     }
 }

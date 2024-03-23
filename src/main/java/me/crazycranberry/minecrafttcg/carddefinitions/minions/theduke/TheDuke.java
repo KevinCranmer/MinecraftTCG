@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 
 public class TheDuke extends Minion {
     public TheDuke(MinionInfo minionInfo) {
@@ -40,6 +42,7 @@ public class TheDuke extends Minion {
             }
         }
         if (hasMike && hasKevin) {
+            newAnimationStarted(this.minionInfo().stadium(), this.minionInfo().master(), 1);
             new ExodiaTracker(this.minionInfo().stadium(), this.minionInfo().master());
         }
     }
@@ -64,13 +67,14 @@ public class TheDuke extends Minion {
                     exodiaInfos.add(new ExodiaInfo(minion, stadium.opponent(caster)));
                 }
             }
-            startLoop(stadium.startingCorner());
+            startLoop(stadium.startingCorner(), stadium, caster);
         }
 
-        public void startLoop(Location startingLoc) {
+        public void startLoop(Location startingLoc, Stadium stadium, Player master) {
             taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
                 for (ExodiaInfo exodia : exodiaInfos) {
                     if (progressTicks > ticksPhase1 + ticksPhase2 + ticksPhase3) {
+                        oneAnimationFinished(stadium, master);
                         exodia.target().damage(1000);
                         Bukkit.getScheduler().cancelTask(taskId);
                         break;

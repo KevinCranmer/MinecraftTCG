@@ -21,6 +21,8 @@ import java.util.List;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.ANIMAL_TYPES;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition.summonMinion;
 import static org.bukkit.Particle.SPELL_INSTANT;
@@ -59,12 +61,14 @@ public class ZooExpedition implements SpellCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
+        newAnimationStarted(stadium, caster, 1);
         progressIndex = 0;
         tickProgress = 0;
         minionsToTransform = stadium.allMinions();
         Collections.shuffle(minionsToTransform);
         taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             if (progressIndex >= minionsToTransform.size()) {
+                oneAnimationFinished(stadium, caster);
                 Bukkit.getScheduler().cancelTask(taskId);
                 return;
             }

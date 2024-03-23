@@ -1,5 +1,8 @@
 package me.crazycranberry.minecrafttcg.carddefinitions;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.CantripCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.SpellCardDefinition;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.NamespacedKey;
@@ -19,4 +22,16 @@ public interface Card {
     String cardDescription();
     CardRarity rarity();
     void onCast(Stadium stadium, Player caster, List<Spot> targets);
+
+    default void onCast(Stadium stadium, Player caster, List<Spot> targets, MinionCardDefinition cardBeingCast) {
+        onCast(stadium, caster, targets);
+    }
+
+    default void onCast(Stadium stadium, Player caster, List<Spot> targets, CantripCardDefinition cardBeingCast) {
+        onCast(stadium, caster, targets);
+    }
+
+    default void onCast(Stadium stadium, Player caster, List<Spot> targets, SpellCardDefinition cardBeingCast) {
+        onCast(stadium, caster, targets);
+    }
 }
