@@ -84,7 +84,7 @@ public interface MinionCardDefinition extends Card {
             }
             entityAdjustment.accept(entity);
             minion = c.newInstance(new MinionInfo(stadium, target, entity, caster));
-            target.minionSetRef().accept(stadium, minion, triggerOnEnter);
+            target.minionSetRef().accept(stadium, minion);
             stadium.showName(target);
             if (triggerOnEnter) {
                 minion.onEnter();

@@ -92,18 +92,7 @@ public class StartingWorldConfigUtils {
     }
 
     private static void teleportInACoupleMs(Player p, Location destination) {
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        Bukkit.getServer().getScheduler().callSyncMethod(getPlugin(), () -> {
-                            p.teleport(destination);
-                            return true;
-                        });
-                    }
-                },
-                100
-        );
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> p.teleport(destination), 2);
     }
 
     private static Location findNearbyBed(Location maybeSpawn) {

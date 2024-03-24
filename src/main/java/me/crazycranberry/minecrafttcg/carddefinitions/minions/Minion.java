@@ -135,9 +135,9 @@ public abstract class Minion {
 
     public void onDeath() {
         HandlerList.unregisterAll(listener);
-        minionInfo.entity().setHealth(0);
         minionInfo.stadium().updateCustomName(this);
         minionInfo.stadium().minionDied(minionInfo.spot());
+        minionInfo.entity().setHealth(0);
         Bukkit.getPluginManager().callEvent(new MinionDiedEvent(this));
     }
 
@@ -156,7 +156,7 @@ public abstract class Minion {
     }
 
     public void attackInFront() {
-        if (attacksLeft <= 0) {
+        if (attacksLeft <= 0 || strength() == 0) {
             return;
         }
         LivingEntity target = minionInfo.stadium().getTargetInFront(this);
@@ -200,7 +200,7 @@ public abstract class Minion {
             if (this.minionInfo().stadium().phase().equals(TurnPhase.COMBAT_PHASE)) {
                 this.minionInfo().stadium().pendingHealForPlayer(this.minionInfo().master(), damageDealt);
             } else {
-                this.minionInfo().master().setHealth(Math.min(this.minionInfo().master().getHealth() + damageDealt, this.minionInfo().master().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+                this.minionInfo().master().setHealth(Math.max(Math.min(this.minionInfo().master().getHealth() + damageDealt, this.minionInfo().master().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
             }
         }
     }

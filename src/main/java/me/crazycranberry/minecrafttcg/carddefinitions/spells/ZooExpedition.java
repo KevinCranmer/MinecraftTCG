@@ -81,7 +81,7 @@ public class ZooExpedition implements SpellCardDefinition {
     }
 
     private void transformMinion(Minion minion) {
-        minion.minionInfo().spot().minionSetRef().accept(minion.minionInfo().stadium(), null, false);
+        minion.minionInfo().spot().minionSetRef().accept(minion.minionInfo().stadium(), null);
         LivingEntity entity = minion.minionInfo().entity();
         entity.remove();
         entity.getWorld().playSound(entity.getEyeLocation(), BLOCK_SPONGE_ABSORB, 1, 1);

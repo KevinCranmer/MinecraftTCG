@@ -95,8 +95,8 @@ public class SinfulSeduction implements SpellCardDefinition {
         Spot newHome = getNewHome(stadium, oldHome);
         target.minionInfo().setSpot(newHome);
         target.minionInfo().setMaster(caster);
-        newHome.minionSetRef().accept(stadium, target, false);
-        oldHome.minionSetRef().accept(stadium, null, false);
+        newHome.minionSetRef().accept(stadium, target);
+        oldHome.minionSetRef().accept(stadium, null);
         target.setupGoals();
         stadium.updateCustomName(target);
         if (stadium.isWalled(target)) {
