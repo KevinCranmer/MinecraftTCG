@@ -10,6 +10,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Protect;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.RadicalShift;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Switch;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.abee.ABeeDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.abeekeeper.ABeeKeeperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.aggressivebandit.AggressiveBanditDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.apprenticearcher.ApprenticeArcherDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bacon.BaconDef;
@@ -60,6 +61,7 @@ public enum CardEnum {
 
     // Minions
     A_BEE(new ABeeDef()),
+    A_BEE_KEEPER(new ABeeKeeperDef()),
     AGGRESSIVE_BANDIT(new AggressiveBanditDef()),
     APPRENTICE_ARCHER(new ApprenticeArcherDef()),
     BACON(new BaconDef()),
