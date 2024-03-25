@@ -3,7 +3,6 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestorytelle
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.theduke.TheDukeDef;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
@@ -37,7 +36,7 @@ public class MikeTheStoryTellerDef implements MinionCardDefinition {
 
     @Override
     public Integer maxHealth() {
-        return 6;
+        return 5;
     }
 
     @Override

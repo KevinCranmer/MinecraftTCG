@@ -41,7 +41,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.TICKS_PER_SECOND;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
@@ -64,15 +63,8 @@ import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.GREEN;
-import static org.bukkit.ChatColor.LIGHT_PURPLE;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
-import static org.bukkit.Material.BOOK;
-import static org.bukkit.Material.BOOKSHELF;
-import static org.bukkit.Material.DIAMOND;
-import static org.bukkit.Material.DIAMOND_AXE;
-import static org.bukkit.Material.IRON_AXE;
-import static org.bukkit.Material.PAPER;
 
 public class TurnManager implements Listener {
     public static final int TITLE_DURATION = 80; // In ticks

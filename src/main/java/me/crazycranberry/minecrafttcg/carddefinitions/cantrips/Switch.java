@@ -4,7 +4,6 @@ import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.MultiTargetCard;
 import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;

@@ -31,7 +31,7 @@ public class KevinTheSmithDef implements MinionCardDefinition {
 
     @Override
     public Integer strength() {
-        return 6;
+        return 5;
     }
 
     @Override

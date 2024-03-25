@@ -25,6 +25,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 
 public abstract class Minion {
@@ -38,6 +41,8 @@ public abstract class Minion {
     private PathfinderMob nmsMob;
     private Integer numTurnsProtected = 0;
     private Integer temporaryBonusStrength = 0;
+    private Map<Minion, Integer> staticBonusStrength = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
+    private Map<Minion, Integer> staticBonusMaxHealth = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
     private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
     private Integer numTurnsOverkill = 0;
     private Boolean isFlying = false;
@@ -64,7 +69,7 @@ public abstract class Minion {
     }
 
     public Integer strength() {
-        return strength + temporaryBonusStrength;
+        return strength + temporaryBonusStrength + staticBonusStrength.values().stream().reduce(0, Integer::sum);
     }
 
     public Integer health() {
@@ -72,7 +77,7 @@ public abstract class Minion {
     }
 
     public Integer maxHealth() {
-        return maxHealth;
+        return maxHealth + staticBonusMaxHealth.values().stream().reduce(0, Integer::sum);
     }
 
     public void setMaxHealth(int newMaxHealth) {
@@ -83,6 +88,7 @@ public abstract class Minion {
     public void setHealthNoHealTrigger(int newHealth) {
         health = newHealth;
         minionInfo.stadium().updateCustomName(this);
+        shouldIBeDead();
     }
 
     public MinionCardDefinition cardDef() {
@@ -150,7 +156,7 @@ public abstract class Minion {
     }
 
     public void onCombatStart() {
-        if (!this.cardDef().isRanged() && this.minionInfo().stadium().hasAllyMinionInFront(this.minionInfo().spot())) {
+        if ((!this.cardDef().isRanged() && this.minionInfo().stadium().hasAllyMinionInFront(this.minionInfo().spot())) || this.strength() == 0) {
             attacksLeft = 0;
         }
     }
@@ -210,7 +216,7 @@ public abstract class Minion {
         if (wasProtected) {
             return;
         }
-        health = Math.min(health - damageReceived, maxHealth);
+        health = Math.min(health - damageReceived, maxHealth());
         minionInfo.stadium().updateCustomName(this);
         this.minionInfo().entity().damage(0);
         if (!minionInfo.stadium().phase().equals(TurnPhase.COMBAT_PHASE)) { // Minions don't die during combat until they get their hits off
@@ -219,10 +225,12 @@ public abstract class Minion {
     }
 
     public void onHeal(Integer healFor) {
-        health = Math.min(maxHealth, health + healFor);
-        minionInfo.entity().getWorld().spawnParticle(Particle.HEART, minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5);
-        minionInfo.stadium().updateCustomName(this);
-        minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 2, 1);
+        if (maxHealth() > health) {
+            health = Math.min(maxHealth(), health + healFor);
+            minionInfo.entity().getWorld().spawnParticle(Particle.HEART, minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5);
+            minionInfo.stadium().updateCustomName(this);
+            minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 2, 1);
+        }
     }
 
     public void unstuckify() {
@@ -233,8 +241,25 @@ public abstract class Minion {
 
     public void giveTemporaryStrength(Integer bonusStrength) {
         temporaryBonusStrength += bonusStrength;
-        minionInfo.stadium().updateCustomName(this);
         minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.BLOCK_ANVIL_USE, 1, 1);
+        this.minionInfo().stadium().updateCustomName(this);
+    }
+
+    public void setStaticStrengthBonus(Minion source, Integer staticStrength) {
+        staticBonusStrength.put(source, staticStrength);
+        this.minionInfo().stadium().updateCustomName(this);
+    }
+
+    public void setStaticMaxHealthBonus(Minion source, Integer staticMaxHealth) {
+        Integer currentMaxHealthBonus = staticBonusMaxHealth.get(source);
+        int healthChange;
+        if (currentMaxHealthBonus != null) {
+            healthChange = staticMaxHealth - currentMaxHealthBonus;
+        } else {
+            healthChange = staticMaxHealth;
+        }
+        this.setHealthNoHealTrigger(this.health() + healthChange);
+        staticBonusMaxHealth.put(source, staticMaxHealth);
         this.minionInfo().stadium().updateCustomName(this);
     }
 

@@ -53,7 +53,6 @@ import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.save
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.BIRCH_BUTTON;
 import static org.bukkit.Material.BIRCH_WALL_SIGN;
-import static org.bukkit.Material.FIRE;
 import static org.bukkit.Material.OAK_WALL_SIGN;
 import static org.bukkit.Material.REDSTONE_LAMP;
 import static org.bukkit.Material.STONE_BUTTON;
@@ -114,22 +113,31 @@ public class StadiumManager implements Listener {
         }
     }
 
-    public static void updateManaForANewTurn(Stadium stadium, int turn) {
+    public static void updateManaLamps(Stadium stadium) {
+        updateManaLampsForPlayer(stadium, stadium.player1());
+        updateManaLampsForPlayer(stadium, stadium.player2());
+    }
+
+    public static void updateManaLampsForPlayer(Stadium stadium, Player player) {
+        boolean isPlayer1 = stadium.player1().equals(player);
+        int x, y, z;
+        if (isPlayer1) {
+            x = (int) PLAYER_1_MANA_OFFSET.getX();
+            y = (int) PLAYER_1_MANA_OFFSET.getY();
+            z = (int) PLAYER_1_MANA_OFFSET.getZ();
+        } else {
+            x = (int) PLAYER_2_MANA_OFFSET.getX();
+            y = (int) PLAYER_2_MANA_OFFSET.getY();
+            z = (int) PLAYER_2_MANA_OFFSET.getZ();
+        }
         Block startingCorner = stadium.startingCorner().getBlock();
-        int x1 = (int) PLAYER_1_MANA_OFFSET.getX(), y1 = (int) PLAYER_1_MANA_OFFSET.getY(), z1 = (int) PLAYER_1_MANA_OFFSET.getZ();
-        int x2 = (int) PLAYER_2_MANA_OFFSET.getX(), y2 = (int) PLAYER_2_MANA_OFFSET.getY(), z2 = (int) PLAYER_2_MANA_OFFSET.getZ();
-        for (int i = 0; i < Math.min(turn, 10); i++) {
+        for (int i = 0; i < Math.min(stadium.playerMaxMana(player), 10); i++) {
             int passedHalfway = i / 5;
-            Block lamp1 = startingCorner.getRelative(x1, y1, z1+passedHalfway+i);
+            Block lamp1 = startingCorner.getRelative(x, y, stadium.player1().equals(player) ? z+passedHalfway+i : z-passedHalfway-i);
             lamp1.setType(REDSTONE_LAMP);
             Lightable lightable1 = (Lightable) lamp1.getBlockData();
-            lightable1.setLit(true);
+            lightable1.setLit(stadium.playerMana(player) > i);
             lamp1.setBlockData(lightable1);
-            Block lamp2 = startingCorner.getRelative(x2, y2, z2-passedHalfway-i);
-            lamp2.setType(REDSTONE_LAMP);
-            Lightable lightable2 = (Lightable) lamp2.getBlockData();
-            lightable2.setLit(true);
-            lamp2.setBlockData(lightable2);
         }
     }
 

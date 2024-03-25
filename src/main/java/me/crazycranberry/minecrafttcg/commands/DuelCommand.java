@@ -30,7 +30,6 @@ import java.util.stream.Stream;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.commands.TcgCommand.MENU_KEY;
 import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;

@@ -1,6 +1,5 @@
 package me.crazycranberry.minecrafttcg.carddefinitions;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 

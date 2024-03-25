@@ -3,7 +3,12 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Map;
 
 public class HungryZombieDef implements MinionCardDefinition {
     @Override
@@ -49,5 +54,12 @@ public class HungryZombieDef implements MinionCardDefinition {
     @Override
     public String signDescription() {
         return "";
+    }
+
+    @Override
+    public Map<EquipmentSlot, ItemStack> equipment() {
+        return Map.of(
+            EquipmentSlot.CHEST, new ItemStack(Material.LEATHER_CHESTPLATE)
+        );
     }
 }

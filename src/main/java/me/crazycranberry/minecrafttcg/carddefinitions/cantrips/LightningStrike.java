@@ -2,12 +2,10 @@ package me.crazycranberry.minecrafttcg.carddefinitions.cantrips;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.ParticleBeamInfo;
-import me.crazycranberry.minecrafttcg.carddefinitions.ParticleBeamTracker;
 import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
-import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 

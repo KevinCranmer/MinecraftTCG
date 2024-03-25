@@ -28,7 +28,7 @@ public class BorsharakDef implements MinionCardDefinition {
 
     @Override
     public Integer strength() {
-        return 4;
+        return 3;
     }
 
     @Override

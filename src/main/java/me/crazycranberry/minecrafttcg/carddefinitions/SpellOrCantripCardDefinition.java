@@ -4,8 +4,6 @@ import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public interface SpellOrCantripCardDefinition extends Card {
     TargetRules targetRules();
 

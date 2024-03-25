@@ -2,7 +2,6 @@ package me.crazycranberry.minecrafttcg.carddefinitions.spells;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
-import me.crazycranberry.minecrafttcg.carddefinitions.ParticleBeamInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
@@ -81,7 +80,7 @@ public class ZooExpedition implements SpellCardDefinition {
     }
 
     private void transformMinion(Minion minion) {
-        minion.minionInfo().spot().minionSetRef().accept(minion.minionInfo().stadium(), null);
+        minion.minionInfo().spot().minionSetRef().accept(minion.minionInfo().stadium(), null, true);
         LivingEntity entity = minion.minionInfo().entity();
         entity.remove();
         entity.getWorld().playSound(entity.getEyeLocation(), BLOCK_SPONGE_ABSORB, 1, 1);

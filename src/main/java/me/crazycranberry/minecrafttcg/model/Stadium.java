@@ -1,10 +1,10 @@
 package me.crazycranberry.minecrafttcg.model;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
-import me.crazycranberry.minecrafttcg.events.MinionEnteredEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,6 +38,7 @@ import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_1_SIGN_OFFSET;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_2_SIGN_OFFSET;
+import static me.crazycranberry.minecrafttcg.managers.StadiumManager.updateManaLampsForPlayer;
 import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_1_BACK;
 import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_1_FRONT;
 import static me.crazycranberry.minecrafttcg.model.Spot.BLUE_2_BACK;
@@ -77,13 +78,17 @@ public class Stadium {
     private boolean player1DoneMulliganing = false;
     private boolean player2DoneMulliganing = false;
     private int player1Mana = 0;
+    private int player1MaxMana = 0;
     private int player2Mana = 0;
+    private int player2MaxMana = 0;
     private int player1PendingDamage = 0;
     private int player1PendingHeal = 0;
     private int player1PendingDraws = 0;
+    private int player1PendingManaReplenish = 0;
     private int player2PendingDamage = 0;
     private int player2PendingHeal = 0;
     private int player2PendingDraws = 0;
+    private int player2PendingManaReplenish = 0;
     private final Deck player1Deck;
     private final Deck player2Deck;
     private int player1MillDamage = 1;
@@ -140,9 +145,11 @@ public class Stadium {
     public void updatePhase(TurnPhase turnPhase) {
         if (turnPhase == FIRST_PRECOMBAT_PHASE) {
             turn++;
-            player1Mana = Math.min(10, turn);
-            player2Mana = Math.min(10, turn);
-            StadiumManager.updateManaForANewTurn(this, turn);
+            addMaxMana(player1, 1);
+            addMaxMana(player2, 1);
+            player1Mana = player1MaxMana;
+            player2Mana = player2MaxMana;
+            StadiumManager.updateManaLamps(this);
         } else if (phase != null && phase.ordinal() + 1 != turnPhase.ordinal()) {
             System.out.println("What the hell, the turn phases are out of order!!!");
             System.out.println("We tried going from " + phase + " to " + turnPhase);
@@ -170,6 +177,11 @@ public class Stadium {
         for (int i = 0; i < player1PendingDraws; i++) {
             draw(player1);
         }
+        if (player1PendingManaReplenish > 0) {
+            player1Mana = Math.min(player1Mana + player1PendingManaReplenish, player1MaxMana);
+            player1PendingManaReplenish = 0;
+            updateManaLampsForPlayer(this, player1);
+        }
         player1PendingDamage = 0;
         player1PendingHeal = 0;
         player1PendingDraws = 0;
@@ -179,6 +191,11 @@ public class Stadium {
         player2.setHealth(Math.max(Math.min(player2.getHealth() + player2PendingHeal - player2PendingDamage, player2.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
         for (int i = 0; i < player2PendingDraws; i++) {
             draw(player2);
+        }
+        if (player2PendingManaReplenish > 0) {
+            player2Mana = Math.min(player2Mana + player2PendingManaReplenish, player2MaxMana);
+            player2PendingManaReplenish = 0;
+            updateManaLampsForPlayer(this, player2);
         }
         player2PendingDamage = 0;
         player2PendingHeal = 0;
@@ -260,6 +277,30 @@ public class Stadium {
         }
     }
 
+    public int playerMaxMana(Player p) {
+        if (p.equals(player1)) {
+            return player1MaxMana;
+        } else {
+            return player2MaxMana;
+        }
+    }
+
+    public void addMaxMana(Player p, int maxMana) {
+        if (p.equals(player1)) {
+            player1MaxMana = Math.min(player1MaxMana + maxMana, 10);
+        } else {
+            player2MaxMana = Math.min(player2MaxMana + maxMana, 10);
+        }
+    }
+
+    public void addMana(Player p, int bonusMana) {
+        if (p.equals(player1)) {
+            player1Mana += bonusMana;
+        } else {
+            player2Mana += bonusMana;
+        }
+    }
+
     public void pendingDamageForPlayer(Player p, Integer damage) {
         if (p.equals(player1)) {
             player1PendingDamage += damage;
@@ -281,6 +322,14 @@ public class Stadium {
             player1PendingDraws += damage;
         } else {
             player2PendingDraws += damage;
+        }
+    }
+
+    public void pendingManaReplenishForPlayer(Player p, Integer damage) {
+        if (p.equals(player1)) {
+            player1PendingManaReplenish += damage;
+        } else {
+            player2PendingManaReplenish += damage;
         }
     }
 
@@ -665,7 +714,7 @@ public class Stadium {
     }
 
     public void minionDied(Spot spot) {
-        spot.minionSetRef().accept(this, null);
+        spot.minionSetRef().accept(this, null, false); // The minions themselves cancel tasks when they die
     }
 
     public int turn() {
@@ -822,51 +871,87 @@ public class Stadium {
         return p.equals(player1) ? player2 : player1;
     }
 
-    public void setRed2BackMinion(Minion minion) {
+    public void setRed2BackMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && red2BackMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         red2BackMinion = minion;
     }
 
-    public void setRed2FrontMinion(Minion minion) {
+    public void setRed2FrontMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && red2FrontMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         red2FrontMinion = minion;
     }
 
-    public void setRed1FrontMinion(Minion minion) {
+    public void setRed1FrontMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && red1FrontMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         red1FrontMinion = minion;
     }
 
-    public void setRed1BackMinion(Minion minion) {
+    public void setRed1BackMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && red1BackMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         red1BackMinion = minion;
     }
 
-    public void setBlue2BackMinion(Minion minion) {
+    public void setBlue2BackMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && blue2BackMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         blue2BackMinion = minion;
     }
 
-    public void setBlue2FrontMinion(Minion minion) {
+    public void setBlue2FrontMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && blue2FrontMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         blue2FrontMinion = minion;
     }
 
-    public void setBlue1FrontMinion(Minion minion) {
+    public void setBlue1FrontMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && blue1FrontMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         blue1FrontMinion = minion;
     }
 
-    public void setBlue1BackMinion(Minion minion) {
+    public void setBlue1BackMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && blue1BackMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         blue1BackMinion = minion;
     }
 
-    public void setGreen2BackMinion(Minion minion) {
+    public void setGreen2BackMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && green2BackMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         green2BackMinion = minion;
     }
 
-    public void setGreen2FrontMinion(Minion minion) {
+    public void setGreen2FrontMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && green2FrontMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         green2FrontMinion = minion;
     }
 
-    public void setGreen1FrontMinion(Minion minion) {
+    public void setGreen1FrontMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && green1FrontMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         green1FrontMinion = minion;
     }
 
-    public void setGreen1BackMinion(Minion minion) {
+    public void setGreen1BackMinion(Minion minion, boolean cancelStaticTasks) {
+        if (cancelStaticTasks && green1BackMinion instanceof MinionWithStaticEffect staticMinion) {
+            staticMinion.cancelTask();
+        }
         green1BackMinion = minion;
     }
 }

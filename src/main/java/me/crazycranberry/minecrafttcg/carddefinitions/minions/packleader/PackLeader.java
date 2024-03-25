@@ -3,7 +3,6 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
-import me.crazycranberry.minecrafttcg.events.MinionEnteredEvent;
 import me.crazycranberry.minecrafttcg.model.Spot;
 
 import java.util.List;
@@ -26,11 +25,11 @@ public class PackLeader extends MinionWithStaticEffect {
             .toList();
     }
 
-    public static void effectForTargets(Minion m) {
-        m.addPermanentStrength(1);
+    public static void effectForTargets(Minion source, Minion target) {
+        target.setStaticStrengthBonus(source, 1);
     }
 
-    public static void removeEffect(Minion m) {
-        m.addPermanentStrength(-1);
+    public static void removeEffect(Minion source, Minion target) {
+        target.setStaticStrengthBonus(source, 0);
     }
 }

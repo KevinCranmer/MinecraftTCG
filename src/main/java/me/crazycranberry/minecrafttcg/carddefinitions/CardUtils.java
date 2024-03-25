@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_PROXY_ENTITY_TYPE;
-import static me.crazycranberry.minecrafttcg.managers.StadiumManager.stadium;
 
 public class CardUtils {
     public static List<Minion> minionsFromSpots(List<Spot> spots, Stadium stadium) {
@@ -72,8 +71,8 @@ public class CardUtils {
     public static void swapTwoSpots(Stadium stadium, Spot spot1, Spot spot2) {
         Minion firstMinion = spot1.minionRef().apply(stadium);
         Minion secondMinion = spot2.minionRef().apply(stadium);
-        spot1.minionSetRef().accept(stadium, secondMinion);
-        spot2.minionSetRef().accept(stadium, firstMinion);
+        spot1.minionSetRef().accept(stadium, secondMinion, false);
+        spot2.minionSetRef().accept(stadium, firstMinion, false);
         if (firstMinion != null) {
             firstMinion.minionInfo().entity().teleport(stadium.locOfSpot(spot2));
             firstMinion.minionInfo().setSpot(spot2);

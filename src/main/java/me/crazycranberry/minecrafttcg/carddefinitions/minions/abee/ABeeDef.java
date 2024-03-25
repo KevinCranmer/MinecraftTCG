@@ -3,7 +3,6 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.abee;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMac;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 

@@ -3,7 +3,6 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.theduke;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTellerDef;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 

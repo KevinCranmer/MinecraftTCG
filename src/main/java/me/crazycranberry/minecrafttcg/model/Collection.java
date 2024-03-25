@@ -245,7 +245,7 @@ public class Collection {
                 description.append(String.format("%s%s Target:%s %s%n", DARK_PURPLE, targetNumberString, RESET, targetsString(multiTargetCard.targetRulesForExtraTargets().get(i))));
             }
         } else if (card instanceof SpellOrCantripCardDefinition spellOrCantripCardDefinition) {
-                description.append(String.format("%starget:%s %s%n", DARK_PURPLE, RESET, targetsString(spellOrCantripCardDefinition.targetRules())));
+                description.append(String.format("%sTarget:%s %s%n", DARK_PURPLE, RESET, targetsString(spellOrCantripCardDefinition.targetRules())));
         }
         return description.toString();
     }

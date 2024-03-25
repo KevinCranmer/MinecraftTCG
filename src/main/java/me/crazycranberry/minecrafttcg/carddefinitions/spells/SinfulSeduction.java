@@ -9,30 +9,16 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
-import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
-import static org.bukkit.Color.BLACK;
-import static org.bukkit.Color.MAROON;
-import static org.bukkit.Color.OLIVE;
 import static org.bukkit.Sound.BLOCK_NOTE_BLOCK_HARP;
-import static org.bukkit.Sound.BLOCK_SLIME_BLOCK_HIT;
-import static org.bukkit.Sound.BLOCK_SLIME_BLOCK_PLACE;
-import static org.bukkit.Sound.BLOCK_SLIME_BLOCK_STEP;
 
 public class SinfulSeduction implements SpellCardDefinition {
     private final static Integer particleBeamNumParticles = 1;
@@ -95,8 +81,8 @@ public class SinfulSeduction implements SpellCardDefinition {
         Spot newHome = getNewHome(stadium, oldHome);
         target.minionInfo().setSpot(newHome);
         target.minionInfo().setMaster(caster);
-        newHome.minionSetRef().accept(stadium, target);
-        oldHome.minionSetRef().accept(stadium, null);
+        newHome.minionSetRef().accept(stadium, target, false);
+        oldHome.minionSetRef().accept(stadium, null, false);
         target.setupGoals();
         stadium.updateCustomName(target);
         if (stadium.isWalled(target)) {

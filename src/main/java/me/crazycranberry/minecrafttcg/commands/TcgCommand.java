@@ -37,18 +37,15 @@ import static org.bukkit.ChatColor.LIGHT_PURPLE;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
 import static org.bukkit.ChatColor.WHITE;
-import static org.bukkit.Material.BLUE_DYE;
 import static org.bukkit.Material.BOOK;
 import static org.bukkit.Material.BOOKSHELF;
 import static org.bukkit.Material.CYAN_DYE;
 import static org.bukkit.Material.DIAMOND;
 import static org.bukkit.Material.DIAMOND_AXE;
-import static org.bukkit.Material.GREEN_DYE;
 import static org.bukkit.Material.IRON_AXE;
 import static org.bukkit.Material.LIME_DYE;
 import static org.bukkit.Material.PAPER;
 import static org.bukkit.Material.RED_DYE;
-import static org.bukkit.Material.SUGAR;
 import static org.bukkit.Material.WHITE_DYE;
 
 public class TcgCommand implements CommandExecutor, TabCompleter {
