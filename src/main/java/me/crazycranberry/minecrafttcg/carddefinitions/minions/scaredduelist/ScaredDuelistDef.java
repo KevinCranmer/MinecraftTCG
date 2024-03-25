@@ -1,34 +1,40 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.theknapper;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
-public class TheKnapperDef implements MinionCardDefinition {
+import java.util.Map;
+
+public class ScaredDuelistDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 3;
+        return 2;
     }
 
     @Override
     public String cardName() {
-        return "The Knapper";
+        return "Scared Duelist";
     }
 
     @Override
     public String cardDescription() {
-        return "At the start of combat, swap strength with the enemy minion in front of this minion if it has higher strength";
+        return String.format("%sMulti-Attack 3%s", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.UNCOMMON;
+        return CardRarity.RARE;
     }
 
     @Override
     public Integer strength() {
-        return 2;
+        return 0;
     }
 
     @Override
@@ -38,16 +44,23 @@ public class TheKnapperDef implements MinionCardDefinition {
 
     @Override
     public EntityType minionType() {
-        return EntityType.PILLAGER;
+        return EntityType.SKELETON;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return TheKnapper.class;
+        return ScaredDuelist.class;
     }
 
     @Override
     public String signDescription() {
-        return "Swaps strength\nwith stronger\nenemies in\nfront";
+        return "Multi-Attack 3";
+    }
+
+    @Override
+    public Map<EquipmentSlot, ItemStack> equipment() {
+        return Map.of(
+            EquipmentSlot.HAND, new ItemStack(Material.GOLDEN_SWORD)
+        );
     }
 }

@@ -1,24 +1,24 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.theknapper;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import org.bukkit.entity.EntityType;
 
-public class TheKnapperDef implements MinionCardDefinition {
+public class EmoVitroDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 3;
+        return 2;
     }
 
     @Override
     public String cardName() {
-        return "The Knapper";
+        return "Emo Vitro";
     }
 
     @Override
     public String cardDescription() {
-        return "At the start of combat, swap strength with the enemy minion in front of this minion if it has higher strength";
+        return "Gets +2 strength and +2 max health when there are 3 other ally minions.";
     }
 
     @Override
@@ -33,21 +33,21 @@ public class TheKnapperDef implements MinionCardDefinition {
 
     @Override
     public Integer maxHealth() {
-        return 4;
+        return 2;
     }
 
     @Override
     public EntityType minionType() {
-        return EntityType.PILLAGER;
+        return EntityType.VILLAGER;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return TheKnapper.class;
+        return EmoVitro.class;
     }
 
     @Override
     public String signDescription() {
-        return "Swaps strength\nwith stronger\nenemies in\nfront";
+        return "Gets +2 str\nand +2 health\nwhen it has\n3 allies";
     }
 }

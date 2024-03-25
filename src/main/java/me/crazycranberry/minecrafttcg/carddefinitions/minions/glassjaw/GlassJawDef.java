@@ -1,11 +1,12 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.theknapper;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.glassjaw;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
-public class TheKnapperDef implements MinionCardDefinition {
+public class GlassJawDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
         return 3;
@@ -13,41 +14,41 @@ public class TheKnapperDef implements MinionCardDefinition {
 
     @Override
     public String cardName() {
-        return "The Knapper";
+        return "Glass Jaw";
     }
 
     @Override
     public String cardDescription() {
-        return "At the start of combat, swap strength with the enemy minion in front of this minion if it has higher strength";
+        return String.format("%sOverkill%s. (Make sure this minions health buffed before it enters)", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.UNCOMMON;
+        return CardRarity.RARE;
     }
 
     @Override
     public Integer strength() {
-        return 2;
+        return 7;
     }
 
     @Override
     public Integer maxHealth() {
-        return 4;
+        return 0;
     }
 
     @Override
     public EntityType minionType() {
-        return EntityType.PILLAGER;
+        return EntityType.RAVAGER;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return TheKnapper.class;
+        return GlassJaw.class;
     }
 
     @Override
     public String signDescription() {
-        return "Swaps strength\nwith stronger\nenemies in\nfront";
+        return "";
     }
 }

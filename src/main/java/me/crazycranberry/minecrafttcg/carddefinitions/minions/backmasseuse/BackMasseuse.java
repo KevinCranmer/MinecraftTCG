@@ -12,7 +12,7 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.minions.backmasseus
 
 public class BackMasseuse extends MinionWithStaticEffect {
     public BackMasseuse(MinionInfo minionInfo) {
-        super(BACK_MASSEUSE.card(), minionInfo, BackMasseuse::getTargets, BackMasseuse::effectForTargets, BackMasseuse::removeEffect);
+        super(BACK_MASSEUSE.card(), minionInfo, BackMasseuse::getTargets, BackMasseuse::effectForTargets, BackMasseuse::removeEffect, true);
     }
 
     public static List<Minion> getTargets(Minion m) {

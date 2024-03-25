@@ -14,7 +14,7 @@ import java.util.List;
 public class DoubleKill implements SpellCardDefinition, MultiTargetCard {
     @Override
     public Integer cost() {
-        return 6;
+        return 7;
     }
 
     @Override

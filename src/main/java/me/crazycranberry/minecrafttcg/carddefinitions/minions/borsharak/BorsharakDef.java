@@ -28,12 +28,12 @@ public class BorsharakDef implements MinionCardDefinition {
 
     @Override
     public Integer strength() {
-        return 3;
+        return 4;
     }
 
     @Override
     public Integer maxHealth() {
-        return 4;
+        return 3;
     }
 
     @Override

@@ -660,13 +660,21 @@ public class Stadium {
     }
 
     public Minion getAllyMinionInFront(Spot spot) {
+        Spot s = getSpotInFront(spot);
+        if (s != null) {
+            return s.minionRef().apply(this);
+        }
+        return null;
+    }
+
+    public Spot getSpotInFront(Spot spot) {
         return switch (spot) {
-            case RED_2_BACK -> RED_2_FRONT.minionRef().apply(this);
-            case RED_1_BACK -> RED_1_FRONT.minionRef().apply(this);
-            case BLUE_2_BACK -> BLUE_2_FRONT.minionRef().apply(this);
-            case BLUE_1_BACK -> BLUE_1_FRONT.minionRef().apply(this);
-            case GREEN_2_BACK -> GREEN_2_FRONT.minionRef().apply(this);
-            case GREEN_1_BACK -> GREEN_1_FRONT.minionRef().apply(this);
+            case RED_2_BACK -> RED_2_FRONT;
+            case RED_1_BACK -> RED_1_FRONT;
+            case BLUE_2_BACK -> BLUE_2_FRONT;
+            case BLUE_1_BACK -> BLUE_1_FRONT;
+            case GREEN_2_BACK -> GREEN_2_FRONT;
+            case GREEN_1_BACK -> GREEN_1_FRONT;
             default -> null;
         };
     }

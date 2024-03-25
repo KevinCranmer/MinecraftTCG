@@ -1,24 +1,30 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.theknapper;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.baby;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.entity.Breedable;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Llama;
+import org.bukkit.entity.Villager;
 
-public class TheKnapperDef implements MinionCardDefinition {
+import java.util.function.Consumer;
+
+public class BabyDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 3;
+        return 0;
     }
 
     @Override
     public String cardName() {
-        return "The Knapper";
+        return "Baby";
     }
 
     @Override
     public String cardDescription() {
-        return "At the start of combat, swap strength with the enemy minion in front of this minion if it has higher strength";
+        return "";
     }
 
     @Override
@@ -28,26 +34,34 @@ public class TheKnapperDef implements MinionCardDefinition {
 
     @Override
     public Integer strength() {
-        return 2;
+        return 1;
     }
 
     @Override
     public Integer maxHealth() {
-        return 4;
+        return 1;
     }
 
     @Override
     public EntityType minionType() {
-        return EntityType.PILLAGER;
+        return EntityType.VILLAGER;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return TheKnapper.class;
+        return Baby.class;
     }
 
     @Override
     public String signDescription() {
-        return "Swaps strength\nwith stronger\nenemies in\nfront";
+        return "";
+    }
+
+    @Override
+    public Consumer<LivingEntity> entityAdjustment() {
+        return e -> {
+            ((Villager) e).setBaby();
+            ((Breedable) e).setAgeLock(true);
+        };
     }
 }

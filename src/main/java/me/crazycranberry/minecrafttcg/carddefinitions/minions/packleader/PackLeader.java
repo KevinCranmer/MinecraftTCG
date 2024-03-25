@@ -12,7 +12,7 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.PACK_LEADE
 
 public class PackLeader extends MinionWithStaticEffect {
     public PackLeader(MinionInfo minionInfo) {
-        super(PACK_LEADER.card(), minionInfo, PackLeader::getTargets, PackLeader::effectForTargets, PackLeader::removeEffect);
+        super(PACK_LEADER.card(), minionInfo, PackLeader::getTargets, PackLeader::effectForTargets, PackLeader::removeEffect, true);
     }
 
     public static List<Minion> getTargets(Minion m) {

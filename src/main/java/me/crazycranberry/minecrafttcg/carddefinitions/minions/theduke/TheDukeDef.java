@@ -35,12 +35,12 @@ public class TheDukeDef implements MinionCardDefinition {
 
     @Override
     public Integer strength() {
-        return 2;
+        return 1;
     }
 
     @Override
     public Integer maxHealth() {
-        return 2;
+        return 8;
     }
 
     @Override

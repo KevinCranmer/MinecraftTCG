@@ -10,7 +10,7 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.YELLOW_PAN
 
 public class YellowPanther extends MinionWithStaticEffect {
     public YellowPanther(MinionInfo minionInfo) {
-        super(YELLOW_PANTHER.card(), minionInfo, YellowPanther::getTargets, YellowPanther::effectForTargets, YellowPanther::removeEffect);
+        super(YELLOW_PANTHER.card(), minionInfo, YellowPanther::getTargets, YellowPanther::effectForTargets, YellowPanther::removeEffect, false);
     }
 
     public static List<Minion> getTargets(Minion m) {

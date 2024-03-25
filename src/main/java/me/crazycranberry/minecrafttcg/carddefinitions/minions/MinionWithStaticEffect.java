@@ -14,16 +14,18 @@ public abstract class MinionWithStaticEffect extends Minion {
     private final BiConsumer<Minion, Minion> removeEffect;
     private final int taskId;
 
-    public MinionWithStaticEffect(Card card, MinionInfo minionInfo, Function<Minion, List<Minion>> getTargets, BiConsumer<Minion, Minion> effectForTargets, BiConsumer<Minion, Minion> removeEffect) {
+    public MinionWithStaticEffect(Card card, MinionInfo minionInfo, Function<Minion, List<Minion>> getTargets, BiConsumer<Minion, Minion> effectForTargets, BiConsumer<Minion, Minion> removeEffect, boolean onlyApplyEffectsOnNewTargets) {
         super(card, minionInfo);
         this.currentTargets = getTargets.apply(this);
         this.removeEffect = removeEffect;
         this.currentTargets.forEach(t -> effectForTargets.accept(this, t));
         this.taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             List<Minion> newTargets = getTargets.apply(this);
-            currentTargets.forEach(t -> removeEffect.accept(this, t));
-            newTargets.forEach(t -> effectForTargets.accept(this, t));
-            currentTargets = newTargets;
+            if (!onlyApplyEffectsOnNewTargets || !newTargets.equals(currentTargets)) {
+                currentTargets.forEach(t -> removeEffect.accept(this, t));
+                newTargets.forEach(t -> effectForTargets.accept(this, t));
+                currentTargets = newTargets;
+            }
         }, 1, 1).getTaskId();
     }
 

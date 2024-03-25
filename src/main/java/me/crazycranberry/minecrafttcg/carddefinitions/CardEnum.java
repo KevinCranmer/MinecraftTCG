@@ -23,7 +23,9 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.brunswick.Brunswic
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDozerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.couchpotato.CouchPotatoDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro.EmoVitroDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.fluffynecromancer.FluffyNecromancerDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.glassjaw.GlassJawDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.happynarwhale.HappyNarwhaleDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch.HealWitchDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.heavyslammer.HeavySlammerDef;
@@ -33,7 +35,9 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.lavaimp.LavaImpDef
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.liljim.LilJimDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.lurkingthief.LurkingThiefDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTellerDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.mom.MomDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.ScaredDuelistDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.yellowpanther.YellowPantherDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLeaderDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
@@ -84,7 +88,9 @@ public enum CardEnum {
     BULLDOZER(new BullDozerDef()),
     COUCH_POTATO(new CouchPotatoDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
+    EMO_VITRO(new EmoVitroDef()),
     FLUFFY_NECROMANCER(new FluffyNecromancerDef()),
+    GLASS_JAW(new GlassJawDef()),
     HAPPY_NARWHALE(new HappyNarwhaleDef()),
     HEAL_WITCH(new HealWitchDef()),
     HEAVY_SLAMMER(new HeavySlammerDef()),
@@ -94,8 +100,10 @@ public enum CardEnum {
     LIL_JIM(new LilJimDef()),
     LURKING_THIEF(new LurkingThiefDef()),
     MIKE_THE_STORY_TELLER(new MikeTheStoryTellerDef()),
+    MOM(new MomDef()),
     NINJA_MAC(new NinjaMacDef()),
     PACK_LEADER(new PackLeaderDef()),
+    SCARED_DUELIST(new ScaredDuelistDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),
     SKI_TURTLE(new SkiTurtleDef()),
     SUPPORTIVE_ZOMBIE(new SupportiveZombieDef()),

@@ -258,8 +258,8 @@ public abstract class Minion {
         } else {
             healthChange = staticMaxHealth;
         }
-        this.setHealthNoHealTrigger(this.health() + healthChange);
         staticBonusMaxHealth.put(source, staticMaxHealth);
+        this.setHealthNoHealTrigger(this.health() + healthChange);
         this.minionInfo().stadium().updateCustomName(this);
     }
 
@@ -280,7 +280,7 @@ public abstract class Minion {
         return temporaryBonusStrength > 0;
     }
 
-    private void shouldIBeDead() {
+    public void shouldIBeDead() {
         if (health <= 0) {
             this.onDeath();
         }

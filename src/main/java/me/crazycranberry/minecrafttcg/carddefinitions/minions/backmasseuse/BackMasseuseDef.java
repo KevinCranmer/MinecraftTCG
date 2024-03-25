@@ -11,7 +11,7 @@ public class BackMasseuseDef implements MinionCardDefinition {
 
     @Override
     public Integer cost() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class BackMasseuseDef implements MinionCardDefinition {
 
     @Override
     public Integer maxHealth() {
-        return 2;
+        return 3;
     }
 
     @Override
