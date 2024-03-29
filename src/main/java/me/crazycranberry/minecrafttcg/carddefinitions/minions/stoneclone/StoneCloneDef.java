@@ -10,16 +10,9 @@ import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.List;
-import java.util.Map;
 
 public class StoneCloneDef implements MinionCardDefinition, MultiTargetCard {
-
-    Minion target = null;
-
     @Override
     public Integer cost() {
         return 4;
@@ -32,7 +25,7 @@ public class StoneCloneDef implements MinionCardDefinition, MultiTargetCard {
 
     @Override
     public String cardDescription() {
-        return "When casted can target any minion and copy it's health and power";
+        return "Copies another minions abilities and stats, and gives it ranged.";
     }
 
     @Override
@@ -65,21 +58,34 @@ public class StoneCloneDef implements MinionCardDefinition, MultiTargetCard {
         return EntityType.HUSK;
     }
 
+    // This should never be called because we're using the cloned minions class
     @Override
     public Class<? extends Minion> minionClass() {
-        return StoneClone.class;
+        return null;
     }
 
     @Override
-    public void onCast(Stadium stadium, Player caster, List<Spot> targets, Map<EquipmentSlot, ItemStack> equipment) {
+    public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         if (!targets.isEmpty()) {
             Spot targetSpot = targets.get(0);
             if (targetSpot != null) {
                 Minion targetMinion = targetSpot.minionRef().apply(stadium);
                 if (targetMinion != null) {
-                    //MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), null, entityAdjustment());
+                    //MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), null, entityAdjustment());   <-- this method is part of what I refactored. So new params, shorter list now.
                 }
             }
         }
+        // Since we're giving him ranged, I'd say you should give him a bow, look at some of the other ranged skeleton minions as an example for giving them a bow
+
+        // Since this is a multitargetcard, you'll have more than 1 targets.
+        // For a minion card, the first target will always be the spot to summon the minion
+        // then in this case, the second target will be the spot of the minion you want to copy
+        // So you need to summon a minion at targets.get(0) and the minionClass should be the minion you want to copy from targets.get(1)
+        // And then this instance of this class would be the final parameter in summonMinion()
+
+        // You also want this minion to be named Stone Clone when sign examined, so look for a way to rename a minion
+        // Then we want this minion to be ranged, so find a way to make him ranged
+
+        // Then bonus if you want, you could add some particles to the minion being copied and/or the stone clone
     }
 }
