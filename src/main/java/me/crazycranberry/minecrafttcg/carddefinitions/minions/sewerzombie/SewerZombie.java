@@ -9,4 +9,9 @@ public class SewerZombie extends Minion {
     public SewerZombie(MinionInfo minionInfo) {
         super(CardEnum.SEWER_ZOMBIE.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

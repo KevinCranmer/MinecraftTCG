@@ -45,9 +45,4 @@ public class BrunswickDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return Brunswick.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "";
-    }
 }

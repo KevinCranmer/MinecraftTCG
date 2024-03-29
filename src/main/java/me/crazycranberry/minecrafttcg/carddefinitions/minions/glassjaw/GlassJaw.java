@@ -18,4 +18,9 @@ public class GlassJaw extends Minion {
         Minion thisMinion = this;
         Bukkit.getScheduler().runTaskLater(getPlugin(), thisMinion::shouldIBeDead, 2);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

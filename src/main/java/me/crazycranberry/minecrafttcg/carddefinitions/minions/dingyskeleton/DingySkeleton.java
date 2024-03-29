@@ -8,4 +8,9 @@ public class DingySkeleton extends Minion {
     public DingySkeleton(MinionInfo minionInfo) {
         super(CardEnum.DINGY_SKELETON.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

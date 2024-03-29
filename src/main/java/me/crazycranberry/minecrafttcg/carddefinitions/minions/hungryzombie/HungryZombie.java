@@ -8,4 +8,9 @@ public class HungryZombie extends Minion {
     public HungryZombie(MinionInfo minionInfo) {
         super(CardEnum.HUNGRY_ZOMBIE.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

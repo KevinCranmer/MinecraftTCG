@@ -45,9 +45,4 @@ public class BillyDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return Billy.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Can knock a\nfront row minion\ninto the back row";
-    }
 }

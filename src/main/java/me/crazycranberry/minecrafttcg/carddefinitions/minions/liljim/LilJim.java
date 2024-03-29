@@ -9,4 +9,9 @@ public class LilJim extends Minion {
     public LilJim(MinionInfo minionInfo) {
         super(LIL_JIM.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

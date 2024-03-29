@@ -49,18 +49,11 @@ public class LavaImpDef implements MinionCardDefinition {
 
     @Override
     public Consumer<LivingEntity> entityAdjustment() {
-        return e -> {
-            ((PigZombie) e).setBaby();
-        };
+        return e -> ((PigZombie) e).setBaby();
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
         return LavaImp.class;
-    }
-
-    @Override
-    public String signDescription() {
-        return "Dealt 3 to\nits controller\nwhen it entered";
     }
 }

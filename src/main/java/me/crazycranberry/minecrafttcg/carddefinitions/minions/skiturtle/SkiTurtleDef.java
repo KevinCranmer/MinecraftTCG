@@ -50,9 +50,4 @@ public class SkiTurtleDef implements MinionCardDefinition {
     public boolean isRanged() {
         return true;
     }
-
-    @Override
-    public String signDescription() {
-        return "Heals ally\nin front of it";
-    }
 }

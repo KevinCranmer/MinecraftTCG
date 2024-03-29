@@ -45,9 +45,4 @@ public class HeavySlammerDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return HeavySlammer.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Hits Front\nand back\nminions";
-    }
 }

@@ -1,6 +1,5 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.mom;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.baby.Baby;
@@ -23,5 +22,10 @@ public class Mom extends Minion {
             BabyDef babyDef = new BabyDef();
             summonMinion(spotInFront, this.minionInfo().stadium(), this.minionInfo().master(), Baby.class, babyDef);
         }
+    }
+
+    @Override
+    public String signDescription() {
+        return "Summons a\n1/1 in front\nat turn start";
     }
 }

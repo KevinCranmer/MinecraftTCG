@@ -45,9 +45,4 @@ public class BaconDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return Bacon.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "";
-    }
 }

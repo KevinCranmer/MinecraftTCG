@@ -104,4 +104,9 @@ public class HappyNarwhale extends Minion {
             b.setType(mat);
         }
     }
+
+    @Override
+    public String signDescription() {
+        return "Can hit Flying";
+    }
 }

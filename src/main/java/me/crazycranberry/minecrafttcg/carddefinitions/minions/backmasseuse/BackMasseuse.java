@@ -32,4 +32,9 @@ public class BackMasseuse extends MinionWithStaticEffect {
         target.setStaticStrengthBonus(source, 0);
         target.setStaticMaxHealthBonus(source, 0);
     }
+
+    @Override
+    public String signDescription() {
+        return "Buffs ally\nin front";
+    }
 }

@@ -52,11 +52,6 @@ public class BigTimDef implements MinionCardDefinition {
     }
 
     @Override
-    public String signDescription() {
-        return "";
-    }
-
-    @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
         return Map.of(
             EquipmentSlot.HEAD, new ItemStack(Material.NETHERITE_HELMET),

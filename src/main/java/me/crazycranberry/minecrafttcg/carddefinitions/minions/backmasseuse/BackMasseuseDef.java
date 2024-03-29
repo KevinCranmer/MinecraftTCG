@@ -48,9 +48,4 @@ public class BackMasseuseDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return BackMasseuse.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Buffs ally\nin front";
-    }
 }

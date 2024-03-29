@@ -45,9 +45,4 @@ public class CouchPotatoDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return CouchPotato.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Heals to max\nat end of turn";
-    }
 }

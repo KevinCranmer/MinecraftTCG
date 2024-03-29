@@ -9,4 +9,9 @@ public class BigTim extends Minion {
     public BigTim(MinionInfo minionInfo) {
         super(BIG_TIM.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

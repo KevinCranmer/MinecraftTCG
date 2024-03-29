@@ -45,9 +45,4 @@ public class BorsharakDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return Borsharak.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Also deals\ndamage to\nadjacent minions";
-    }
 }

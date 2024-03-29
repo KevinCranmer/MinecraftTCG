@@ -47,11 +47,6 @@ public class MomDef implements MinionCardDefinition {
     }
 
     @Override
-    public String signDescription() {
-        return "Summons a\n1/1 in front";
-    }
-
-    @Override
     public boolean isRanged() {
         return true;
     }

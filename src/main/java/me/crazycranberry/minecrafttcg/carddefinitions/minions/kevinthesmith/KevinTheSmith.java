@@ -8,4 +8,9 @@ public class KevinTheSmith extends Minion {
     public KevinTheSmith(MinionInfo minionInfo) {
         super(CardEnum.KEVIN_THE_SMITH.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "One of the\nhog trio";
+    }
 }

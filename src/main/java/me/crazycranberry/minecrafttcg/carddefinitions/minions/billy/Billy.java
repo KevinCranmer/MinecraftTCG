@@ -36,4 +36,9 @@ public class Billy extends Minion {
         }
         minionsIHit.clear();
     }
+
+    @Override
+    public String signDescription() {
+        return "Can knock a\nfront row minion\ninto the back row";
+    }
 }

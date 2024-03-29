@@ -24,4 +24,9 @@ public class YellowPanther extends MinionWithStaticEffect {
     public static void removeEffect(Minion source, Minion target) {
         target.setStaticStrengthBonus(source, 0);
     }
+
+    @Override
+    public String signDescription() {
+        return "Strength bonus\nequal to amount\nof health missing";
+    }
 }

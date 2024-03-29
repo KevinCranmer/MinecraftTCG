@@ -9,4 +9,9 @@ public class BullDozer extends Minion {
         super(CardEnum.BULLDOZER.card(), minionInfo);
         this.setPermanentOverkill(true);
     }
+
+    @Override
+    public String signDescription() {
+        return "Overkill";
+    }
 }

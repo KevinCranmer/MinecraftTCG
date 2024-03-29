@@ -45,9 +45,4 @@ public class ABeeKeeperDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return ABeeKeeper.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "On death \nSummon A Bee";
-    }
 }

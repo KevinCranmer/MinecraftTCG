@@ -52,11 +52,6 @@ public class ApprenticeArcherDef implements MinionCardDefinition {
     }
 
     @Override
-    public String signDescription() {
-        return "";
-    }
-
-    @Override
     public boolean isRanged() {
         return true;
     }

@@ -46,9 +46,4 @@ public class AggressiveBanditDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return AggressiveBandit.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Multi-Attack 2";
-    }
 }

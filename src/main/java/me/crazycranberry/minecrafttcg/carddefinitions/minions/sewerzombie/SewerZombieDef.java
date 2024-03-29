@@ -27,11 +27,6 @@ public class SewerZombieDef implements MinionCardDefinition {
     }
 
     @Override
-    public String signDescription() {
-        return "";
-    }
-
-    @Override
     public Integer strength() {
         return 1;
     }

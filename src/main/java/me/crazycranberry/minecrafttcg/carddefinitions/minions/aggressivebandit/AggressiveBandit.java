@@ -9,4 +9,9 @@ public class AggressiveBandit extends Minion {
         super(CardEnum.AGGRESSIVE_BANDIT.card(), minionInfo);
         setAttacksPerTurn(2);
     }
+
+    @Override
+    public String signDescription() {
+        return "Multi-Attack 2";
+    }
 }

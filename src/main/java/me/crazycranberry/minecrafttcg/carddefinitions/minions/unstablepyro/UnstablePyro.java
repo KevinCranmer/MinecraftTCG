@@ -49,4 +49,9 @@ public class UnstablePyro extends Minion {
             minionInfo().entity().getWorld().spawnParticle(Particle.LAVA, enemyToFireball.get().minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5);
             }, 20);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

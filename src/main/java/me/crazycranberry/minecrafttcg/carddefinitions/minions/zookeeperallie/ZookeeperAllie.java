@@ -34,4 +34,9 @@ public class ZookeeperAllie extends Minion {
         this.setMaxHealth(this.maxHealth() + numAnimals);
         this.setHealthNoHealTrigger(this.maxHealth());
     }
+
+    @Override
+    public String signDescription() {
+        return "Gets +1/+1\nfor each animal\nwhen entering";
+    }
 }

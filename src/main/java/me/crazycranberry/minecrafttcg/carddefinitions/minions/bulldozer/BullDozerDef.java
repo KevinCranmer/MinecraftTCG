@@ -46,9 +46,4 @@ public class BullDozerDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return BullDozer.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Overkill";
-    }
 }

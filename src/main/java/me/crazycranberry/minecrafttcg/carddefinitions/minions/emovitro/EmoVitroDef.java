@@ -45,9 +45,4 @@ public class EmoVitroDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return EmoVitro.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Gets +2 str\nand +2 health\nwhen it has\n3 allies";
-    }
 }

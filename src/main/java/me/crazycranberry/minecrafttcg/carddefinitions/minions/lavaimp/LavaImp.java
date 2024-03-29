@@ -16,4 +16,9 @@ public class LavaImp extends Minion {
         super.onEnter();
         this.minionInfo().master().damage(DAMAGE_TO_CONTROLLER);
     }
+
+    @Override
+    public String signDescription() {
+        return "Dealt 3 to\nits controller\nwhen it entered";
+    }
 }

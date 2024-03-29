@@ -37,4 +37,9 @@ public class EmoVitro extends MinionWithStaticEffect {
         target.setStaticStrengthBonus(source, 0);
         target.setStaticMaxHealthBonus(source, 0);
     }
+
+    @Override
+    public String signDescription() {
+        return "Gets +2 str\nand +2 health\nwhen it has\n3 allies";
+    }
 }

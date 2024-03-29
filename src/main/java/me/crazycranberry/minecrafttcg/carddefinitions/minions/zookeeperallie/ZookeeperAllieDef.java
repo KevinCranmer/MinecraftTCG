@@ -46,9 +46,4 @@ public class ZookeeperAllieDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return ZookeeperAllie.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Gets +1/+1\nfor each animal\nwhen entering";
-    }
 }

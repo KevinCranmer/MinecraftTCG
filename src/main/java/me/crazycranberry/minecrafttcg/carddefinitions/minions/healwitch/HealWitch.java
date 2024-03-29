@@ -26,4 +26,9 @@ public class HealWitch extends Minion {
             .toList());
         allyToHeal.ifPresent(minion -> minion.onHeal(1));
     }
+
+    @Override
+    public String signDescription() {
+        return "Randomly\nheals 1\nally minion";
+    }
 }

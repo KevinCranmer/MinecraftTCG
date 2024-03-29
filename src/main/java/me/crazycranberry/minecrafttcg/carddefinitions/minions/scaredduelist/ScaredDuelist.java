@@ -10,4 +10,9 @@ public class ScaredDuelist extends Minion {
         super(SCARED_DUELIST.card(), minionInfo);
         setAttacksPerTurn(3);
     }
+
+    @Override
+    public String signDescription() {
+        return "Multi-Attack 3";
+    }
 }

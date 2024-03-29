@@ -51,11 +51,6 @@ public class LilJimDef implements MinionCardDefinition {
     }
 
     @Override
-    public String signDescription() {
-        return "";
-    }
-
-    @Override
     public Consumer<LivingEntity> entityAdjustment() {
         return e -> ((Zombie) e).setBaby();
     }

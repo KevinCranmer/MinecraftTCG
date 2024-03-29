@@ -9,4 +9,9 @@ public class ApprenticeArcher extends Minion {
     public ApprenticeArcher(MinionInfo minionInfo) {
         super(APPRENTICE_ARCHER.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

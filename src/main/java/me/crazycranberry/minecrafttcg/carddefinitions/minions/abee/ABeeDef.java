@@ -51,9 +51,4 @@ public class ABeeDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return ABee.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Lifesteal";
-    }
 }

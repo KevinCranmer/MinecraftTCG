@@ -36,7 +36,7 @@ public abstract class Minion {
     private Integer maxHealth;
     private Integer attacksPerTurn = 1;
     private Integer attacksLeft = attacksPerTurn;
-    private MinionCardDefinition cardDef;
+    private final MinionCardDefinition cardDef;
     private final MinionInfo minionInfo;
     private PathfinderMob nmsMob;
     private Integer numTurnsProtected = 0;
@@ -45,9 +45,9 @@ public abstract class Minion {
     private Map<Minion, Integer> staticBonusMaxHealth = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
     private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
     private Integer numTurnsOverkill = 0;
-    private Boolean isFlying = false;
+    private Boolean isFlying;
     private Integer numTurnsFlying = 0;
-    private Boolean isRanged = false;
+    private Boolean isRanged;
     private Integer numTurnsRanged = 0;
     private Boolean hasLifesteal = false;
     private Integer numTurnsLifesteal = 0;
@@ -167,6 +167,7 @@ public abstract class Minion {
 
     public void attackInFront() {
         if (attacksLeft <= 0 || strength() == 0) {
+            this.minionInfo().stadium().doneAttacking();
             return;
         }
         LivingEntity target = minionInfo.stadium().getTargetInFront(this);
@@ -343,4 +344,10 @@ public abstract class Minion {
     public PathfinderMob nmsMob() {
         return nmsMob;
     }
+
+    /**
+     *  Use '\n' for where a line break in the Signs should be, only 5 \n's allowed.
+     *  \n can be used as many times as you want, as it'll only be utilized in the cards book.
+     */
+    public abstract String signDescription();
 }

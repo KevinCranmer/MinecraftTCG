@@ -52,9 +52,4 @@ public class TheDukeDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return TheDuke.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Auto Wins if Duke,\nMike, and Kevin\nare alive at the\nend of the turn";
-    }
 }

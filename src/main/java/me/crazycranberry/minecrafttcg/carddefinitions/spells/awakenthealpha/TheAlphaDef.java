@@ -50,9 +50,4 @@ public class TheAlphaDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return TheAlpha.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "";
-    }
 }

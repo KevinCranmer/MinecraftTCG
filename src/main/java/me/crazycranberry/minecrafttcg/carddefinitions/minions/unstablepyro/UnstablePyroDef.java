@@ -45,9 +45,4 @@ public class UnstablePyroDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return UnstablePyro.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "";
-    }
 }

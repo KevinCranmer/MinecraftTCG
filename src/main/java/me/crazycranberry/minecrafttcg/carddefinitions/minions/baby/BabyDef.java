@@ -6,7 +6,6 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefiniti
 import org.bukkit.entity.Breedable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Llama;
 import org.bukkit.entity.Villager;
 
 import java.util.function.Consumer;
@@ -50,11 +49,6 @@ public class BabyDef implements MinionCardDefinition {
     @Override
     public Class<? extends Minion> minionClass() {
         return Baby.class;
-    }
-
-    @Override
-    public String signDescription() {
-        return "";
     }
 
     @Override

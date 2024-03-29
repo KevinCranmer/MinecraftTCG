@@ -8,4 +8,9 @@ public class Bacon extends Minion {
     public Bacon(MinionInfo minionInfo) {
         super(CardEnum.BACON.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

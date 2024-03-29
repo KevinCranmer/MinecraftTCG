@@ -7,4 +7,9 @@ public class TheAlpha extends Minion {
     public TheAlpha(MinionInfo minionInfo) {
         super(new TheAlphaDef(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

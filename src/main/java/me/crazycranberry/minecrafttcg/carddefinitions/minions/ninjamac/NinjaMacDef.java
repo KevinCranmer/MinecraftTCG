@@ -50,9 +50,4 @@ public class NinjaMacDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return NinjaMac.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Draws if it\nhits you";
-    }
 }

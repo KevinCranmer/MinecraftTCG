@@ -10,4 +10,9 @@ public class ABee extends Minion {
         this.setPermanentLifesteal(true);
         this.setPermanentFlying(true);
     }
+
+    @Override
+    public String signDescription() {
+        return "Lifesteal";
+    }
 }

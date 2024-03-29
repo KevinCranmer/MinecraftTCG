@@ -45,9 +45,4 @@ public class PackLeaderDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return PackLeader.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Gives adjacent\nminions +1\nStrength";
-    }
 }

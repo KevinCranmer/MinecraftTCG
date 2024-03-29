@@ -50,9 +50,4 @@ public class DingySkeletonDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return DingySkeleton.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "";
-    }
 }

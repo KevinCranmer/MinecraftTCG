@@ -53,11 +53,6 @@ public class ScaredDuelistDef implements MinionCardDefinition {
     }
 
     @Override
-    public String signDescription() {
-        return "Multi-Attack 3";
-    }
-
-    @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
         return Map.of(
             EquipmentSlot.HAND, new ItemStack(Material.GOLDEN_SWORD)

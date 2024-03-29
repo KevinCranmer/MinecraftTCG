@@ -24,4 +24,9 @@ public class NinjaMac extends Minion {
             }
         }
     }
+
+    @Override
+    public String signDescription() {
+        return "Draws if it\nhits you";
+    }
 }

@@ -52,11 +52,6 @@ public class HungryZombieDef implements MinionCardDefinition {
     }
 
     @Override
-    public String signDescription() {
-        return "";
-    }
-
-    @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
         return Map.of(
             EquipmentSlot.CHEST, new ItemStack(Material.LEATHER_CHESTPLATE)

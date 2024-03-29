@@ -33,4 +33,9 @@ public class TheKnapper extends Minion {
             this.minionInfo().entity().getWorld().spawnParticle(Particle.NOTE, targetEntity.getEyeLocation(), 3, 0.75, 0.5, 0.75);
         }
     }
+
+    @Override
+    public String signDescription() {
+        return "Swaps strength\nwith stronger\nenemies in\nfront";
+    }
 }

@@ -47,18 +47,11 @@ public class LurkingThiefDef implements MinionCardDefinition {
 
     @Override
     public Consumer<LivingEntity> entityAdjustment() {
-        return e -> {
-            ((Villager) e).setBaby();
-        };
+        return e -> ((Villager) e).setBaby();
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
         return LurkingThief.class;
-    }
-
-    @Override
-    public String signDescription() {
-        return "Replenishes mana\nbased on damage\ndone to player";
     }
 }

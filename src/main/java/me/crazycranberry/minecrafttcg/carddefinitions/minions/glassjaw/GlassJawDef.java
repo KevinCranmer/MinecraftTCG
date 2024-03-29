@@ -46,9 +46,4 @@ public class GlassJawDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return GlassJaw.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "";
-    }
 }

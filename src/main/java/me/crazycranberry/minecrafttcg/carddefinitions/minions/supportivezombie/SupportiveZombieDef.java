@@ -61,11 +61,6 @@ public class SupportiveZombieDef implements MinionCardDefinition, MultiTargetCar
     }
 
     @Override
-    public String signDescription() {
-        return "Gives another\nMinion +" + BONUS_STRENGTH + " strength\nuntil end of turn";
-    }
-
-    @Override
     public List<TargetRules> targetRulesForExtraTargets() {
         return List.of(new TargetRules(true, false, false, true, false));
     }

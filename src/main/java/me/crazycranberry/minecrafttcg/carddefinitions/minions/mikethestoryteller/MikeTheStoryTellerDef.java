@@ -48,9 +48,4 @@ public class MikeTheStoryTellerDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return MikeTheStoryTeller.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "One of the\nhog trio";
-    }
 }

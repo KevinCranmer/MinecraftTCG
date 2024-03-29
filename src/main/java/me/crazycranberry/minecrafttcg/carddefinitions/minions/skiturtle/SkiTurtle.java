@@ -17,4 +17,9 @@ public class SkiTurtle extends Minion {
             ally.onHeal(ally.maxHealth() - ally.health());
         }
     }
+
+    @Override
+    public String signDescription() {
+        return "Heals ally\nin front of it";
+    }
 }

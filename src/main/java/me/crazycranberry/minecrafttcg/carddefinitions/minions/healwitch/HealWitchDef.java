@@ -45,9 +45,4 @@ public class HealWitchDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return HealWitch.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Randomly\nheals 1\nally minion";
-    }
 }

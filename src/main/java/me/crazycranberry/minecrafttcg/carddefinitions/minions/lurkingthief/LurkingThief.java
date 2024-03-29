@@ -24,4 +24,9 @@ public class LurkingThief extends Minion {
             }
         }
     }
+
+    @Override
+    public String signDescription() {
+        return "Replenishes mana\nbased on damage\ndone to player";
+    }
 }

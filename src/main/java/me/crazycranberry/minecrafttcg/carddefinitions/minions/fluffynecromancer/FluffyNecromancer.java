@@ -8,4 +8,9 @@ public class FluffyNecromancer extends Minion {
     public FluffyNecromancer(MinionInfo minionInfo) {
         super(CardEnum.FLUFFY_NECROMANCER.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

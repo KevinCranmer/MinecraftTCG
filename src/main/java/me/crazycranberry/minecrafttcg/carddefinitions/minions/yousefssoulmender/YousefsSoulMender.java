@@ -21,4 +21,9 @@ public class YousefsSoulMender extends Minion {
             this.minionInfo().master().getWorld().spawnParticle(Particle.HEART, this.minionInfo().master().getEyeLocation(), 7, 0.5, 0.75, 0.5);
         }
     }
+
+    @Override
+    public String signDescription() {
+        return "Heals its\ncontroller 2\nat end of turn";
+    }
 }

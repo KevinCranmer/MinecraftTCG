@@ -45,9 +45,4 @@ public class HappyNarwhaleDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return HappyNarwhale.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Can hit Flying";
-    }
 }

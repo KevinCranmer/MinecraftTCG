@@ -15,4 +15,9 @@ public class CouchPotato extends Minion {
         super.onTurnEnd();
         this.onHeal(this.maxHealth());
     }
+
+    @Override
+    public String signDescription() {
+        return "Heals to max\nat end of turn";
+    }
 }

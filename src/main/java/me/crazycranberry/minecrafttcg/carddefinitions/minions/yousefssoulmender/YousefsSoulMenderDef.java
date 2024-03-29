@@ -46,9 +46,4 @@ public class YousefsSoulMenderDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return YousefsSoulMender.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Heals its\ncontroller 2\nat end of turn";
-    }
 }

@@ -45,9 +45,4 @@ public class YellowPantherDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return YellowPanther.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Strength bonus\nequal to amount\nof health missing";
-    }
 }

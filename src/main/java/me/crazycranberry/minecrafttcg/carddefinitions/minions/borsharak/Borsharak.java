@@ -34,4 +34,9 @@ public class Borsharak extends Minion {
                 m.onDamageReceived(this.minionInfo().entity(), damageDealt, m.isProtected());
             });
     }
+
+    @Override
+    public String signDescription() {
+        return "Also deals\ndamage to\nadjacent minions";
+    }
 }

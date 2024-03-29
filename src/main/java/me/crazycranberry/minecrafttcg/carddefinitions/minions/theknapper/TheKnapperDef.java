@@ -45,9 +45,4 @@ public class TheKnapperDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return TheKnapper.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "Swaps strength\nwith stronger\nenemies in\nfront";
-    }
 }

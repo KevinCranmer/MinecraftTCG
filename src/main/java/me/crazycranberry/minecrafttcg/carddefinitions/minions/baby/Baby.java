@@ -7,4 +7,9 @@ public class Baby extends Minion {
     public Baby(MinionInfo minionInfo) {
         super(new BabyDef(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

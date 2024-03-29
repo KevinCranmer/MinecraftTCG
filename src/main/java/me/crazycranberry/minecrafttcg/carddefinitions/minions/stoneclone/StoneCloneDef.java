@@ -71,11 +71,6 @@ public class StoneCloneDef implements MinionCardDefinition, MultiTargetCard {
     }
 
     @Override
-    public String signDescription() {
-        return "Player targets\n minion and will\n copy target\n card";
-    }
-
-    @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets, Map<EquipmentSlot, ItemStack> equipment) {
         if (!targets.isEmpty()) {
             Spot targetSpot = targets.get(0);

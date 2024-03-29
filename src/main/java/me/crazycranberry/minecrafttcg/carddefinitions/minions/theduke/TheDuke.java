@@ -47,6 +47,11 @@ public class TheDuke extends Minion {
         }
     }
 
+    @Override
+    public String signDescription() {
+        return "Auto Wins if Duke,\nMike, and Kevin\nare alive at the\nend of the turn";
+    }
+
 
     private static class ExodiaTracker {
         private Integer taskId;

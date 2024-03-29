@@ -48,9 +48,4 @@ public class KevinTheSmithDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return KevinTheSmith.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "One of the\nhog trio";
-    }
 }

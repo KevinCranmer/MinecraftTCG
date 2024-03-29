@@ -8,4 +8,9 @@ public class Brunswick extends Minion {
     public Brunswick(MinionInfo minionInfo) {
         super(CardEnum.BRUNSWICK.card(), minionInfo);
     }
+
+    @Override
+    public String signDescription() {
+        return "";
+    }
 }

@@ -32,4 +32,9 @@ public class PackLeader extends MinionWithStaticEffect {
     public static void removeEffect(Minion source, Minion target) {
         target.setStaticStrengthBonus(source, 0);
     }
+
+    @Override
+    public String signDescription() {
+        return "Gives adjacent\nminions +1\nStrength";
+    }
 }

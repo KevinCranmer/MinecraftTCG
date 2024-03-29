@@ -73,11 +73,6 @@ public class FluffyNecromancerDef implements MinionCardDefinition, MultiTargetCa
     }
 
     @Override
-    public String signDescription() {
-        return "";
-    }
-
-    @Override
     public List<TargetRules> targetRulesForExtraTargets() {
         return List.of(new TargetRules(false, false, false, true, false));
     }
