@@ -36,7 +36,7 @@ public abstract class Minion {
     private Integer maxHealth;
     private Integer attacksPerTurn = 1;
     private Integer attacksLeft = attacksPerTurn;
-    private final MinionCardDefinition cardDef;
+    private String minionName;
     private final MinionInfo minionInfo;
     private PathfinderMob nmsMob;
     private Integer numTurnsProtected = 0;
@@ -54,12 +54,13 @@ public abstract class Minion {
     private final ListenerForIndividualMinion listener;
 
     public Minion(Card card, MinionInfo minionInfo) {
-        this.cardDef = (MinionCardDefinition) card;
-        this.strength = cardDef.strength();
-        this.maxHealth = cardDef.maxHealth();
-        this.health = cardDef.maxHealth();
-        this.isFlying = cardDef.isFlying();
-        this.isRanged = cardDef.isRanged();
+        MinionCardDefinition minionCard = (MinionCardDefinition) card;
+        this.minionName = minionCard.cardName();
+        this.strength = minionCard.strength();
+        this.maxHealth = minionCard.maxHealth();
+        this.health = minionCard.maxHealth();
+        this.isFlying = minionCard.isFlying();
+        this.isRanged = minionCard.isRanged();
         this.minionInfo = minionInfo;
         CraftMob mob = (CraftMob) minionInfo.entity();
         this.nmsMob = (PathfinderMob) mob.getHandle();
@@ -95,8 +96,12 @@ public abstract class Minion {
         shouldIBeDead();
     }
 
-    public MinionCardDefinition cardDef() {
-        return cardDef;
+    public String name() {
+        return minionName;
+    }
+
+    public void setMinionName(String newName) {
+        minionName = newName;
     }
 
     public MinionInfo minionInfo() {

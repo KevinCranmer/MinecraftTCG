@@ -3,8 +3,8 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.theduke;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.kevinthesmith.KevinTheSmithDef;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTellerDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.kevinthesmith.KevinTheSmith;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTeller;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
@@ -35,9 +35,9 @@ public class TheDuke extends Minion {
         List<Spot> allySpots = this.minionInfo().stadium().allyMinionSpots(this.minionInfo().master());
         for (Spot spot : allySpots) {
             Minion minion = spot.minionRef().apply(this.minionInfo().stadium());
-            if (minion != null && minion.cardDef().getClass().equals(MikeTheStoryTellerDef.class)) {
+            if (minion instanceof MikeTheStoryTeller) {
                 hasMike = true;
-            } else if (minion != null && minion.cardDef().getClass().equals(KevinTheSmithDef.class)) {
+            } else if (minion instanceof KevinTheSmith) {
                 hasKevin = true;
             }
         }
@@ -68,7 +68,7 @@ public class TheDuke extends Minion {
             this.exodiaInfos = new ArrayList<>();
             for (Spot spot : stadium.allyMinionSpots(caster)) {
                 Minion minion = spot.minionRef().apply(stadium);
-                if (minion != null && (minion.cardDef().getClass().equals(TheDukeDef.class) || minion.cardDef().getClass().equals(MikeTheStoryTellerDef.class) || minion.cardDef().getClass().equals(KevinTheSmithDef.class))) {
+                if (minion instanceof TheDuke || minion instanceof MikeTheStoryTeller || minion instanceof KevinTheSmith) {
                     exodiaInfos.add(new ExodiaInfo(minion, stadium.opponent(caster)));
                 }
             }
@@ -115,10 +115,10 @@ public class TheDuke extends Minion {
             this.particleLoc = exodiaMinion.minionInfo().entity().getLocation();
             this.startingLoc = exodiaMinion.minionInfo().entity().getLocation().clone();
             this.target = target;
-            Class<?> exodiaClass = exodiaMinion.cardDef().getClass();
-            if (exodiaClass.equals(KevinTheSmithDef.class)) {
+            Class<? extends Minion> exodiaClass = exodiaMinion.getClass();
+            if (exodiaClass.equals(KevinTheSmith.class)) {
                 this.piece = ExodiaPiece.KEVIN;
-            } else if (exodiaClass.equals(MikeTheStoryTellerDef.class)) {
+            } else if (exodiaClass.equals(MikeTheStoryTeller.class)) {
                 this.piece = ExodiaPiece.MIKE;
             } else {
                 this.piece = ExodiaPiece.DUKE;
