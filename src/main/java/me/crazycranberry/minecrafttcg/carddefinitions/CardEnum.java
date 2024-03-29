@@ -38,6 +38,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mom.MomDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.ScaredDuelistDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.stoneclone.StoneCloneDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.yellowpanther.YellowPantherDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLeaderDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
@@ -106,6 +107,7 @@ public enum CardEnum {
     SCARED_DUELIST(new ScaredDuelistDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),
     SKI_TURTLE(new SkiTurtleDef()),
+    STONE_CLONE(new StoneCloneDef()),
     SUPPORTIVE_ZOMBIE(new SupportiveZombieDef()),
     THE_DUKE(new TheDukeDef()),
     THE_KNAPPER(new TheKnapperDef()),
@@ -113,6 +115,7 @@ public enum CardEnum {
     YELLOW_PANTHER(new YellowPantherDef()),
     YOUSEFS_SOUL_MENDER(new YousefsSoulMenderDef()),
     ZOOKEEPER_ALLIE(new ZookeeperAllieDef()),
+
 
     // Spells
     AWAKEN_THE_ALPHA(new AwakenTheAlpha()),
