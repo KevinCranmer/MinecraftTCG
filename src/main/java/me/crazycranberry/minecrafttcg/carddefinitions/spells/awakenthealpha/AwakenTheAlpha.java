@@ -51,7 +51,7 @@ public class AwakenTheAlpha implements SpellCardDefinition {
             }
         }
         TheAlphaDef alphaDef = new TheAlphaDef();
-        Minion theAlpha = MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, TheAlpha.class, alphaDef.minionType(), null, alphaDef.entityAdjustment());
+        Minion theAlpha = MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, TheAlpha.class, alphaDef);
         theAlpha.addPermanentStrength(totalStr);
         theAlpha.setMaxHealth(theAlpha.maxHealth() + totalHealth);
         theAlpha.setHealthNoHealTrigger(alphaDef.maxHealth());

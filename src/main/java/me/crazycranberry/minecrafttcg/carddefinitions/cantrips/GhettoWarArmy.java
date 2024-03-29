@@ -2,7 +2,8 @@ package me.crazycranberry.minecrafttcg.carddefinitions.cantrips;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
@@ -57,6 +58,8 @@ public class GhettoWarArmy implements CantripCardDefinition {
         spotsToSpawn = stadium.allyMinionSpots(caster).stream().filter(spot -> spot.minionRef().apply(stadium) == null).toList();
         tickProgress = 0;
         spotProgress = 0;
+        SewerZombieDef zombie = (SewerZombieDef) SEWER_ZOMBIE.card();
+        DingySkeletonDef skeleton = (DingySkeletonDef) DINGY_SKELETON.card();
         taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
             if (spotProgress >= spotsToSpawn.size()) {
                 oneAnimationFinished(stadium, caster);
@@ -65,9 +68,9 @@ public class GhettoWarArmy implements CantripCardDefinition {
             }
             if (tickProgress >= ticksTillStartSpawning && tickProgress % ticksBetweenSpawning == 0) {
                 if (spotsToSpawn.get(spotProgress).name().endsWith("FRONT") && spotsToSpawn.get(spotProgress).minionRef().apply(stadium) == null) { // Don't feel great about this i'll be honest...
-                    summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, ((MinionCardDefinition)SEWER_ZOMBIE.card()).minionClass(), ((MinionCardDefinition)SEWER_ZOMBIE.card()).minionType(), null, ((MinionCardDefinition)SEWER_ZOMBIE.card()).entityAdjustment());
+                    summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, zombie.minionClass(), zombie);
                 } else if (spotsToSpawn.get(spotProgress).name().endsWith("BACK") && spotsToSpawn.get(spotProgress).minionRef().apply(stadium) == null) {
-                    summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, ((MinionCardDefinition)DINGY_SKELETON.card()).minionClass(), ((MinionCardDefinition)DINGY_SKELETON.card()).minionType(), null, ((MinionCardDefinition)DINGY_SKELETON.card()).entityAdjustment());
+                    summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, skeleton.minionClass(), skeleton);
                 }
                 spotProgress++;
             }

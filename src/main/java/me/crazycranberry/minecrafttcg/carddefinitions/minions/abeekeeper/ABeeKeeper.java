@@ -16,6 +16,7 @@ public class ABeeKeeper extends Minion {
     @Override
     public void onDeath() {
         super.onDeath();
-        MinionCardDefinition.summonMinion(minionInfo().spot(), minionInfo().stadium(), minionInfo().master(), ABee.class, ((MinionCardDefinition)A_BEE.card()).minionType(), null, ((MinionCardDefinition)A_BEE.card()).entityAdjustment());
+        MinionCardDefinition abhi = (MinionCardDefinition) A_BEE.card();
+        MinionCardDefinition.summonMinion(minionInfo().spot(), minionInfo().stadium(), minionInfo().master(), abhi.minionClass(), abhi);
     }
 }

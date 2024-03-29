@@ -21,7 +21,7 @@ public class Mom extends Minion {
         Spot spotInFront = this.minionInfo().stadium().getSpotInFront(this.minionInfo().spot());
         if (spotInFront != null && spotInFront.minionRef().apply(this.minionInfo().stadium()) == null) {
             BabyDef babyDef = new BabyDef();
-            summonMinion(spotInFront, this.minionInfo().stadium(), this.minionInfo().master(), Baby.class, babyDef.minionType(), babyDef.equipment(), babyDef.entityAdjustment());
+            summonMinion(spotInFront, this.minionInfo().stadium(), this.minionInfo().master(), Baby.class, babyDef);
         }
     }
 }

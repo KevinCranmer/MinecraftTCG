@@ -50,7 +50,7 @@ public class HappyNarwhale extends Minion {
         if (List.of(GREEN_1_BACK, GREEN_2_BACK, BLUE_1_BACK, BLUE_2_BACK, RED_1_BACK, RED_2_BACK).contains(this.minionInfo().spot())) {
             positionVector = new Vector(0, 0, 0);
         }
-        Vector offset = this.cardDef().isFlying() ? new Vector(0, 3, 0) : positionVector;
+        Vector offset = this.hasFlying() ? new Vector(0, 3, 0) : positionVector;
         nmsMob().goalSelector.addGoal(5, new WalkToLocationGoal(nmsMob(), minionInfo().stadium().locOfSpot(minionInfo().spot()).add(offset)));
     }
 
@@ -61,7 +61,7 @@ public class HappyNarwhale extends Minion {
         }
         LivingEntity target = minionInfo().stadium().getTargetInFront(this, true);
         nmsMob().setTarget(((CraftLivingEntity) target).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
-        if (cardDef().isRanged()) {
+        if (hasRanged()) {
             Particle.DustOptions dustOptions = new Particle.DustOptions(minionInfo().master().equals(minionInfo().stadium().player1()) ? Color.GREEN : Color.ORANGE, 1);
             nmsMob().goalSelector.addGoal(1, new ShootParticlesGoal<>(this, target, Particle.REDSTONE, strength(), dustOptions));
         } else {

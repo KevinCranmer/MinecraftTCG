@@ -82,7 +82,7 @@ public class StoneCloneDef implements MinionCardDefinition, MultiTargetCard {
             if (targetSpot != null) {
                 Minion targetMinion = targetSpot.minionRef().apply(stadium);
                 if (targetMinion != null) {
-                    MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), null, entityAdjustment());
+                    //MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), null, entityAdjustment());
                 }
             }
         }

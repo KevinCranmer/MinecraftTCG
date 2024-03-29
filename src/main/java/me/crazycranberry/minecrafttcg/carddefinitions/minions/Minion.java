@@ -47,6 +47,8 @@ public abstract class Minion {
     private Integer numTurnsOverkill = 0;
     private Boolean isFlying = false;
     private Integer numTurnsFlying = 0;
+    private Boolean isRanged = false;
+    private Integer numTurnsRanged = 0;
     private Boolean hasLifesteal = false;
     private Integer numTurnsLifesteal = 0;
     private final ListenerForIndividualMinion listener;
@@ -56,6 +58,8 @@ public abstract class Minion {
         this.strength = cardDef.strength();
         this.maxHealth = cardDef.maxHealth();
         this.health = cardDef.maxHealth();
+        this.isFlying = cardDef.isFlying();
+        this.isRanged = cardDef.isRanged();
         this.minionInfo = minionInfo;
         CraftMob mob = (CraftMob) minionInfo.entity();
         this.nmsMob = (PathfinderMob) mob.getHandle();
@@ -156,7 +160,7 @@ public abstract class Minion {
     }
 
     public void onCombatStart() {
-        if ((!this.cardDef().isRanged() && this.minionInfo().stadium().hasAllyMinionInFront(this.minionInfo().spot())) || this.strength() == 0) {
+        if ((!this.hasRanged() && this.minionInfo().stadium().hasAllyMinionInFront(this.minionInfo().spot())) || this.strength() == 0) {
             attacksLeft = 0;
         }
     }
@@ -167,7 +171,7 @@ public abstract class Minion {
         }
         LivingEntity target = minionInfo.stadium().getTargetInFront(this);
         nmsMob.setTarget(((CraftLivingEntity) target).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
-        if (cardDef().isRanged()) {
+        if (this.hasRanged()) {
             DustOptions dustOptions = new DustOptions(minionInfo().master().equals(minionInfo().stadium().player1()) ? Color.GREEN : Color.ORANGE, 1);
             nmsMob.goalSelector.addGoal(1, new ShootParticlesGoal<>(this, target, Particle.REDSTONE, strength(), dustOptions));
         } else {
@@ -300,7 +304,7 @@ public abstract class Minion {
     }
 
     public void setGoalOfStayingOnSpot() {
-        Vector flyingModifier = this.cardDef().isFlying() ? new Vector(0, 3, 0) : new Vector(0, 0, 0);
+        Vector flyingModifier = this.hasFlying() ? new Vector(0, 3, 0) : new Vector(0, 0, 0);
         nmsMob.goalSelector.addGoal(5, new WalkToLocationGoal(nmsMob, minionInfo().stadium().locOfSpot(minionInfo().spot()).add(flyingModifier)));
     }
 
@@ -318,6 +322,10 @@ public abstract class Minion {
 
     public Boolean hasFlying() {
         return numTurnsFlying > 0 || isFlying;
+    }
+
+    public Boolean hasRanged() {
+        return numTurnsRanged > 0 || isRanged;
     }
 
     public Boolean hasLifesteal() {
