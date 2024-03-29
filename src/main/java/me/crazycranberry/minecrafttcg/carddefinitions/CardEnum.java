@@ -37,6 +37,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.lurkingthief.Lurki
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTellerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mom.MomDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.ScaredDuelistDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.yellowpanther.YellowPantherDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLeaderDef;
@@ -103,6 +104,7 @@ public enum CardEnum {
     MOM(new MomDef()),
     NINJA_MAC(new NinjaMacDef()),
     PACK_LEADER(new PackLeaderDef()),
+    RECKLESS_STINKER(new RecklessStinkerDef()),
     SCARED_DUELIST(new ScaredDuelistDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),
     SKI_TURTLE(new SkiTurtleDef()),
