@@ -44,7 +44,7 @@ public class FireBlast implements CantripCardDefinition {
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         newAnimationStarted(stadium, caster, 1);
-        new ParticleBeamTracker(stadium, caster, List.of(targets.get(0).minionRef().apply(stadium).minionInfo().entity()), Particle.LAVA, null, 0.8, 3, FireBlast::beamCollided);
+        new ParticleBeamTracker(stadium, caster, List.of(stadium.minionFromSpot(targets.get(0)).minionInfo().entity()), Particle.LAVA, null, 0.8, 3, FireBlast::beamCollided);
     }
 
     @Override

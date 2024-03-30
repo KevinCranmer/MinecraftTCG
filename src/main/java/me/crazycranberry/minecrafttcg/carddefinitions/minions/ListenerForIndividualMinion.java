@@ -53,7 +53,7 @@ public class ListenerForIndividualMinion implements Listener {
 
     @EventHandler (priority = EventPriority.HIGH)
     private void onMinionEnteredEvent(MinionEnteredEvent event) {
-        if (event.stadium().equals(minion.minionInfo().stadium()) && !event.minion().equals(this)) {
+        if (event.stadium().equals(minion.minionInfo().stadium()) && !event.minion().equals(minion)) {
             if (event.master().equals(minion.minionInfo().master())) {
                 minion.onAllyMinionEntered(event.minion());
             } else {

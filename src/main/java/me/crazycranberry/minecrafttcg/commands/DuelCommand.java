@@ -76,7 +76,7 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
                     Player opponent = playerDuelChallenges.get(p);
                     playerDuelChallenges.remove(p);
                     opponent.sendMessage(String.format("%s%s has declined your duel.", ChatColor.GRAY, p.getName()));
-                    p.sendMessage(String.format("%sSuccessfully declined.", ChatColor.GRAY, p.getName()));
+                    p.sendMessage(String.format("%sSuccessfully declined.", ChatColor.GRAY));
                 } else {
                     p.sendMessage(String.format("%sYou do not have any challenges to decline", ChatColor.GRAY));
                 }
@@ -95,7 +95,7 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
                     challengedPlayer.get().sendMessage(String.format("%s%s has just sent you a duel challenge. Type \"/duel <accept/decline>\" to respond to it.", ChatColor.GRAY, p.getName()));
                     Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
                         Optional<Player> key = playerDuelChallenges.entrySet().stream().filter(e -> challengedPlayer.get().equals(e.getKey()) && p.equals(e.getValue())).map(Map.Entry::getKey).findFirst();
-                        key.ifPresent(player -> playerDuelChallenges.remove(player));
+                        key.ifPresent(playerDuelChallenges::remove);
                     }, 1200);
                 }
             }

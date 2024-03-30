@@ -28,13 +28,13 @@ public class Billy extends Minion {
 
     @Override
     public void onCombatEnd() {
-        super.onCombatEnd();
         for (Minion m : minionsIHit) {
             if (FRONT_ROW_SPOTS.contains(m.minionInfo().spot())) {
                 swapTwoSpots(this.minionInfo().stadium(), m.minionInfo().spot(), Spot.spotBehind(m.minionInfo().spot()));
             }
         }
         minionsIHit.clear();
+        super.onCombatEnd();
     }
 
     @Override

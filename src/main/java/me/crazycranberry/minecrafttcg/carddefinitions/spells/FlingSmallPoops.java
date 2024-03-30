@@ -56,7 +56,7 @@ public class FlingSmallPoops implements SpellCardDefinition {
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         List<LivingEntity> minionsToPoopOn = new ArrayList<>();
         for (Spot spot : stadium.enemyMinionSpots(caster)) {
-            Minion minion = spot.minionRef().apply(stadium);
+            Minion minion = stadium.minionFromSpot(spot);
             if (minion != null && !minion.minionInfo().entity().isDead()) {
                 minionsToPoopOn.add(minion.minionInfo().entity());
             }

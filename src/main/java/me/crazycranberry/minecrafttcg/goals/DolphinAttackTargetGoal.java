@@ -19,7 +19,7 @@ public class DolphinAttackTargetGoal extends Goal {
     private int attackCooldown = 0;
     private final Dolphin mob;
     private final LivingEntity target;
-    private boolean targetIsFlying = false;
+    private boolean targetIsFlying;
     private boolean jumpStarted = false;
     private boolean breached;
 

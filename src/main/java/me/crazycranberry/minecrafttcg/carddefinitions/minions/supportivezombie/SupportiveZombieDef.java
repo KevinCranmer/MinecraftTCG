@@ -82,7 +82,7 @@ public class SupportiveZombieDef implements MinionCardDefinition, MultiTargetCar
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         MinionCardDefinition.super.onCast(stadium, caster, targets);
         if (targets.size() > 1) {
-            Minion minion = targets.get(1).minionRef().apply(stadium);
+            Minion minion = stadium.minionFromSpot(targets.get(1));
             if (minion != null) {
                 minion.giveTemporaryStrength(BONUS_STRENGTH);
             }

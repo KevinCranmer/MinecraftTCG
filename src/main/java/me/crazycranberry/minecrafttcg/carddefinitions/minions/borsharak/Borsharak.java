@@ -26,8 +26,7 @@ public class Borsharak extends Minion {
         }
         List<Spot> adjacentSpots = stadium.adjacentSpots(targetMinion.get().minionInfo().spot());
         adjacentSpots.stream()
-            .map(Spot::minionRef)
-            .map(mr -> mr.apply(stadium))
+            .map(stadium::minionFromSpot)
             .filter(Objects::nonNull)
             .forEach(m -> {
                 this.onDamageDealt(m.minionInfo().entity(), damageDealt, false, m.isProtected());

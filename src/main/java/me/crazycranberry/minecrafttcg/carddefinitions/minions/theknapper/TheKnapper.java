@@ -21,14 +21,14 @@ public class TheKnapper extends Minion {
         super.onCombatStart();
         Stadium stadium = this.minionInfo().stadium();
         LivingEntity targetEntity = stadium.getTargetInFront(this);
-        if (stadium.hasAllyMinionInFront(this.minionInfo().spot()) || targetEntity.getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
+        if (stadium.getAllyMinionInFront(this.minionInfo().spot()) != null || targetEntity.getType().equals(PLAYER_PROXY_ENTITY_TYPE)) {
             return;
         }
         Optional<Minion> targetMinion = stadium.minionFromEntity(targetEntity);
         if (targetMinion.isPresent() && targetMinion.get().strength() > this.strength()) {
-            int currentStrength = this.baseStrength();
-            this.setStrength(targetMinion.get().baseStrength());
-            targetMinion.get().setStrength(currentStrength);
+            int currentStrength = this.strength();
+            this.giveTemporaryStrength(targetMinion.get().strength() - currentStrength);
+            targetMinion.get().giveTemporaryStrength(currentStrength - targetMinion.get().strength());
             this.minionInfo().entity().getWorld().spawnParticle(Particle.NOTE, this.minionInfo().entity().getEyeLocation(), 3, 0.75, 0.5, 0.75);
             this.minionInfo().entity().getWorld().spawnParticle(Particle.NOTE, targetEntity.getEyeLocation(), 3, 0.75, 0.5, 0.75);
         }
@@ -36,6 +36,6 @@ public class TheKnapper extends Minion {
 
     @Override
     public String signDescription() {
-        return "Swaps strength\nwith stronger\nenemies in\nfront";
+        return "Swaps strength\nwith stronger\nenemies in\nfront until turn end";
     }
 }

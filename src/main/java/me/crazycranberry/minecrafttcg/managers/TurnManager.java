@@ -210,7 +210,7 @@ public class TurnManager implements Listener {
         Integer loserRank = getPlugin().config().playerRank(event.loser());
         Integer higherRank = winnerRank > loserRank ? winnerRank : loserRank;
         Integer lowerRank = winnerRank > loserRank ? loserRank : winnerRank;
-        Integer rankDifferential = higherRank - lowerRank;
+        int rankDifferential = higherRank - lowerRank;
         double proportionalDiff = ((double) Math.min(rankDifferential, UPPER_LIMIT_OF_RANK_DIFFERENTIAL_WEIGHTING)) / ((double) UPPER_LIMIT_OF_RANK_DIFFERENTIAL_WEIGHTING);
         Integer rankChange;
         Player playerGainingRank;
@@ -245,9 +245,7 @@ public class TurnManager implements Listener {
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
             if (turn == stadium.turn() && turnPhase.equals(stadium.phase())) {
                 Arrays.stream(Spot.values())
-                    .map(Spot::minionRef)
-                    .filter(Objects::nonNull)
-                    .map(mr -> mr.apply(stadium))
+                    .map(stadium::minionFromSpot)
                     .filter(Objects::nonNull)
                     .forEach(Minion::unstuckify);
             }
@@ -261,9 +259,7 @@ public class TurnManager implements Listener {
         startTurnPhaseTimer(turn, turnPhase, stadium, 3);
         startTurnPhaseTimer(turn, turnPhase, stadium, 2);
         startTurnPhaseTimer(turn, turnPhase, stadium, 1);
-        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            maybeNextPhase(turn, turnPhase, stadium);
-        }, (long) getPlugin().config().duelSecondsPerRound() * TICKS_PER_SECOND);
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> maybeNextPhase(turn, turnPhase, stadium), (long) getPlugin().config().duelSecondsPerRound() * TICKS_PER_SECOND);
     }
 
     private void startTurnPhaseTimer(int turn, TurnPhase turnPhase, Stadium stadium, int secondsLeft) {

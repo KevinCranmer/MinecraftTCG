@@ -202,7 +202,6 @@ public class TestCommands {
         Optional<Player> player2 = Bukkit.getOnlinePlayers().stream().filter(onlinePlayer -> onlinePlayer.getName().equals(player2Name)).map(OfflinePlayer::getPlayer).findFirst();
         if (player1.isEmpty() || player2.isEmpty()) {
             System.out.println("NO");
-            return;
         }
     }
 
@@ -291,12 +290,12 @@ public class TestCommands {
         net.minecraft.world.entity.monster.Skeleton nmsSkeleton = craftSkeleton.getHandle();
         System.out.println("\nSkele goals:");
         nmsSkeleton.goalSelector.getAvailableGoals()
-                .forEach(g -> System.out.println(String.format("%s %s", g.getGoal().getClass(), g.getGoal().toString())));
+                .forEach(g -> System.out.printf("%s %s%n", g.getGoal().getClass(), g.getGoal().toString()));
 
         CraftZombie craftZombie = (CraftZombie) zombie;
         net.minecraft.world.entity.monster.Zombie nmsZombie = craftZombie.getHandle();
         System.out.println("\nZombie goals:");
         nmsZombie.goalSelector.getAvailableGoals()
-                .forEach(g -> System.out.println(String.format("%s %s", g.getGoal().getClass(), g.getGoal().toString())));
+                .forEach(g -> System.out.printf("%s %s%n", g.getGoal().getClass(), g.getGoal().toString()));
     }
 }

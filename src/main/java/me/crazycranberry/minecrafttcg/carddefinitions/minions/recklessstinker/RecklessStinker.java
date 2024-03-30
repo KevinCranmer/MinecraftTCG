@@ -7,6 +7,8 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEf
 import java.util.List;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.RECKLESS_STINKER;
+import static me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef.BONUS_HEALTH;
+import static me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef.BONUS_STRENGTH;
 
 public class RecklessStinker extends MinionWithStaticEffect {
     public RecklessStinker(MinionInfo minionInfo) {
@@ -27,5 +29,10 @@ public class RecklessStinker extends MinionWithStaticEffect {
     public static void removeEffect(Minion source, Minion target) {
         target.setStaticStrengthBonus(source, 0);
         target.setStaticMaxHealthBonus(source, 0);
+    }
+
+    @Override
+    public String signDescription() {
+        return "+" + BONUS_STRENGTH + "/+" + BONUS_HEALTH + " if\ncontroller has\n1 or fewer\ncards in hand";
     }
 }

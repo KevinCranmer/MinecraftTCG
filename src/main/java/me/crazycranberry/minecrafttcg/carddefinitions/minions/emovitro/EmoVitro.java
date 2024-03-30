@@ -3,7 +3,6 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
-import me.crazycranberry.minecrafttcg.model.Spot;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,8 +21,7 @@ public class EmoVitro extends MinionWithStaticEffect {
     public static void effectForTargets(Minion source, Minion target) {
         long numAllies = source.minionInfo().stadium().allyMinionSpots(source.minionInfo().master())
             .stream()
-            .map(Spot::minionRef)
-            .map(mr -> mr.apply(source.minionInfo().stadium()))
+            .map(s -> source.minionInfo().stadium().minionFromSpot(s))
             .filter(Objects::nonNull)
             .filter(m -> !m.equals(source))
             .count();

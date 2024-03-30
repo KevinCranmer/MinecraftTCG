@@ -33,7 +33,7 @@ public class KeepItSchwifty implements SpellCardDefinition {
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         for (Spot spot : stadium.allyMinionSpots(caster)) {
-            Minion minion = spot.minionRef().apply(stadium);
+            Minion minion = stadium.minionFromSpot(spot);
             if (minion != null) {
                 minion.giveTemporaryStrength(2);
                 minion.setTemporaryOverkill(1);

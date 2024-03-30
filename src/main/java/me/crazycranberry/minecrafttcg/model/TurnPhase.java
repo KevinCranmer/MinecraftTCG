@@ -20,7 +20,7 @@ public enum TurnPhase {
     SECOND_POSTCOMBAT_PHASE(EndOfTurnPhaseStartedEvent.class),
     END_OF_TURN(TurnEndEvent.class);
 
-    private Class<? extends Event> nextPhaseRequestEventClass;
+    private final Class<? extends Event> nextPhaseRequestEventClass;
 
     TurnPhase(Class<? extends Event> nextPhaseRequestEventClass) {
         this.nextPhaseRequestEventClass = nextPhaseRequestEventClass;

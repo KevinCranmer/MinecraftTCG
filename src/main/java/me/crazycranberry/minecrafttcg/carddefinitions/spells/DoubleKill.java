@@ -34,11 +34,11 @@ public class DoubleKill implements SpellCardDefinition, MultiTargetCard {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
-        Minion minion = targets.get(0).minionRef().apply(stadium);
+        Minion minion = stadium.minionFromSpot(targets.get(0));
         if (minion != null) {
             minion.onDeath();
         }
-        Minion minion2 = targets.get(1).minionRef().apply(stadium);
+        Minion minion2 = stadium.minionFromSpot(targets.get(1));
         if (minion2 != null) {
             minion2.onDeath();
         }

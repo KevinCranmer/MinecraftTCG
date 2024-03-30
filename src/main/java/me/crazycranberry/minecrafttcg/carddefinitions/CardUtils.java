@@ -17,7 +17,7 @@ import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_PROX
 public class CardUtils {
     public static List<Minion> minionsFromSpots(List<Spot> spots, Stadium stadium) {
         return spots.stream()
-            .map(s -> s.minionRef().apply(stadium))
+            .map(stadium::minionFromSpot)
             .filter(Objects::nonNull)
             .toList();
     }
@@ -69,10 +69,10 @@ public class CardUtils {
     }
 
     public static void swapTwoSpots(Stadium stadium, Spot spot1, Spot spot2) {
-        Minion firstMinion = spot1.minionRef().apply(stadium);
-        Minion secondMinion = spot2.minionRef().apply(stadium);
-        spot1.minionSetRef().accept(stadium, secondMinion, false);
-        spot2.minionSetRef().accept(stadium, firstMinion, false);
+        Minion firstMinion = stadium.minionFromSpot(spot1);
+        Minion secondMinion = stadium.minionFromSpot(spot2);
+        stadium.setMinionAtSpot(spot1, secondMinion, false);
+        stadium.setMinionAtSpot(spot2, firstMinion, false);
         if (firstMinion != null) {
             firstMinion.minionInfo().entity().teleport(stadium.locOfSpot(spot2));
             firstMinion.minionInfo().setSpot(spot2);

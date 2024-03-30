@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DuelEndEvent extends Event {
-    private static List<Stadium> stadiumsEnding = new ArrayList<>();
+    private static final List<Stadium> stadiumsEnding = new ArrayList<>();
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final Stadium stadium;

@@ -48,9 +48,4 @@ public class RecklessStinkerDef implements MinionCardDefinition {
     public Class<? extends Minion> minionClass() {
         return RecklessStinker.class;
     }
-
-    @Override
-    public String signDescription() {
-        return "+" + BONUS_STRENGTH + "/+" + BONUS_HEALTH + " if\ncontroller has\n1 or fewer\ncards in hand";
-    }
 }

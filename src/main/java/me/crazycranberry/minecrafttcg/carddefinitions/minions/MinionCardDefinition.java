@@ -51,7 +51,7 @@ public interface MinionCardDefinition extends Card {
     }
 
     static Minion summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, EntityType minionType, Map<EquipmentSlot, ItemStack> equipment, Consumer<LivingEntity> entityAdjustment, boolean triggerOnEnter) {
-        if (target.minionRef().apply(stadium) != null) {
+        if (stadium.minionFromSpot(target) != null) {
             caster.sendMessage(String.format("%sA minion tried to be summoned on a spot that already has a minion. The new minion was not summoned.%s", ChatColor.GRAY, ChatColor.RESET));
             return null;
         }
@@ -75,7 +75,7 @@ public interface MinionCardDefinition extends Card {
             }
             entityAdjustment.accept(entity);
             minion = c.newInstance(new MinionInfo(stadium, target, entity, caster));
-            target.minionSetRef().accept(stadium, minion, false);
+            stadium.setMinionAtSpot(target, minion, false);
             stadium.showName(target);
             if (triggerOnEnter) {
                 minion.onEnter();

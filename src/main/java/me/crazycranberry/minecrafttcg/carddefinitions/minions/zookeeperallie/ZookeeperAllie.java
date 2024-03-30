@@ -19,13 +19,13 @@ public class ZookeeperAllie extends Minion {
         int numAnimals = 0;
         Stadium stadium = this.minionInfo().stadium();
         for (Spot spot : stadium.allyMinionSpots(this.minionInfo().master())) {
-            Minion minion = spot.minionRef().apply(stadium);
+            Minion minion = stadium.minionFromSpot(spot);
             if (minion != null && ANIMAL_TYPES.contains(minion.minionInfo().entity().getType())) {
                 numAnimals++;
             }
         }
         for (Spot spot : stadium.enemyMinionSpots(this.minionInfo().master())) {
-            Minion minion = spot.minionRef().apply(stadium);
+            Minion minion = stadium.minionFromSpot(spot);
             if (minion != null && ANIMAL_TYPES.contains(minion.minionInfo().entity().getType())) {
                 numAnimals++;
             }

@@ -71,7 +71,7 @@ public class ToxicSpikes implements SpellCardDefinition {
                     return;
                 } else if (progressInTicks == (numTicks / 2)) {
                     spots.stream()
-                            .map(s -> s.minionRef().apply(stadium))
+                            .map(stadium::minionFromSpot)
                             .filter(Objects::nonNull)
                             .forEach(m -> m.minionInfo().entity().damage(2, caster));
                 }

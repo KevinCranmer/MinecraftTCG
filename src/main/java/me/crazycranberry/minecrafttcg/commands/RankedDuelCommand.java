@@ -28,10 +28,9 @@ public class RankedDuelCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player p)) {
             return false;
         }
-        Player p = (Player) sender;
         if (command.getName().equalsIgnoreCase("rankedduel")) {
             if (args.length == 0) {
                 p.openInventory(createDuelChallengeInventory(p, 0, true));
@@ -61,7 +60,7 @@ public class RankedDuelCommand implements CommandExecutor, TabCompleter {
                     Player opponent = playerDuelChallenges.get(p);
                     playerDuelChallenges.remove(p);
                     opponent.sendMessage(String.format("%s%s has declined your rankedduel.", ChatColor.GRAY, p.getName()));
-                    p.sendMessage(String.format("%sSuccessfully declined.", ChatColor.GRAY, p.getName()));
+                    p.sendMessage(String.format("%sSuccessfully declined.", ChatColor.GRAY));
                 } else {
                     p.sendMessage(String.format("%sYou do not have any challenges to decline", ChatColor.GRAY));
                 }
@@ -80,7 +79,7 @@ public class RankedDuelCommand implements CommandExecutor, TabCompleter {
                     challengedPlayer.get().sendMessage(String.format("%s%s has just sent you a rankedduel challenge. Type \"/rankedduel <accept/decline>\" to respond to it.", ChatColor.GRAY, p.getName()));
                     Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
                         Optional<Player> key = playerDuelChallenges.entrySet().stream().filter(e -> challengedPlayer.get().equals(e.getKey()) && p.equals(e.getValue())).map(Map.Entry::getKey).findFirst();
-                        key.ifPresent(player -> playerDuelChallenges.remove(player));
+                        key.ifPresent(playerDuelChallenges::remove);
                     }, 1200);
                 }
             }
@@ -91,7 +90,7 @@ public class RankedDuelCommand implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player && (command.getName().equalsIgnoreCase("rankedduel") && args.length == 1)) {
-            List<String> possibleValues = new ArrayList<>(Bukkit.getOnlinePlayers().stream().filter(p -> !((Player) sender).equals(p)).map(Player::getName).toList());
+            List<String> possibleValues = new ArrayList<>(Bukkit.getOnlinePlayers().stream().filter(p -> !sender.equals(p)).map(Player::getName).toList());
             possibleValues.add("accept");
             possibleValues.add("decline");
             return possibleValues.stream().filter(n -> n.toLowerCase().startsWith(args[0].toLowerCase())).toList();

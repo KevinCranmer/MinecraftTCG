@@ -32,7 +32,7 @@ public class Unalive implements SpellCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
-        Minion minion = targets.get(0).minionRef().apply(stadium);
+        Minion minion = stadium.minionFromSpot(targets.get(0));
         if (minion != null) {
             minion.onDeath();
         }

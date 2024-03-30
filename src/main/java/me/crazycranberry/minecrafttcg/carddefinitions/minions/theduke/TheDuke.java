@@ -34,7 +34,7 @@ public class TheDuke extends Minion {
         boolean hasKevin = false;
         List<Spot> allySpots = this.minionInfo().stadium().allyMinionSpots(this.minionInfo().master());
         for (Spot spot : allySpots) {
-            Minion minion = spot.minionRef().apply(this.minionInfo().stadium());
+            Minion minion = this.minionInfo().stadium().minionFromSpot(spot);
             if (minion instanceof MikeTheStoryTeller) {
                 hasMike = true;
             } else if (minion instanceof KevinTheSmith) {
@@ -67,7 +67,7 @@ public class TheDuke extends Minion {
             this.stadiumWorld = stadium.startingCorner().getWorld();
             this.exodiaInfos = new ArrayList<>();
             for (Spot spot : stadium.allyMinionSpots(caster)) {
-                Minion minion = spot.minionRef().apply(stadium);
+                Minion minion = stadium.minionFromSpot(spot);
                 if (minion instanceof TheDuke || minion instanceof MikeTheStoryTeller || minion instanceof KevinTheSmith) {
                     exodiaInfos.add(new ExodiaInfo(minion, stadium.opponent(caster)));
                 }
@@ -108,7 +108,7 @@ public class TheDuke extends Minion {
     private static class ExodiaInfo {
         private final Player target;
         private Location particleLoc;
-        private Location startingLoc;
+        private final Location startingLoc;
         private final ExodiaPiece piece;
 
         private ExodiaInfo(Minion exodiaMinion, Player target) {

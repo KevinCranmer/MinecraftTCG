@@ -86,11 +86,11 @@ public class TheVoid implements SpellCardDefinition {
                     return;
                 } else if (progressInTicks == (numTicks / 2)) {
                     stadium.allyMinionSpots(caster).stream()
-                        .map(s -> s.minionRef().apply(stadium))
+                        .map(stadium::minionFromSpot)
                         .filter(Objects::nonNull)
                         .forEach(Minion::onDeath);
                     stadium.enemyMinionSpots(caster).stream()
-                        .map(s -> s.minionRef().apply(stadium))
+                        .map(stadium::minionFromSpot)
                         .filter(Objects::nonNull)
                         .forEach(Minion::onDeath);
                 }

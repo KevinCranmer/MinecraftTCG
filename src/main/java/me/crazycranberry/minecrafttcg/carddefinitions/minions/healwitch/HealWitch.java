@@ -20,7 +20,7 @@ public class HealWitch extends Minion {
     public void onTurnEnd() {
         List<Spot> allySpots = minionInfo().stadium().allyMinionSpots(minionInfo().master());
         Optional<Minion> allyToHeal = randomFromList(allySpots.stream()
-            .map(s -> s.minionRef().apply(minionInfo().stadium()))
+            .map(s -> this.minionInfo().stadium().minionFromSpot(s))
             .filter(Objects::nonNull)
             .filter(m -> m.health() < m.maxHealth())
             .toList());

@@ -47,13 +47,13 @@ public class RadicalShift implements CantripCardDefinition {
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         List<LivingEntity> alliesToHeal = new ArrayList<>();
         for (Spot spot : stadium.allyMinionSpots(caster)) {
-            Minion minion = spot.minionRef().apply(stadium);
+            Minion minion = stadium.minionFromSpot(spot);
             if (minion != null && !minion.minionInfo().entity().isDead()) {
                 alliesToHeal.add(minion.minionInfo().entity());
             }
         }
         newAnimationStarted(stadium, caster, 1 + alliesToHeal.size());
-        new ParticleBeamTracker(stadium, caster, List.of(targets.get(0).minionRef().apply(stadium).minionInfo().entity()), Particle.LAVA, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, RadicalShift::onDamageBeamCollided);
+        new ParticleBeamTracker(stadium, caster, List.of(stadium.minionFromSpot(targets.get(0)).minionInfo().entity()), Particle.LAVA, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, RadicalShift::onDamageBeamCollided);
         new ParticleBeamTracker(stadium, caster, alliesToHeal, Particle.WAX_ON, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, RadicalShift::onHealBeamCollided);
     }
 

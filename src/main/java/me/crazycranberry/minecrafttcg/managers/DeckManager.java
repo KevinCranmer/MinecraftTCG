@@ -36,8 +36,8 @@ import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.RESET;
 
 public class DeckManager implements Listener {
-    private static Map<Player, List<ItemStack>> playersLookingAtDecks = new HashMap<>();
-    private static Map<Player, Collection> playersLookingAtCollection = new HashMap<>();
+    private static final Map<Player, List<ItemStack>> playersLookingAtDecks = new HashMap<>();
+    private static final Map<Player, Collection> playersLookingAtCollection = new HashMap<>();
 
     @EventHandler
     private void onDeckViewRequest(DeckViewRequestEvent event) {
@@ -50,7 +50,7 @@ public class DeckManager implements Listener {
             deck = Deck.fromConfig(event.getPlayer()).deck();
             event.getPlayer().openInventory(deck);
         }
-        playersLookingAtDecks.put(event.getPlayer(), List.copyOf(Arrays.asList(deck.getContents()).stream().filter(Objects::nonNull).toList()));
+        playersLookingAtDecks.put(event.getPlayer(), List.copyOf(Arrays.stream(deck.getContents()).filter(Objects::nonNull).toList()));
     }
 
     @EventHandler
@@ -65,9 +65,7 @@ public class DeckManager implements Listener {
     private void onDeckOrCollectionSave(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
         if ((!playersLookingAtDecks.containsKey(p) && !playersLookingAtCollection.containsKey(p)) || (StadiumManager.stadium(p.getLocation()) != null && StadiumManager.stadium(p.getLocation()).isPlayerParticipating(p))) {
-            if (playersLookingAtDecks.containsKey(p)) {
-                playersLookingAtDecks.remove(p);
-            }
+            playersLookingAtDecks.remove(p);
             return;
         }
         if (playersLookingAtDecks.containsKey(p)) {

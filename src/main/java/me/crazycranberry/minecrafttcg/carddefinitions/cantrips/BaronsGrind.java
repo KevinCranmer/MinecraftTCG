@@ -33,7 +33,7 @@ public class BaronsGrind implements CantripCardDefinition {
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         for (Spot spot : stadium.enemyMinionSpots(caster)) {
-            Minion minion = spot.minionRef().apply(stadium);
+            Minion minion = stadium.minionFromSpot(spot);
             if (minion != null) {
                 stadium.draw(caster);
             }

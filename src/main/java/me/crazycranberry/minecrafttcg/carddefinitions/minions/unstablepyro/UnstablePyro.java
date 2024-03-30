@@ -34,7 +34,7 @@ public class UnstablePyro extends Minion {
     private void fireballEnemyMinion() {
         List<Spot> enemySpots = minionInfo().stadium().enemyMinionSpots(minionInfo().master());
         Optional<Minion> enemyToFireball = randomFromList(enemySpots.stream()
-            .map(s -> s.minionRef().apply(minionInfo().stadium()))
+            .map(s -> this.minionInfo().stadium().minionFromSpot(s))
             .filter(Objects::nonNull)
             .toList());
         if (enemyToFireball.isEmpty()) {

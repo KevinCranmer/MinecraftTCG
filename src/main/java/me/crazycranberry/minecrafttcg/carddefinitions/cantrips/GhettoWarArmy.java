@@ -55,7 +55,7 @@ public class GhettoWarArmy implements CantripCardDefinition {
     }
 
     private void startSpawningTheseBoys(Stadium stadium, Player caster) {
-        spotsToSpawn = stadium.allyMinionSpots(caster).stream().filter(spot -> spot.minionRef().apply(stadium) == null).toList();
+        spotsToSpawn = stadium.allyMinionSpots(caster).stream().filter(spot -> stadium.minionFromSpot(spot) == null).toList();
         tickProgress = 0;
         spotProgress = 0;
         SewerZombieDef zombie = (SewerZombieDef) SEWER_ZOMBIE.card();
@@ -67,9 +67,9 @@ public class GhettoWarArmy implements CantripCardDefinition {
                 return;
             }
             if (tickProgress >= ticksTillStartSpawning && tickProgress % ticksBetweenSpawning == 0) {
-                if (spotsToSpawn.get(spotProgress).name().endsWith("FRONT") && spotsToSpawn.get(spotProgress).minionRef().apply(stadium) == null) { // Don't feel great about this i'll be honest...
+                if (spotsToSpawn.get(spotProgress).name().endsWith("FRONT") && stadium.minionFromSpot(spotsToSpawn.get(spotProgress)) == null) { // Don't feel great about this i'll be honest...
                     summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, zombie.minionClass(), zombie);
-                } else if (spotsToSpawn.get(spotProgress).name().endsWith("BACK") && spotsToSpawn.get(spotProgress).minionRef().apply(stadium) == null) {
+                } else if (spotsToSpawn.get(spotProgress).name().endsWith("BACK") && stadium.minionFromSpot(spotsToSpawn.get(spotProgress)) == null) {
                     summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, skeleton.minionClass(), skeleton);
                 }
                 spotProgress++;

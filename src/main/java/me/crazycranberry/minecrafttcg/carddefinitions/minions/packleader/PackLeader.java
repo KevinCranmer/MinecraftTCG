@@ -18,9 +18,7 @@ public class PackLeader extends MinionWithStaticEffect {
     public static List<Minion> getTargets(Minion m) {
         List<Spot> adjacentSpots = m.minionInfo().stadium().adjacentSpots(m.minionInfo().spot());
         return adjacentSpots.stream()
-            .map(Spot::minionRef)
-            .filter(Objects::nonNull)
-            .map(mr -> mr.apply(m.minionInfo().stadium()))
+            .map(s -> m.minionInfo().stadium().minionFromSpot(s))
             .filter(Objects::nonNull)
             .toList();
     }

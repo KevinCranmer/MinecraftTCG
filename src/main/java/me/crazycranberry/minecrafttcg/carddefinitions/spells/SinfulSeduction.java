@@ -26,8 +26,8 @@ public class SinfulSeduction implements SpellCardDefinition {
     private int taskId;
     private int tickProgress = 0;
     private int pitchProgress = 0;
-    private int ticksBetweenEachNote = 3;
-    private List<Float> pitches = List.of(0.707f, 0.794f, 0.891f, 0.944f, 1.059f, 1.189f, 1.335f, 1.414f);
+    private final int ticksBetweenEachNote = 3;
+    private final List<Float> pitches = List.of(0.707f, 0.794f, 0.891f, 0.944f, 1.059f, 1.189f, 1.335f, 1.414f);
     @Override
     public Integer cost() {
         return 8;
@@ -51,7 +51,7 @@ public class SinfulSeduction implements SpellCardDefinition {
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         newAnimationStarted(stadium, caster, 1);
-        new ParticleBeamTracker(stadium, caster, List.of(targets.get(0).minionRef().apply(stadium).minionInfo().entity()), Particle.HEART, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, SinfulSeduction::onParticleBeamCollided);
+        new ParticleBeamTracker(stadium, caster, List.of(stadium.minionFromSpot(targets.get(0)).minionInfo().entity()), Particle.HEART, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, SinfulSeduction::onParticleBeamCollided);
         playHarpScale(caster);
     }
 
@@ -81,8 +81,8 @@ public class SinfulSeduction implements SpellCardDefinition {
         Spot newHome = getNewHome(stadium, oldHome);
         target.minionInfo().setSpot(newHome);
         target.minionInfo().setMaster(caster);
-        newHome.minionSetRef().accept(stadium, target, false);
-        oldHome.minionSetRef().accept(stadium, null, false);
+        stadium.setMinionAtSpot(newHome, target, false);
+        stadium.setMinionAtSpot(oldHome, null, false);
         target.setupGoals();
         stadium.updateCustomName(target);
         if (stadium.isWalled(target)) {
@@ -103,11 +103,11 @@ public class SinfulSeduction implements SpellCardDefinition {
 
     private static Spot getNewHome(Stadium stadium, Spot target) {
         Spot opposingFrontRankSpot = Spot.opposingFrontRankSpot(target);
-        if (opposingFrontRankSpot.minionRef().apply(stadium) == null) {
+        if (stadium.minionFromSpot(opposingFrontRankSpot) == null) {
             return opposingFrontRankSpot;
         }
         Spot opposingBackRankSpot = Spot.opposingBackRankSpot(target);
-        if (opposingBackRankSpot.minionRef().apply(stadium) == null) {
+        if (stadium.minionFromSpot(opposingBackRankSpot) == null) {
             return opposingBackRankSpot;
         }
         return null;

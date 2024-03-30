@@ -216,7 +216,7 @@ public class CardDropManager implements Listener {
         double roll = Math.random() * totalRarityOdds;
         int rarityIndex = 0;
         while (roll > 0) {
-            Double rarityOdds = getPlugin().config().dropOddsConfig().getDouble(raritiesInDroppableCards.get(rarityIndex).name().toLowerCase());
+            double rarityOdds = getPlugin().config().dropOddsConfig().getDouble(raritiesInDroppableCards.get(rarityIndex).name().toLowerCase());
             if (rarityOdds != 0.0 && roll < rarityOdds) {
                 break;
             }

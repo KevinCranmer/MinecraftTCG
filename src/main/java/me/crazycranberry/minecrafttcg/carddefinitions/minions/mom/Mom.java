@@ -18,7 +18,7 @@ public class Mom extends Minion {
     public void onTurnStart() {
         super.onTurnStart();
         Spot spotInFront = this.minionInfo().stadium().getSpotInFront(this.minionInfo().spot());
-        if (spotInFront != null && spotInFront.minionRef().apply(this.minionInfo().stadium()) == null) {
+        if (spotInFront != null && this.minionInfo().stadium().minionFromSpot(spotInFront) == null) {
             BabyDef babyDef = new BabyDef();
             summonMinion(spotInFront, this.minionInfo().stadium(), this.minionInfo().master(), Baby.class, babyDef);
         }

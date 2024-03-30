@@ -69,7 +69,7 @@ public class StoneCloneDef implements MinionCardDefinition, MultiTargetCard {
         if (!targets.isEmpty()) {
             Spot targetSpot = targets.get(0);
             if (targetSpot != null) {
-                Minion targetMinion = targetSpot.minionRef().apply(stadium);
+                Minion targetMinion = stadium.minionFromSpot(targetSpot);
                 if (targetMinion != null) {
                     //MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, minionClass(), minionType(), null, entityAdjustment());   <-- this method is part of what I refactored. So new params, shorter list now.
                 }

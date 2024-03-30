@@ -38,17 +38,17 @@ public abstract class Minion {
     private Integer attacksLeft = attacksPerTurn;
     private String minionName;
     private final MinionInfo minionInfo;
-    private PathfinderMob nmsMob;
+    private final PathfinderMob nmsMob;
     private Integer numTurnsProtected = 0;
     private Integer temporaryBonusStrength = 0;
-    private Map<Minion, Integer> staticBonusStrength = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
-    private Map<Minion, Integer> staticBonusMaxHealth = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
+    private final Map<Minion, Integer> staticBonusStrength = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
+    private final Map<Minion, Integer> staticBonusMaxHealth = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
     private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
     private Integer numTurnsOverkill = 0;
     private Boolean isFlying;
     private Integer numTurnsFlying = 0;
-    private Boolean isRanged;
-    private Integer numTurnsRanged = 0;
+    private final Boolean isRanged;
+    private final Integer numTurnsRanged = 0;
     private Boolean hasLifesteal = false;
     private Integer numTurnsLifesteal = 0;
     private final ListenerForIndividualMinion listener;
@@ -165,7 +165,7 @@ public abstract class Minion {
     }
 
     public void onCombatStart() {
-        if ((!this.hasRanged() && this.minionInfo().stadium().hasAllyMinionInFront(this.minionInfo().spot())) || this.strength() == 0) {
+        if ((!this.hasRanged() && this.minionInfo().stadium().getAllyMinionInFront(this.minionInfo().spot()) != null) || this.strength() == 0) {
             attacksLeft = 0;
         }
     }

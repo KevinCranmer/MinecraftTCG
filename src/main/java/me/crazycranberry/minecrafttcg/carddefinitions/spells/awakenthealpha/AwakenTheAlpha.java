@@ -43,7 +43,7 @@ public class AwakenTheAlpha implements SpellCardDefinition {
         int totalStr = 0;
         int totalHealth = 0;
         for (Spot spot : stadium.allyMinionSpots(caster)) {
-            Minion allyMinion = spot.minionRef().apply(stadium);
+            Minion allyMinion = stadium.minionFromSpot(spot);
             if (allyMinion != null) {
                 totalStr += allyMinion.strength();
                 totalHealth += allyMinion.health();
@@ -54,7 +54,7 @@ public class AwakenTheAlpha implements SpellCardDefinition {
         Minion theAlpha = MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, TheAlpha.class, alphaDef);
         theAlpha.addPermanentStrength(totalStr);
         theAlpha.setMaxHealth(theAlpha.maxHealth() + totalHealth);
-        theAlpha.setHealthNoHealTrigger(alphaDef.maxHealth());
+        theAlpha.setHealthNoHealTrigger(theAlpha.maxHealth());
         theAlpha.setPermanentOverkill(true);
     }
 

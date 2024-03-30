@@ -119,8 +119,8 @@ public class Stadium {
     private Spot player2Target;
     private int fireworksLeft = 10;
     private int fireworkTaskId;
-    private int fireworkInterval = 10;
-    private int totalFireworkDuration = (fireworksLeft + 1) * fireworkInterval;
+    private final int fireworkInterval = 10;
+    private final int totalFireworkDuration = (fireworksLeft + 1) * fireworkInterval;
     private boolean duelDone = false;
 
     public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck, Boolean ranked) {
@@ -264,16 +264,17 @@ public class Stadium {
     }
 
     public void showName(Spot spot) {
-        if (spot.minionRef() != null && spot.minionRef().apply(this) != null) {
-            Minion minion = spot.minionRef().apply(this);
-            updateCustomName(minion);
-            minion.minionInfo().entity().setCustomNameVisible(true);
+        Minion m = minionFromSpot(spot);
+        if (m != null) {
+            updateCustomName(m);
+            m.minionInfo().entity().setCustomNameVisible(true);
         }
     }
 
     private void hideName(Spot spot) {
-        if (spot.minionRef() != null && spot.minionRef().apply(this) != null && !getPlugin().config().duelShowAllMinionNames()) {
-            spot.minionRef().apply(this).minionInfo().entity().setCustomNameVisible(false);
+        Minion m = minionFromSpot(spot);
+        if (m != null && !getPlugin().config().duelShowAllMinionNames()) {
+            m.minionInfo().entity().setCustomNameVisible(false);
         }
     }
 
@@ -347,17 +348,17 @@ public class Stadium {
 
     public Minion targetedMinion(Player p) {
         if (p.equals(player1)) {
-            return player1Target.equals(PLAYER_2_OUTLOOK) || player1Target.equals(PLAYER_1_OUTLOOK) ? null : player1Target.minionRef().apply(this);
+            return player1Target.equals(PLAYER_2_OUTLOOK) || player1Target.equals(PLAYER_1_OUTLOOK) ? null : minionFromSpot(player1Target);
         }
         else {
-            return player2Target.equals(PLAYER_1_OUTLOOK) || player2Target.equals(PLAYER_2_OUTLOOK) ? null : player2Target.minionRef().apply(this);
+            return player2Target.equals(PLAYER_1_OUTLOOK) || player2Target.equals(PLAYER_2_OUTLOOK) ? null : minionFromSpot(player2Target);
         }
     }
 
     public List<Minion> allMinions() {
         List<Minion> minions = new ArrayList<>();
         for (Spot spot : List.of(RED_1_FRONT, RED_1_BACK, BLUE_1_FRONT, BLUE_1_BACK, GREEN_1_FRONT, GREEN_1_BACK, RED_2_FRONT, RED_2_BACK, BLUE_2_FRONT, BLUE_2_BACK, GREEN_2_FRONT, GREEN_2_BACK)) {
-            Minion m = spot.minionRef().apply(this);
+            Minion m = minionFromSpot(spot);
             if (m != null) {
                 minions.add(m);
             }
@@ -404,9 +405,9 @@ public class Stadium {
 
     public boolean isPlayersTargetAvailable(Player p) {
         if (p.equals(player1)) {
-            return player1Target.minionRef().apply(this) == null;
+            return minionFromSpot(player1Target) == null;
         } else {
-            return player2Target.minionRef().apply(this) == null;
+            return minionFromSpot(player2Target) == null;
         }
     }
 
@@ -435,11 +436,11 @@ public class Stadium {
     }
 
     public LivingEntity getTargetInFront(Minion minion, boolean canTargetFlying) {
-        Minion opposingMinion = Spot.opposingFrontRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
+        Minion opposingMinion = minionFromSpot(Spot.opposingFrontRankSpot(minion.minionInfo().spot()));
         if (opposingMinion == null || (opposingMinion.hasFlying() && !canTargetFlying)) {
-            opposingMinion = Spot.opposingBackRankSpot(minion.minionInfo().spot()).minionRef().apply(this);
+            opposingMinion = minionFromSpot(Spot.opposingBackRankSpot(minion.minionInfo().spot()));
             if (opposingMinion == null || (opposingMinion.hasFlying() && !canTargetFlying)) {
-                return Spot.opposingChicken(minion.minionInfo().spot(), this);
+                return opposingChickenFromSpot(minion.minionInfo().spot());
             }
         }
         return opposingMinion.minionInfo().entity();
@@ -447,11 +448,9 @@ public class Stadium {
 
     public Optional<Minion> minionFromEntity(LivingEntity entity) {
         for (Spot spot : Spot.values()) {
-            if (spot.minionRef() != null) {
-                Minion minion = spot.minionRef().apply(this);
-                if (minion != null && minion.minionInfo().entity().equals(entity)) {
-                    return Optional.of(minion);
-                }
+            Minion minion = minionFromSpot(spot);
+            if (minion != null && minion.minionInfo().entity().equals(entity)) {
+                return Optional.of(minion);
             }
         }
         return Optional.empty();
@@ -463,7 +462,7 @@ public class Stadium {
         } else if (spot.equals(PLAYER_2_OUTLOOK)) {
             return Optional.of(player2);
         } else {
-            return Optional.ofNullable(spot.minionRef().apply(this)).map(m -> m.minionInfo().entity());
+            return Optional.ofNullable(minionFromSpot(spot)).map(m -> m.minionInfo().entity());
         }
     }
 
@@ -548,13 +547,11 @@ public class Stadium {
 
     private void killAllMinions() {
         allyMinionSpots(player1).stream()
-            .map(Spot::minionRef)
-            .map(mr -> mr.apply(this))
+            .map(this::minionFromSpot)
             .filter(Objects::nonNull)
             .forEach(Minion::onDeath);
         allyMinionSpots(player2).stream()
-            .map(Spot::minionRef)
-            .map(mr -> mr.apply(this))
+            .map(this::minionFromSpot)
             .filter(Objects::nonNull)
             .forEach(Minion::onDeath);
     }
@@ -580,7 +577,8 @@ public class Stadium {
             offset = PLAYER_1_SIGN_OFFSET;
         }
         ChatColor minionNameColor = targetedSpot.isPlayer1Spot() ? GREEN : GOLD;
-        if (targetedSpot.minionRef() == null || targetedSpot.minionRef().apply(this) == null) {
+        Minion targetedMinion = minionFromSpot(targetedSpot);
+        if (targetedMinion == null) {
             if (targetedSpot.equals(PLAYER_1_OUTLOOK) || targetedSpot.equals(Spot.PLAYER_2_OUTLOOK)) {
                 Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
                 Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
@@ -598,12 +596,11 @@ public class Stadium {
             }
             return;
         }
-        Minion minion = targetedSpot.minionRef().apply(this);
         Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
         Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
-        sign1.getSide(Side.FRONT).setLine(0, String.format("%s%s%s", minionNameColor, minion.name(), RESET));
-        sign1.getSide(Side.FRONT).setLine(1, String.format("%s%s%s:%s %s❤%s:%s/%s\n", DARK_GREEN, minion.hasFlying() ? "☁" : minion.hasRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()));
-        List<String> lines = List.of(minion.signDescription().split("\n"));
+        sign1.getSide(Side.FRONT).setLine(0, String.format("%s%s%s", minionNameColor, targetedMinion.name(), RESET));
+        sign1.getSide(Side.FRONT).setLine(1, String.format("%s%s%s:%s %s❤%s:%s/%s\n", DARK_GREEN, targetedMinion.hasFlying() ? "☁" : targetedMinion.hasRanged() ? "\uD83C\uDFF9" : "🗡", RESET, targetedMinion.strength(), RED, RESET, targetedMinion.health(), targetedMinion.maxHealth()));
+        List<String> lines = List.of(targetedMinion.signDescription().split("\n"));
         for (int i = 0; i < 6; i++) {
             int lineIndex = i + 2;
             Sign sign = lineIndex > 3 ? sign2 : sign1;
@@ -624,8 +621,8 @@ public class Stadium {
         boolean everyoneDone = true;
         for (Spot spot : Spot.values()) {
             if (spot.isSummonableSpot()) {
-                Minion minion = spot.minionRef().apply(this);
-                if (minion != null && minion.attacksLeft() > 0 && !(!minion.hasRanged() && hasAllyMinionInFront(spot))) {
+                Minion minion = minionFromSpot(spot);
+                if (minion != null && minion.attacksLeft() > 0 && !(!minion.hasRanged() && getAllyMinionInFront(spot) != null)) {
                     everyoneDone = false;
                 }
             }
@@ -635,26 +632,14 @@ public class Stadium {
         }
     }
 
-    public boolean hasAllyMinionInFront(Spot spot) {
-        return switch (spot) {
-            case RED_2_BACK -> RED_2_FRONT.minionRef().apply(this) != null;
-            case RED_1_BACK -> RED_1_FRONT.minionRef().apply(this) != null;
-            case BLUE_2_BACK -> BLUE_2_FRONT.minionRef().apply(this) != null;
-            case BLUE_1_BACK -> BLUE_1_FRONT.minionRef().apply(this) != null;
-            case GREEN_2_BACK -> GREEN_2_FRONT.minionRef().apply(this) != null;
-            case GREEN_1_BACK -> GREEN_1_FRONT.minionRef().apply(this) != null;
-            default -> false;
-        };
-    }
-
     public Minion getAllyMinionBehind(Spot spot) {
         return switch (spot) {
-            case RED_2_FRONT -> RED_2_BACK.minionRef().apply(this);
-            case RED_1_FRONT -> RED_1_BACK.minionRef().apply(this);
-            case BLUE_2_FRONT -> BLUE_2_BACK.minionRef().apply(this);
-            case BLUE_1_FRONT -> BLUE_1_BACK.minionRef().apply(this);
-            case GREEN_2_FRONT -> GREEN_2_BACK.minionRef().apply(this);
-            case GREEN_1_FRONT -> GREEN_1_BACK.minionRef().apply(this);
+            case RED_2_FRONT -> minionFromSpot(RED_2_BACK);
+            case RED_1_FRONT -> minionFromSpot(RED_1_BACK);
+            case BLUE_2_FRONT -> minionFromSpot(BLUE_2_BACK);
+            case BLUE_1_FRONT -> minionFromSpot(BLUE_1_BACK);
+            case GREEN_2_FRONT -> minionFromSpot(GREEN_2_BACK);
+            case GREEN_1_FRONT -> minionFromSpot(GREEN_1_BACK);
             default -> null;
         };
     }
@@ -662,7 +647,7 @@ public class Stadium {
     public Minion getAllyMinionInFront(Spot spot) {
         Spot s = getSpotInFront(spot);
         if (s != null) {
-            return s.minionRef().apply(this);
+            return minionFromSpot(s);
         }
         return null;
     }
@@ -682,17 +667,17 @@ public class Stadium {
     public LivingEntity getEntityBehind(Spot spot) {
         return switch (spot) {
             case RED_2_BACK -> player2RedChicken;
-            case RED_2_FRONT -> Optional.ofNullable(RED_2_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player2RedChicken);
+            case RED_2_FRONT -> Optional.ofNullable(minionFromSpot(RED_2_BACK)).map(m -> m.minionInfo().entity()).orElse(player2RedChicken);
             case RED_1_BACK -> player1RedChicken;
-            case RED_1_FRONT -> Optional.ofNullable(RED_1_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player1RedChicken);
+            case RED_1_FRONT -> Optional.ofNullable(minionFromSpot(RED_1_BACK)).map(m -> m.minionInfo().entity()).orElse(player1RedChicken);
             case BLUE_2_BACK -> player2BlueChicken;
-            case BLUE_2_FRONT -> Optional.ofNullable(BLUE_2_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player2BlueChicken);
+            case BLUE_2_FRONT -> Optional.ofNullable(minionFromSpot(BLUE_2_BACK)).map(m -> m.minionInfo().entity()).orElse(player2BlueChicken);
             case BLUE_1_BACK -> player1BlueChicken;
-            case BLUE_1_FRONT -> Optional.ofNullable(BLUE_1_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player1BlueChicken);
+            case BLUE_1_FRONT -> Optional.ofNullable(minionFromSpot(BLUE_1_BACK)).map(m -> m.minionInfo().entity()).orElse(player1BlueChicken);
             case GREEN_2_BACK -> player2GreenChicken;
-            case GREEN_2_FRONT -> Optional.ofNullable(GREEN_2_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player2GreenChicken);
+            case GREEN_2_FRONT -> Optional.ofNullable(minionFromSpot(GREEN_2_BACK)).map(m -> m.minionInfo().entity()).orElse(player2GreenChicken);
             case GREEN_1_BACK -> player1GreenChicken;
-            case GREEN_1_FRONT -> Optional.ofNullable(GREEN_1_BACK.minionRef().apply(this)).map(m -> m.minionInfo().entity()).orElse(player1GreenChicken);
+            case GREEN_1_FRONT -> Optional.ofNullable(minionFromSpot(GREEN_1_BACK)).map(m -> m.minionInfo().entity()).orElse(player1GreenChicken);
             default -> null;
         };
     }
@@ -722,7 +707,7 @@ public class Stadium {
     }
 
     public void minionDied(Spot spot) {
-        spot.minionSetRef().accept(this, null, false); // The minions themselves cancel tasks when they die
+        setMinionAtSpot(spot, null, false); // The minions themselves cancel tasks when they die
     }
 
     public int turn() {
@@ -795,76 +780,90 @@ public class Stadium {
         player2.sendMessage(message);
     }
 
-    public Minion red2BackMinion() {
-        return red2BackMinion;
+    public Minion minionFromSpot(Spot spot) {
+        return switch (spot) {
+            case RED_2_BACK -> red2BackMinion;
+            case RED_2_FRONT -> red2FrontMinion;
+            case RED_1_BACK -> red1BackMinion;
+            case RED_1_FRONT -> red1FrontMinion;
+            case BLUE_2_BACK -> blue2BackMinion;
+            case BLUE_2_FRONT -> blue2FrontMinion;
+            case BLUE_1_BACK -> blue1BackMinion;
+            case BLUE_1_FRONT -> blue1FrontMinion;
+            case GREEN_2_BACK -> green2BackMinion;
+            case GREEN_2_FRONT -> green2FrontMinion;
+            case GREEN_1_BACK -> green1BackMinion;
+            case GREEN_1_FRONT -> green1FrontMinion;
+            default -> null;
+        };
     }
 
-    public Minion red2FrontMinion() {
-        return red2FrontMinion;
+    /** If the current minion at this spot is still going to be alive, then
+     * cancelStaticTasks should be false, true otherwise. */
+    public void setMinionAtSpot(Spot spot, Minion newMinion, boolean cancelStaticTasks) {
+        switch (spot) {
+            case RED_2_BACK -> {
+                if (cancelStaticTasks && red2BackMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                red2BackMinion = newMinion;
+            }
+            case RED_2_FRONT -> {
+                if (cancelStaticTasks && red2FrontMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                red2FrontMinion = newMinion;
+            }
+            case RED_1_BACK -> {
+                if (cancelStaticTasks && red1BackMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                red1BackMinion = newMinion;
+            }
+            case RED_1_FRONT -> {
+                if (cancelStaticTasks && red1FrontMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                red1FrontMinion = newMinion;
+            }
+            case BLUE_2_BACK -> {
+                if (cancelStaticTasks && blue2BackMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                blue2BackMinion = newMinion;
+            }
+            case BLUE_2_FRONT -> {
+                if (cancelStaticTasks && blue2FrontMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                blue2FrontMinion = newMinion;
+            }
+            case BLUE_1_BACK -> {
+                if (cancelStaticTasks && blue1BackMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                blue1BackMinion = newMinion;
+            }
+            case BLUE_1_FRONT -> {
+                if (cancelStaticTasks && blue1FrontMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                blue1FrontMinion = newMinion;
+            }
+            case GREEN_2_BACK -> {
+                if (cancelStaticTasks && green2BackMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                green2BackMinion = newMinion;
+            }
+            case GREEN_2_FRONT -> {
+                if (cancelStaticTasks && green2FrontMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                green2FrontMinion = newMinion;
+            }
+            case GREEN_1_BACK -> {
+                if (cancelStaticTasks && green1BackMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                green1BackMinion = newMinion;
+            }
+            case GREEN_1_FRONT -> {
+                if (cancelStaticTasks && green1FrontMinion instanceof MinionWithStaticEffect staticEffectMinion) staticEffectMinion.cancelTask();
+                green1FrontMinion = newMinion;
+            }
+        }
     }
 
-    public Minion red1FrontMinion() {
-        return red1FrontMinion;
-    }
-
-    public Minion red1BackMinion() {
-        return red1BackMinion;
-    }
-
-    public Minion blue2BackMinion() {
-        return blue2BackMinion;
-    }
-
-    public Minion blue2FrontMinion() {
-        return blue2FrontMinion;
-    }
-
-    public Minion blue1FrontMinion() {
-        return blue1FrontMinion;
-    }
-
-    public Minion blue1BackMinion() {
-        return blue1BackMinion;
-    }
-
-    public Minion green2BackMinion() {
-        return green2BackMinion;
-    }
-
-    public Minion green2FrontMinion() {
-        return green2FrontMinion;
-    }
-
-    public Minion green1FrontMinion() {
-        return green1FrontMinion;
-    }
-
-    public Minion green1BackMinion() {
-        return green1BackMinion;
-    }
-
-    public LivingEntity player1RedChicken() {
-        return player1RedChicken;
-    }
-
-    public LivingEntity player1BlueChicken() {
-        return player1BlueChicken;
-    }
-
-    public LivingEntity player1GreenChicken() {
-        return player1GreenChicken;
-    }
-
-    public LivingEntity player2RedChicken() {
-        return player2RedChicken;
-    }
-
-    public LivingEntity player2BlueChicken() {
-        return player2BlueChicken;
-    }
-
-    public LivingEntity player2GreenChicken() {
-        return player2GreenChicken;
+    public LivingEntity opposingChickenFromSpot(Spot currentSpot) {
+        return switch (currentSpot) {
+            case RED_1_FRONT, RED_1_BACK -> player2RedChicken;
+            case RED_2_BACK, RED_2_FRONT -> player1RedChicken;
+            case BLUE_1_FRONT, BLUE_1_BACK -> player2BlueChicken;
+            case BLUE_2_BACK, BLUE_2_FRONT -> player1BlueChicken;
+            case GREEN_1_FRONT, GREEN_1_BACK -> player2GreenChicken;
+            case GREEN_2_BACK, GREEN_2_FRONT -> player1GreenChicken;
+            default ->
+                throw new IllegalArgumentException("You cannot try to get the opposingChicken from " + currentSpot);
+        };
     }
 
     public Player player1() {
@@ -877,89 +876,5 @@ public class Stadium {
 
     public Player opponent(Player p) {
         return p.equals(player1) ? player2 : player1;
-    }
-
-    public void setRed2BackMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && red2BackMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        red2BackMinion = minion;
-    }
-
-    public void setRed2FrontMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && red2FrontMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        red2FrontMinion = minion;
-    }
-
-    public void setRed1FrontMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && red1FrontMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        red1FrontMinion = minion;
-    }
-
-    public void setRed1BackMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && red1BackMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        red1BackMinion = minion;
-    }
-
-    public void setBlue2BackMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && blue2BackMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        blue2BackMinion = minion;
-    }
-
-    public void setBlue2FrontMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && blue2FrontMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        blue2FrontMinion = minion;
-    }
-
-    public void setBlue1FrontMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && blue1FrontMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        blue1FrontMinion = minion;
-    }
-
-    public void setBlue1BackMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && blue1BackMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        blue1BackMinion = minion;
-    }
-
-    public void setGreen2BackMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && green2BackMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        green2BackMinion = minion;
-    }
-
-    public void setGreen2FrontMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && green2FrontMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        green2FrontMinion = minion;
-    }
-
-    public void setGreen1FrontMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && green1FrontMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        green1FrontMinion = minion;
-    }
-
-    public void setGreen1BackMinion(Minion minion, boolean cancelStaticTasks) {
-        if (cancelStaticTasks && green1BackMinion instanceof MinionWithStaticEffect staticMinion) {
-            staticMinion.cancelTask();
-        }
-        green1BackMinion = minion;
     }
 }
