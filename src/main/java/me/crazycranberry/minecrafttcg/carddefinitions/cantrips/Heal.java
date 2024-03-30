@@ -3,12 +3,16 @@ package me.crazycranberry.minecrafttcg.carddefinitions.cantrips;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.events.PlayerHealedEvent;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+
+import static me.crazycranberry.minecrafttcg.carddefinitions.minions.yousefssoulmender.YousefsSoulMenderDef.HEAL_AMOUNT;
 
 public class Heal implements CantripCardDefinition {
     private static final int healsFor = 3;
@@ -36,9 +40,9 @@ public class Heal implements CantripCardDefinition {
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         Spot spot = stadium.playerTargetSpot(caster);
         if (spot.equals(Spot.PLAYER_1_OUTLOOK)) {
-            stadium.player1().setHealth(Math.min(stadium.player1().getHealth() + healsFor, stadium.player1().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+            stadium.healPlayer(stadium.player1(), healsFor);
         } else if (spot.equals(Spot.PLAYER_2_OUTLOOK)) {
-            stadium.player2().setHealth(Math.min(stadium.player2().getHealth() + healsFor, stadium.player2().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+            stadium.healPlayer(stadium.player2(), healsFor);
         } else {
             Minion minion = stadium.targetedMinion(caster);
             minion.onHeal(healsFor);

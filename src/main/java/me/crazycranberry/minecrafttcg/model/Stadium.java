@@ -5,6 +5,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEf
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
+import me.crazycranberry.minecrafttcg.events.PlayerHealedEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -876,5 +877,10 @@ public class Stadium {
 
     public Player opponent(Player p) {
         return p.equals(player1) ? player2 : player1;
+    }
+
+    public void healPlayer(Player p, int healAmount) {
+        p.setHealth(Math.min(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), p.getHealth() + healAmount));
+        Bukkit.getPluginManager().callEvent(new PlayerHealedEvent(this, p));
     }
 }

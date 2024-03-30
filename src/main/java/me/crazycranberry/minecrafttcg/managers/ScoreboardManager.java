@@ -2,6 +2,7 @@ package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
+import me.crazycranberry.minecrafttcg.events.PlayerHealedEvent;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,6 +29,11 @@ public class ScoreboardManager implements Listener {
                 updateObjective(p.equals(stadium.player1()) ? stadium.player2() : stadium.player1(), p, -event.getDamage());
             }
         }
+    }
+
+    @EventHandler
+    private void onPlayerHealed(PlayerHealedEvent event) {
+        updateObjective(event.player().equals(event.stadium().player1()) ? event.stadium().player2() : event.stadium().player1(), event.player());
     }
 
     @EventHandler

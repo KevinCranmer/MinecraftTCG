@@ -2,6 +2,8 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.yousefssoulmender
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
+import me.crazycranberry.minecrafttcg.events.PlayerHealedEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.YOUSEFS_SOUL_MENDER;
@@ -17,7 +19,7 @@ public class YousefsSoulMender extends Minion {
         super.onTurnEnd();
         double currentHealth = this.minionInfo().master().getHealth();
         if (currentHealth < 20) {
-            this.minionInfo().master().setHealth(Math.min(currentHealth, currentHealth + HEAL_AMOUNT));
+            this.minionInfo().stadium().healPlayer(this.minionInfo().master(), HEAL_AMOUNT);
             this.minionInfo().master().getWorld().spawnParticle(Particle.HEART, this.minionInfo().master().getEyeLocation(), 7, 0.5, 0.75, 0.5);
         }
     }
