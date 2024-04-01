@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.EquipmentSlot;
@@ -23,7 +24,7 @@ public class HungryZombieDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return "";
+        return String.format("%sRally%s", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
@@ -56,5 +57,10 @@ public class HungryZombieDef implements MinionCardDefinition {
         return Map.of(
             EquipmentSlot.CHEST, new ItemStack(Material.LEATHER_CHESTPLATE)
         );
+    }
+
+    @Override
+    public boolean hasRally() {
+        return true;
     }
 }

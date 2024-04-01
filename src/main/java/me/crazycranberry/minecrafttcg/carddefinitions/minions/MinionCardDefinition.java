@@ -35,6 +35,9 @@ public interface MinionCardDefinition extends Card {
     default boolean isFlying() {
         return false;
     }
+    default boolean hasRally() {
+        return false;
+    }
     default Map<EquipmentSlot, ItemStack> equipment() {
         return null;
     }

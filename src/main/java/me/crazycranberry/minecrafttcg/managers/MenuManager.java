@@ -1,5 +1,7 @@
 package me.crazycranberry.minecrafttcg.managers;
 
+import me.crazycranberry.minecrafttcg.commands.DuelCommand;
+import me.crazycranberry.minecrafttcg.commands.RankedDuelCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,8 +15,10 @@ import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.commands.DuelCommand.DUEL_MENU_NAME;
 import static me.crazycranberry.minecrafttcg.commands.DuelCommand.DUEL_NEW_PAGE_KEY;
+import static me.crazycranberry.minecrafttcg.commands.DuelCommand.DUEL_REQUESTS_MENU_NAME;
 import static me.crazycranberry.minecrafttcg.commands.DuelCommand.IS_RANKED_KEY;
 import static me.crazycranberry.minecrafttcg.commands.DuelCommand.createDuelChallengeInventory;
+import static me.crazycranberry.minecrafttcg.commands.DuelCommand.createDuelRequestsInventory;
 import static me.crazycranberry.minecrafttcg.commands.TcgCommand.MENU_KEY;
 import static me.crazycranberry.minecrafttcg.commands.TcgCommand.TCG_INFO_MENU_NAME;
 import static me.crazycranberry.minecrafttcg.commands.TcgCommand.TCG_MENU_NAME;
@@ -30,7 +34,7 @@ public class MenuManager implements Listener {
                 .map(ItemMeta::getPersistentDataContainer)
                 .map(c -> c.get(MENU_KEY, PersistentDataType.STRING))
                 .ifPresent(c -> ((Player) event.getWhoClicked()).performCommand(c));
-        } else if (event.getView().getTitle().equals(DUEL_MENU_NAME)) {
+        } else if (event.getView().getTitle().equals(DUEL_MENU_NAME) || event.getView().getTitle().equals(DUEL_REQUESTS_MENU_NAME)) {
             event.setCancelled(true);
             Optional<PersistentDataContainer> maybePdc = Optional.ofNullable(event.getCurrentItem())
                 .map(ItemStack::getItemMeta)
@@ -38,7 +42,12 @@ public class MenuManager implements Listener {
             if (maybePdc.isPresent()) {
                 Integer newPage = maybePdc.get().get(DUEL_NEW_PAGE_KEY, PersistentDataType.INTEGER);
                 if (newPage != null) {
-                    event.getWhoClicked().openInventory(createDuelChallengeInventory((Player) event.getWhoClicked(), newPage, Boolean.TRUE.equals(maybePdc.get().get(IS_RANKED_KEY, PersistentDataType.BOOLEAN))));
+                    boolean isRanked = Boolean.TRUE.equals(maybePdc.get().get(IS_RANKED_KEY, PersistentDataType.BOOLEAN));
+                    if (event.getView().getTitle().equals(DUEL_MENU_NAME)) {
+                        event.getWhoClicked().openInventory(createDuelChallengeInventory((Player) event.getWhoClicked(), newPage, isRanked));
+                    } else {
+                        event.getWhoClicked().openInventory(createDuelRequestsInventory((Player) event.getWhoClicked(), isRanked ? RankedDuelCommand.challengesMap() : DuelCommand.challengesMap(), newPage, isRanked));
+                    }
                 } else {
                     maybePdc
                         .map(c -> c.get(MENU_KEY, PersistentDataType.STRING))

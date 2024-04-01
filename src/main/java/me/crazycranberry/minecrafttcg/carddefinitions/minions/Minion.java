@@ -45,10 +45,12 @@ public abstract class Minion {
     private final Map<Minion, Integer> staticBonusMaxHealth = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
     private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
     private Integer numTurnsOverkill = 0;
-    private Boolean isFlying;
+    private Boolean hasFlying;
     private Integer numTurnsFlying = 0;
-    private final Boolean isRanged;
-    private final Integer numTurnsRanged = 0;
+    private Boolean hasRally;
+    private Integer numTurnsRally = 0;
+    private Boolean hasRanged;
+    private Integer numTurnsRanged = 0;
     private Boolean hasLifesteal = false;
     private Integer numTurnsLifesteal = 0;
     private final ListenerForIndividualMinion listener;
@@ -59,8 +61,9 @@ public abstract class Minion {
         this.strength = minionCard.strength();
         this.maxHealth = minionCard.maxHealth();
         this.health = minionCard.maxHealth();
-        this.isFlying = minionCard.isFlying();
-        this.isRanged = minionCard.isRanged();
+        this.hasFlying = minionCard.isFlying();
+        this.hasRanged = minionCard.isRanged();
+        this.hasRally = minionCard.hasRally();
         this.minionInfo = minionInfo;
         CraftMob mob = (CraftMob) minionInfo.entity();
         this.nmsMob = (PathfinderMob) mob.getHandle();
@@ -128,7 +131,7 @@ public abstract class Minion {
     }
 
     public void setPermanentFlying(Boolean giveFlying) {
-        this.isFlying = giveFlying;
+        this.hasFlying = giveFlying;
         setupGoals();
     }
 
@@ -165,7 +168,7 @@ public abstract class Minion {
     }
 
     public void onCombatStart() {
-        if ((!this.hasRanged() && this.minionInfo().stadium().getAllyMinionInFront(this.minionInfo().spot()) != null) || this.strength() == 0) {
+        if ((!this.hasRally() && this.minionInfo().stadium().getAllyMinionInFront(this.minionInfo().spot()) != null) || this.strength() == 0) {
             attacksLeft = 0;
         }
     }
@@ -323,19 +326,23 @@ public abstract class Minion {
     }
 
     public Boolean hasOverkill() {
-        return numTurnsOverkill > 0 || hasOverkill;
+        return hasOverkill || numTurnsOverkill > 0;
     }
 
     public Boolean hasFlying() {
-        return numTurnsFlying > 0 || isFlying;
+        return hasFlying || numTurnsFlying > 0;
     }
 
     public Boolean hasRanged() {
-        return numTurnsRanged > 0 || isRanged;
+        return hasRanged || numTurnsRanged > 0;
+    }
+
+    public boolean hasRally() {
+        return hasRally || numTurnsRally > 0;
     }
 
     public Boolean hasLifesteal() {
-        return numTurnsLifesteal > 0 || hasLifesteal;
+        return hasLifesteal || numTurnsLifesteal > 0;
     }
 
     public void loadTemporaryEffects(Minion minion) {

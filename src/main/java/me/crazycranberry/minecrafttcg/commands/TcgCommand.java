@@ -22,13 +22,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.ANIMAL_TYPES;
-import static me.crazycranberry.minecrafttcg.commands.DuelCommand.getOpponentFromChallengeRequest;
-import static me.crazycranberry.minecrafttcg.commands.RankedDuelCommand.getOpponentFromRankedChallengeRequest;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
@@ -76,6 +73,9 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         Map.entry("pacifist", pacifistInfo()),
         Map.entry("lifesteal", lifestealInfo()),
         Map.entry("ranked", rankedInfo()),
+        Map.entry("ranged", rangedInfo()),
+        Map.entry("flying", flyingInfo()),
+        Map.entry("rally", rallyInfo()),
         Map.entry("animal", animalInfo())
     );
 
@@ -118,8 +118,8 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         tcgInv.setItem(2, createMenuItem(IRON_AXE, "/duel", GREEN));
         tcgInv.setItem(4, createMenuItem(DIAMOND_AXE, "/rankedduel", AQUA));
         tcgInv.setItem(6, createMenuItem(DIAMOND, "/ranks", AQUA));
-        tcgInv.setItem(3, createDuelAcceptItem(p, false));
-        tcgInv.setItem(5, createDuelAcceptItem(p, true));
+        tcgInv.setItem(3, createDuelRequestsItem(p, false));
+        tcgInv.setItem(5, createDuelRequestsItem(p, true));
         tcgInv.setItem(21, createMenuItem(BOOK, "/deck", GOLD));
         tcgInv.setItem(22, createMenuItem(BOOKSHELF, "/collection", LIGHT_PURPLE));
         tcgInv.setItem(23, createAutoCollectItem(p));
@@ -127,23 +127,22 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         return tcgInv;
     }
 
-    private ItemStack createDuelAcceptItem(Player p, boolean isRanked) {
-        Optional<Player> opponent = isRanked ? getOpponentFromRankedChallengeRequest(p) : getOpponentFromChallengeRequest(p);
-        if (opponent.isEmpty()) {
+    private ItemStack createDuelRequestsItem(Player p, boolean isRanked) {
+        Map<Player, Player> challengesMap = isRanked ? RankedDuelCommand.challengesMap() : DuelCommand.challengesMap();
+        if (!challengesMap.containsValue(p)) {
             return null;
         }
         Material mat = WHITE_DYE;
         ChatColor color = GREEN;
-        String command = "/duel accept";
+        String command = "/duel requests";
         if (isRanked) {
             mat = CYAN_DYE;
             color = AQUA;
-            command = "/rankedduel accept";
+            command = "/rankedduel requests";
         }
         ItemStack item = new ItemStack(mat);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(color + command);
-        meta.setLore(List.of(String.format("%sAgainst %s", GRAY, opponent.map(Player::getName).orElse("%MISSING%"))));
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.getPersistentDataContainer().set(MENU_KEY, PersistentDataType.STRING, command.replace("/", ""));
         item.setItemMeta(meta);
@@ -330,5 +329,23 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
             Use %s/ranks%s to see how you compare!%s""",
             GRAY, AQUA, GRAY,
             LIGHT_PURPLE, GRAY, RESET);
+    }
+
+    private static String rangedInfo() {
+        return String.format("""
+            %sMinions with ranged can hit flying minions.%s""",
+            GRAY, RESET);
+    }
+
+    private static String flyingInfo() {
+        return String.format("""
+            %sMinions with flying cannot be hit my other minions unless they have ranged or flying.%s""",
+            GRAY, RESET);
+    }
+
+    private static String rallyInfo() {
+        return String.format("""
+            %sMinions with rally can attack even if there is an ally minion in front of them.%s""",
+            GRAY, RESET);
     }
 }

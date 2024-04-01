@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.skiturtle;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
 public class SkiTurtleDef implements MinionCardDefinition {
@@ -18,7 +19,7 @@ public class SkiTurtleDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return "At the end of combat, fully heal the ally minion in front of this one.";
+        return String.format("%sRally%s. At the end of combat, fully heal the ally minion in front of this one.", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
@@ -44,6 +45,11 @@ public class SkiTurtleDef implements MinionCardDefinition {
     @Override
     public Class<? extends Minion> minionClass() {
         return SkiTurtle.class;
+    }
+
+    @Override
+    public boolean hasRally() {
+        return true;
     }
 
     @Override

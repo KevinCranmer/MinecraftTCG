@@ -3,10 +3,14 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.skiturtle;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
+import org.bukkit.ChatColor;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class SkiTurtle extends Minion {
     public SkiTurtle(MinionInfo minionInfo) {
         super(CardEnum.SKI_TURTLE.card(), minionInfo);
+        this.minionInfo().entity().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 7200, 2));
     }
 
     @Override
@@ -20,6 +24,6 @@ public class SkiTurtle extends Minion {
 
     @Override
     public String signDescription() {
-        return "Heals ally\nin front of it";
+        return String.format("%sRally%s%nHeals ally%nin front of it", ChatColor.BOLD, ChatColor.RESET);
     }
 }

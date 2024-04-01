@@ -433,7 +433,7 @@ public class Stadium {
     }
 
     public LivingEntity getTargetInFront(Minion minion) {
-        return getTargetInFront(minion, minion.hasFlying());
+        return getTargetInFront(minion, minion.hasFlying() || minion.hasRanged());
     }
 
     public LivingEntity getTargetInFront(Minion minion, boolean canTargetFlying) {
@@ -623,7 +623,7 @@ public class Stadium {
         for (Spot spot : Spot.values()) {
             if (spot.isSummonableSpot()) {
                 Minion minion = minionFromSpot(spot);
-                if (minion != null && minion.attacksLeft() > 0 && !(!minion.hasRanged() && getAllyMinionInFront(spot) != null)) {
+                if (minion != null && minion.attacksLeft() > 0 && !(!minion.hasRally() && getAllyMinionInFront(spot) != null)) {
                     everyoneDone = false;
                 }
             }
