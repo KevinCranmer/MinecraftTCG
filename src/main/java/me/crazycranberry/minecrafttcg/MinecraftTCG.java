@@ -26,6 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -121,8 +122,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
             logger().info("Duel crash recovery initiated for " + event.getPlayer().getName());
             restoreStartingWorldConfig(event.getPlayer());
         }
-        //TODO: Don't set name unless they've played a match
-        if (event.getPlayer().getName().equals(config().topRankedPlayerName())) {
+        if (config().rankedDuelHasHappened() && config().setHighestRankedPlayersNameToBlue() && event.getPlayer().getName().equals(config().topRankedPlayerName())) {
             event.getPlayer().setDisplayName(ChatColor.AQUA + event.getPlayer().getName());
             event.getPlayer().setPlayerListName(ChatColor.AQUA + event.getPlayer().getName());
         }
@@ -150,11 +150,26 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
 
     public String refreshConfigs() {
         try {
+            boolean topRankedPlayerWasNameBlue = config != null && config.setHighestRankedPlayersNameToBlue();
             config = new MinecraftTcgConfig(loadConfig("minecraft_tcg.yml"),
                 loadConfig("drop_odds.yml"),
                 loadConfig("card_drop_rules.yml"),
                 loadConfig("player_ranks.yml")
             );
+            String topRankedPlayerName = config().topRankedPlayerName();
+            if (!topRankedPlayerWasNameBlue && config().setHighestRankedPlayersNameToBlue() && topRankedPlayerName != null) {
+                Player topRankedPlayer = Bukkit.getPlayer(topRankedPlayerName);
+                if (topRankedPlayer != null) {
+                    topRankedPlayer.setDisplayName(ChatColor.AQUA + topRankedPlayer.getName());
+                    topRankedPlayer.setPlayerListName(ChatColor.AQUA + topRankedPlayer.getName());
+                }
+            } else if (topRankedPlayerWasNameBlue && !config().setHighestRankedPlayersNameToBlue()) {
+                Player topRankedPlayer = Bukkit.getPlayer(topRankedPlayerName);
+                if (topRankedPlayer != null) {
+                    topRankedPlayer.setDisplayName(topRankedPlayer.getName());
+                    topRankedPlayer.setPlayerListName(topRankedPlayer.getName());
+                }
+            }
             return "Successfully loaded configs.";
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,3 +1,5 @@
+set_highest_ranked_players_name_to_blue: true
+ranked_duel_has_happened: false
 duel:
   seconds_per_round: 60
   show_all_minion_names: true

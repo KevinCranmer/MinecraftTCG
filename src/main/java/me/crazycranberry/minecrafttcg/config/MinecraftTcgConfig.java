@@ -25,6 +25,8 @@ public class MinecraftTcgConfig {
     private int duelSecondsPerRound;
     private boolean duelShowAllMinionNames;
     private boolean duelAutoSkipPhasesWithoutAvailableActions;
+    private boolean setHighestRankedPlayersNameToBlue;
+    private boolean rankedDuelHasHappened;
     private List<String> autoCollectPlayerNames;
 
     public MinecraftTcgConfig(YamlConfiguration config, YamlConfiguration dropOddsConfig, YamlConfiguration cardDropRulesConfig, YamlConfiguration playerRanks) {
@@ -60,6 +62,8 @@ public class MinecraftTcgConfig {
         duelSecondsPerRound = config.getInt("duel.seconds_per_round", originalConfig.getInt("duel.seconds_per_round"));
         duelShowAllMinionNames = config.getBoolean("duel.show_all_minion_names", originalConfig.getBoolean("duel.show_all_minion_names"));
         duelAutoSkipPhasesWithoutAvailableActions = config.getBoolean("duel.auto_skip_phases_with_no_available_actions", originalConfig.getBoolean("duel.auto_skip_phases_with_no_available_actions"));
+        setHighestRankedPlayersNameToBlue = config.getBoolean("set_highest_ranked_players_name_to_blue", originalConfig.getBoolean("set_highest_ranked_players_name_to_blue"));
+        rankedDuelHasHappened = config.getBoolean("ranked_duel_has_happened", originalConfig.getBoolean("ranked_duel_has_happened"));
         autoCollectPlayerNames = new ArrayList<>((List<String>) config.getList("auto_collect", List.of()));
     }
 
@@ -73,6 +77,14 @@ public class MinecraftTcgConfig {
 
     public boolean duelAutoSkipPhasesWithoutAvailableActions() {
         return duelAutoSkipPhasesWithoutAvailableActions;
+    }
+
+    public boolean setHighestRankedPlayersNameToBlue() {
+        return setHighestRankedPlayersNameToBlue;
+    }
+
+    public boolean rankedDuelHasHappened() {
+        return rankedDuelHasHappened;
     }
 
     public YamlConfiguration dropOddsConfig() {
@@ -137,6 +149,9 @@ public class MinecraftTcgConfig {
     }
 
     public void playerRankChanged() throws IOException {
+        if (!setHighestRankedPlayersNameToBlue()) {
+            return;
+        }
         String currentKingName = config.getString("current_highest_ranked_player_name");
         String newKingName = topRankedPlayerName();
         if (currentKingName == null) {
@@ -160,6 +175,11 @@ public class MinecraftTcgConfig {
             }
             config.set("current_highest_ranked_player_name", newKingName);
             config.save(new File(getPlugin().getDataFolder() + "" + File.separatorChar + "minecraft_tcg.yml"));
+        }
+        if (!rankedDuelHasHappened()) {
+            config.set("ranked_duel_has_happened", true);
+            config.save(new File(getPlugin().getDataFolder() + "" + File.separatorChar + "minecraft_tcg.yml"));
+            rankedDuelHasHappened = true;
         }
     }
 }
