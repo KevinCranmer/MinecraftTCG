@@ -89,7 +89,7 @@ public abstract class Minion {
     }
 
     public void setMaxHealth(int newMaxHealth) {
-        maxHealth = newMaxHealth;
+        maxHealth = Math.max(newMaxHealth, 0);
         minionInfo.stadium().updateCustomName(this);
     }
 
@@ -122,7 +122,7 @@ public abstract class Minion {
     }
 
     public void setStrength(Integer newStrength) {
-        this.strength = newStrength;
+        this.strength = Math.max(newStrength, 0);
         minionInfo.stadium().updateCustomName(this);
     }
 
@@ -197,7 +197,6 @@ public abstract class Minion {
 
     }
 
-    // See PackLeader for an example
     public void onAllyMinionEntered(Minion otherMinion) {
 
     }

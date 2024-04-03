@@ -112,6 +112,22 @@ public class CardUtils {
         EntityType.POLAR_BEAR
     );
 
+    public static final List<EntityType> UNDEAD_TYPES = List.of(
+        EntityType.SKELETON,
+        EntityType.SKELETON_HORSE,
+        EntityType.ZOMBIE,
+        EntityType.ZOMBIE_HORSE,
+        EntityType.ZOMBIE_VILLAGER,
+        EntityType.ZOMBIFIED_PIGLIN,
+        EntityType.WITHER_SKELETON,
+        EntityType.STRAY,
+        EntityType.HUSK,
+        EntityType.PHANTOM,
+        EntityType.DROWNED,
+        EntityType.ZOGLIN,
+        EntityType.WITHER
+    );
+
     public static final List<Spot> FRONT_ROW_SPOTS = List.of(
         Spot.RED_1_FRONT,
         Spot.RED_2_FRONT,
@@ -119,5 +135,14 @@ public class CardUtils {
         Spot.BLUE_2_FRONT,
         Spot.GREEN_1_FRONT,
         Spot.GREEN_2_FRONT
+    );
+
+    public static final List<Spot> BACK_ROW_SPOTS = List.of(
+        Spot.RED_1_BACK,
+        Spot.RED_2_BACK,
+        Spot.BLUE_1_BACK,
+        Spot.BLUE_2_BACK,
+        Spot.GREEN_1_BACK,
+        Spot.GREEN_2_BACK
     );
 }

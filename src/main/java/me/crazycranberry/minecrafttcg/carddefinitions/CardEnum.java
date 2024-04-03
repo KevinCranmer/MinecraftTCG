@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Adrenaline;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.BaronsGrind;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.BloodSacrifice;
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.FarmersBlessing;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.FireBlast;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.GhettoWarArmy;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Heal;
@@ -11,6 +12,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.MysticSurge;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Protect;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.RadicalShift;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Switch;
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.WithersBlessing;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.abee.ABeeDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.abeekeeper.ABeeKeeperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.aggressivebandit.AggressiveBanditDef;
@@ -25,6 +27,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDoze
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.couchpotato.CouchPotatoDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro.EmoVitroDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.farmer.FarmerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.fluffynecromancer.FluffyNecromancerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.glassjaw.GlassJawDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.happynarwhale.HappyNarwhaleDef;
@@ -38,6 +41,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.lurkingthief.Lurki
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTellerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mom.MomDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.reaper.ReaperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.ScaredDuelistDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.stoneclone.StoneCloneDef;
@@ -69,6 +73,7 @@ public enum CardEnum {
     ADRENALINE(new Adrenaline()),
     BARONS_GRIND(new BaronsGrind()),
     BLOOD_SACRIFICE(new BloodSacrifice()),
+    FARMERS_BLESSING(new FarmersBlessing()),
     FIRE_BLAST(new FireBlast()),
     GHETTO_WAR_ARMY(new GhettoWarArmy()),
     HEAL(new Heal()),
@@ -77,6 +82,7 @@ public enum CardEnum {
     PROTECT(new Protect()),
     RADICAL_SHIFT(new RadicalShift()),
     SWITCH(new Switch()),
+    WITHERS_BLESSING(new WithersBlessing()),
 
     // Minions
     A_BEE(new ABeeDef()),
@@ -93,6 +99,7 @@ public enum CardEnum {
     COUCH_POTATO(new CouchPotatoDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
     EMO_VITRO(new EmoVitroDef()),
+    FARMER(new FarmerDef()),
     FLUFFY_NECROMANCER(new FluffyNecromancerDef()),
     GLASS_JAW(new GlassJawDef()),
     HAPPY_NARWHALE(new HappyNarwhaleDef()),
@@ -107,6 +114,7 @@ public enum CardEnum {
     MOM(new MomDef()),
     NINJA_MAC(new NinjaMacDef()),
     PACK_LEADER(new PackLeaderDef()),
+    REAPER(new ReaperDef()),
     RECKLESS_STINKER(new RecklessStinkerDef()),
     SCARED_DUELIST(new ScaredDuelistDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),

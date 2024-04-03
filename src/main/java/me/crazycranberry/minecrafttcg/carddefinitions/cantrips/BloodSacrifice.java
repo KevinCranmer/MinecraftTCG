@@ -17,6 +17,8 @@ import java.util.Objects;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.BACK_ROW_SPOTS;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.FRONT_ROW_SPOTS;
 
 public class BloodSacrifice implements CantripCardDefinition {
     private final static Integer numTicks = 30;
@@ -85,7 +87,7 @@ public class BloodSacrifice implements CantripCardDefinition {
             taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
                 if (progressInTicks >= numTicks) {
                     stadium.enemyMinionSpots(caster).stream()
-                        .filter(s -> s.name().endsWith("BACK"))
+                        .filter(BACK_ROW_SPOTS::contains)
                         .map(stadium::minionFromSpot)
                         .filter(Objects::nonNull)
                         .forEach(m -> m.minionInfo().entity().damage(2, caster));
@@ -95,7 +97,7 @@ public class BloodSacrifice implements CantripCardDefinition {
                 }
                 if (progressInTicks == numTicks / 2) {
                     stadium.enemyMinionSpots(caster).stream()
-                        .filter(s -> s.name().endsWith("FRONT"))
+                        .filter(FRONT_ROW_SPOTS::contains)
                         .map(stadium::minionFromSpot)
                         .filter(Objects::nonNull)
                         .forEach(m -> m.minionInfo().entity().damage(2, caster));

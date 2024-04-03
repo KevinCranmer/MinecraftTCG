@@ -16,6 +16,8 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.DINGY_SKELETON;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.SEWER_ZOMBIE;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.BACK_ROW_SPOTS;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.FRONT_ROW_SPOTS;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition.summonMinion;
 import static org.bukkit.Sound.ENTITY_WARDEN_DIG;
 
@@ -67,9 +69,9 @@ public class GhettoWarArmy implements CantripCardDefinition {
                 return;
             }
             if (tickProgress >= ticksTillStartSpawning && tickProgress % ticksBetweenSpawning == 0) {
-                if (spotsToSpawn.get(spotProgress).name().endsWith("FRONT") && stadium.minionFromSpot(spotsToSpawn.get(spotProgress)) == null) { // Don't feel great about this i'll be honest...
+                if (FRONT_ROW_SPOTS.contains(spotsToSpawn.get(spotProgress)) && stadium.minionFromSpot(spotsToSpawn.get(spotProgress)) == null) { // Don't feel great about this i'll be honest...
                     summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, zombie.minionClass(), zombie);
-                } else if (spotsToSpawn.get(spotProgress).name().endsWith("BACK") && stadium.minionFromSpot(spotsToSpawn.get(spotProgress)) == null) {
+                } else if (BACK_ROW_SPOTS.contains(spotsToSpawn.get(spotProgress)) && stadium.minionFromSpot(spotsToSpawn.get(spotProgress)) == null) {
                     summonMinion(spotsToSpawn.get(spotProgress), stadium, caster, skeleton.minionClass(), skeleton);
                 }
                 spotProgress++;

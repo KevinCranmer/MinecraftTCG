@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.ANIMAL_TYPES;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.UNDEAD_TYPES;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
@@ -76,7 +77,8 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         Map.entry("ranged", rangedInfo()),
         Map.entry("flying", flyingInfo()),
         Map.entry("rally", rallyInfo()),
-        Map.entry("animal", animalInfo())
+        Map.entry("animal", animalInfo()),
+        Map.entry("undead", undeadInfo())
     );
 
     @Override
@@ -313,6 +315,15 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
             (It's very likely some of these don't have cards for them yet).%s""",
             GRAY,
             String.join(", ", ANIMAL_TYPES.stream().map(EntityType::name).toList()),
+            RESET);
+    }
+
+    private static String undeadInfo() {
+        return String.format("""
+            %sThe following entities are considered undead: [%s]
+            (It's very likely some of these don't have cards for them yet).%s""",
+            GRAY,
+            String.join(", ", UNDEAD_TYPES.stream().map(EntityType::name).toList()),
             RESET);
     }
 
