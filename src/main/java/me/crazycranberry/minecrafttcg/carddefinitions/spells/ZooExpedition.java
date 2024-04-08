@@ -40,7 +40,7 @@ public class ZooExpedition implements SpellCardDefinition {
 
     @Override
     public Integer cost() {
-        return 5;
+        return 4;
     }
 
     @Override
