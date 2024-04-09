@@ -10,6 +10,7 @@ import me.crazycranberry.minecrafttcg.managers.DuelActionsManager;
 import me.crazycranberry.minecrafttcg.managers.PlayerManager;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import me.crazycranberry.minecrafttcg.managers.TurnManager;
+import me.crazycranberry.minecrafttcg.managers.utils.StadiumDefinition;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
@@ -238,11 +239,6 @@ public class TestCommands {
     }
 
     private static void shoot(Player p) {
-        CraftSkeleton craftSkeleton = (CraftSkeleton) skeleton;
-        net.minecraft.world.entity.monster.Skeleton nmsSkeleton = craftSkeleton.getHandle();
-        nmsSkeleton.setTarget(((CraftZombie) zombie).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
-        shootingGoal = new RangedBowAttackGoal<>(nmsSkeleton, 1, 1, 10);
-        nmsSkeleton.goalSelector.addGoal(1, shootingGoal);
     }
 
     private static void spawnAndRemove(Player p) {

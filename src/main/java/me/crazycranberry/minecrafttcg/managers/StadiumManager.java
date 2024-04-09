@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.managers;
 import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
+import me.crazycranberry.minecrafttcg.managers.utils.StadiumDefinition;
 import me.crazycranberry.minecrafttcg.model.Deck;
 import me.crazycranberry.minecrafttcg.model.Participant;
 import me.crazycranberry.minecrafttcg.model.Spot;
@@ -32,11 +33,19 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.managers.utils.CsvLoader.loadBlocksCsv;
+import static me.crazycranberry.minecrafttcg.managers.utils.CsvLoader.loadMobsCsv;
+import static me.crazycranberry.minecrafttcg.managers.utils.StadiumDefinition.STADIUM_DEFINITIONS;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_BLUE_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_GREEN_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_1_OUTLOOK;
@@ -60,16 +69,12 @@ import static org.bukkit.block.BlockFace.NORTH;
 import static org.bukkit.block.BlockFace.SOUTH;
 
 public class StadiumManager implements Listener {
-    public static final int TOTAL_X = 26;
-    public static final int TOTAL_Y = 15;
-    public static final int TOTAL_Z = 13;
     public static final Vector PLAYER_1_SIGN_OFFSET = new Vector(3, 10, 4);
     public static final Vector PLAYER_1_MANA_OFFSET = new Vector(3, 13, 0);
     public static final Vector PLAYER_2_SIGN_OFFSET = new Vector(23, 10, 6);
     public static final Vector PLAYER_2_MANA_OFFSET = new Vector(23, 13, 10);
     public static final int DISTANCE_BETWEEN_STADIUMS_Z = 100;
     public static final EntityType PLAYER_PROXY_ENTITY_TYPE = EntityType.COW;
-    private static final Material FILL_BLOCK = Material.WHITE_TERRACOTTA;
     private static final Map<Location, Stadium> stadiums = new HashMap<>();
     private static final Map<UUID, Scoreboard> playerOldScoreboards = new HashMap<>();
 
@@ -89,10 +94,10 @@ public class StadiumManager implements Listener {
 
     private static void setupStadium(Location startingCorner, Player player1, Player player2, Boolean ranked) {
         clearStadiumArea(startingCorner);
-        buildStadium(startingCorner);
-        Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2), ranked);
+        StadiumDefinition sd = randomFromList(STADIUM_DEFINITIONS).get();
+        buildStadium(startingCorner, sd);
+        Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2), ranked, sd);
         stadiums.put(startingCorner, newStadium);
-        startingCorner.getWorld().getNearbyEntities(startingCorner, 40, 40, 40).stream().filter(e -> !e.getType().equals(EntityType.PLAYER)).forEach(Entity::remove);
         newStadium.setChickens(summonChicken(PLAYER_1_RED_CHICKEN, startingCorner),
                 summonChicken(PLAYER_1_BLUE_CHICKEN, startingCorner),
                 summonChicken(PLAYER_1_GREEN_CHICKEN, startingCorner),
@@ -237,292 +242,45 @@ public class StadiumManager implements Listener {
         return (LivingEntity) startingCorner.getWorld().spawnEntity(startingCorner.clone().add(spot.offset()), PLAYER_PROXY_ENTITY_TYPE);
     }
 
-    private static void buildStadium(Location location) {
-        buildRow(location.getBlock(), 0, Material.PURPLE_TERRACOTTA, RED_MATERIAL, Material.PINK_TERRACOTTA);
-        buildRow(location.getBlock(), 4, Material.BLUE_TERRACOTTA, BLUE_MATERIAL, Material.CYAN_TERRACOTTA);
-        buildRow(location.getBlock(), 8, Material.YELLOW_TERRACOTTA, GREEN_MATERIAL, Material.GREEN_TERRACOTTA);
-        buildBarriers(location.getBlock());
-        buildPlayer1Tower(location.getBlock());
-        buildPlayer2Tower(location.getBlock());
+    private static void buildStadium(Location startingCorner, StadiumDefinition sd) {
+        loadBlocksCsv(startingCorner.getWorld(), sd.blocksInputStream(), (int) (startingCorner.getX() + sd.xOffset()), (int) (startingCorner.getY() + sd.yOffset()), (int) (startingCorner.getZ() + sd.zOffset()));
+        loadMobsCsv(startingCorner.getWorld(), sd.mobsInputStream(), (int) (startingCorner.getX() + sd.xOffset()), (int) (startingCorner.getY() + sd.yOffset()), (int) (startingCorner.getZ() + sd.zOffset()));
+        Block p1Sign = startingCorner.getBlock().getRelative((int) PLAYER_1_SIGN_OFFSET.getX(), (int) PLAYER_1_SIGN_OFFSET.getY(), (int) PLAYER_1_SIGN_OFFSET.getZ());
+        Block p2Sign = startingCorner.getBlock().getRelative((int) PLAYER_2_SIGN_OFFSET.getX(), (int) PLAYER_2_SIGN_OFFSET.getY(), (int) PLAYER_2_SIGN_OFFSET.getZ());
+        addDescriptionText(p1Sign);
+        addDescriptionText(p2Sign);
+        Block p1SignTurnPhase = startingCorner.getBlock().getRelative((int) PLAYER_1_SIGN_OFFSET.getX(), (int) PLAYER_1_SIGN_OFFSET.getY()-2, (int) PLAYER_1_SIGN_OFFSET.getZ() + 2);
+        Block p2SignTurnPhase = startingCorner.getBlock().getRelative((int) PLAYER_2_SIGN_OFFSET.getX(), (int) PLAYER_2_SIGN_OFFSET.getY()-2, (int) PLAYER_2_SIGN_OFFSET.getZ() - 2);
+        addNextPhaseText(p1SignTurnPhase);
+        addNextPhaseText(p2SignTurnPhase);
+    }
+
+    private static void addDescriptionText(Block sign) {
+        Sign signState = (Sign) sign.getState();
+        signState.getSide(Side.FRONT).setLine(0, "Left click things");
+        signState.getSide(Side.FRONT).setLine(1, "for a description");
+        signState.getSide(Side.FRONT).setLine(2, "|");
+        signState.getSide(Side.FRONT).setLine(3, "V");
+        signState.update();
+    }
+
+    private static void addNextPhaseText(Block sign) {
+        Sign signState = (Sign) sign.getState();
+        signState.getSide(Side.FRONT).setLine(0, "/\\");
+        signState.getSide(Side.FRONT).setLine(1, "|");
+        signState.getSide(Side.FRONT).setLine(2, "Go to the next");
+        signState.getSide(Side.FRONT).setLine(3, "turn Phase");
+        signState.update();
     }
 
     private static void clearStadiumArea(Location startingCorner) {
-        for (int x = 0; x < TOTAL_X; x++) {
-            for (int y = 0; y < TOTAL_Y; y++) {
-                for (int z = 0; z < TOTAL_Z; z++) {
+        for (int x = -20; x < 60; x++) {
+            for (int y = -30; y < 20; y++) {
+                for (int z = -20; z < 50; z++) {
                     startingCorner.getBlock().getRelative(x, y, z).setType(AIR);
                 }
             }
         }
-    }
-
-    private static void buildBarriers(Block startingCornerBlock) {
-        // Walls
-        for (int y = 0; y < 12; y++) {
-            for (int x = 0; x <= 26; x++) {
-                startingCornerBlock.getRelative(x, y, -1).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(x, y, 11).setType(Material.BARRIER);
-            }
-            for (int z = -1; z <= 11; z++) {
-                startingCornerBlock.getRelative(0, y, z).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(26, y, z).setType(Material.BARRIER);
-            }
-        }
-        // Floor
-        for (int x = 0; x <= 26; x++) {
-            for (int z = -1; z <= 11; z++) {
-                startingCornerBlock.getRelative(x, 6, z).setType(Material.BARRIER);
-            }
-        }
-        // Sides of rows
-        for (int i = 2; i < 25; i++) {
-            for (int y = 0; y <= 6; y++) {
-                startingCornerBlock.getRelative(i, y, -1).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i, y, 3).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i, y, 7).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(i, y, 11).setType(Material.BARRIER);
-            }
-        }
-        // Ends of rows
-        for (int z = 0; z <= 11; z++) {
-            for (int y = 0; y <= 6; y++) {
-                startingCornerBlock.getRelative(25, y, z).setType(Material.BARRIER);
-                startingCornerBlock.getRelative(1, y, z).setType(Material.BARRIER);
-            }
-        }
-    }
-
-    private static void buildPlayer1Tower(Block startingCornerBlock) {
-        // Sign posts:
-        int signX = (int) PLAYER_1_SIGN_OFFSET.getX();
-        int signY = (int) PLAYER_1_SIGN_OFFSET.getY();
-        int signZ = (int) PLAYER_1_SIGN_OFFSET.getZ();
-        startingCornerBlock.getRelative(3, 8, 3).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(3, 9, 3).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(3, 10, 3).setType(Material.BIRCH_PLANKS);
-        makeSign(startingCornerBlock, signX, signY, signZ, BIRCH_WALL_SIGN, SOUTH, true, false);
-        makeSign(startingCornerBlock, signX, signY-1, signZ, BIRCH_WALL_SIGN, SOUTH, false, false);
-        makeSign(startingCornerBlock, signX, signY-2, signZ, BIRCH_WALL_SIGN, SOUTH, false, false);
-
-        // Phase button:
-        startingCornerBlock.getRelative(3, 8, 7).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(3, 9, 7).setType(Material.BIRCH_PLANKS);
-        makeButton(startingCornerBlock, 3, 9, 6, NORTH, STONE_BUTTON);
-        makeSign(startingCornerBlock, 3, 8, 6, BIRCH_WALL_SIGN, NORTH, false, true);
-
-        // Building:
-        startingCornerBlock.getRelative(1, 7, 4).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(1, 7, 5).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(1, 7, 6).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(2, 7, 4).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(2, 7, 5).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(2, 7, 6).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(3, 7, 4).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(3, 7, 5).setType(Material.BIRCH_PLANKS);
-        startingCornerBlock.getRelative(3, 7, 6).setType(Material.BIRCH_PLANKS);
-
-        // Mana blocks
-        int manaX = (int) PLAYER_1_MANA_OFFSET.getX();
-        int manaY = (int) PLAYER_1_MANA_OFFSET.getY();
-        int manaZ = (int) PLAYER_1_MANA_OFFSET.getZ();
-        startingCornerBlock.getRelative(manaX, manaY, manaZ).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ + 1).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ + 2).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ + 3).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ + 4).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ + 6).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ + 7).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ + 8).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ + 9).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ + 10).setType(Material.BEDROCK);
-    }
-
-    private static void buildPlayer2Tower(Block startingCornerBlock) {
-        // Sign posts:
-        int signX = (int) PLAYER_2_SIGN_OFFSET.getX();
-        int signY = (int) PLAYER_2_SIGN_OFFSET.getY();
-        int signZ = (int) PLAYER_2_SIGN_OFFSET.getZ();
-        startingCornerBlock.getRelative(23, 8, 7).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(23, 9, 7).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(23, 10, 7).setType(Material.COBBLESTONE);
-        makeSign(startingCornerBlock, signX, signY, signZ, OAK_WALL_SIGN, NORTH, true, false);
-        makeSign(startingCornerBlock, signX, signY-1, signZ, OAK_WALL_SIGN, NORTH, false, false);
-        makeSign(startingCornerBlock, signX, signY-2, signZ, OAK_WALL_SIGN, NORTH, false, false);
-
-        // Phase button:
-        startingCornerBlock.getRelative(23, 8, 3).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(23, 9, 3).setType(Material.COBBLESTONE);
-        makeButton(startingCornerBlock, 23, 9, 4, SOUTH, BIRCH_BUTTON);
-        makeSign(startingCornerBlock, 23, 8, 4, OAK_WALL_SIGN, SOUTH, false, true);
-
-        //Building:
-        startingCornerBlock.getRelative(23, 7, 4).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(23, 7, 5).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(23, 7, 6).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(24, 7, 4).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(24, 7, 5).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(24, 7, 6).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(25, 7, 4).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(25, 7, 5).setType(Material.COBBLESTONE);
-        startingCornerBlock.getRelative(25, 7, 6).setType(Material.COBBLESTONE);
-
-        // Mana blocks
-        int manaX = (int) PLAYER_2_MANA_OFFSET.getX();
-        int manaY = (int) PLAYER_2_MANA_OFFSET.getY();
-        int manaZ = (int) PLAYER_2_MANA_OFFSET.getZ();
-        startingCornerBlock.getRelative(manaX, manaY, manaZ).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ - 1).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ - 2).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ - 3).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ - 4).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ - 6).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ - 7).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ - 8).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ - 9).setType(Material.BEDROCK);
-        startingCornerBlock.getRelative(manaX, manaY, manaZ - 10).setType(Material.BEDROCK);
-    }
-
-    private static void makeButton(Block startingCornerBlock, int x, int y, int z, BlockFace direction, Material material) {
-        Block buttonBlock = startingCornerBlock.getRelative(x, y, z);
-        buttonBlock.setType(material);
-        BlockState state = buttonBlock.getState();
-        Directional directional = (Directional) state.getBlockData();
-        directional.setFacing(direction);
-        state.setBlockData(directional);
-        state.update();
-    }
-
-    private static void makeSign(Block startingCornerBlock, int x, int y, int z, Material material, BlockFace blockFace, boolean addDescText, boolean addPhaseText) {
-        Block signBlock = startingCornerBlock.getRelative(x, y, z);
-        signBlock.setType(material);
-        Sign signState = (Sign) signBlock.getState();
-        Directional directional = (Directional) signState.getBlockData();
-        directional.setFacing(blockFace);
-        signState.setBlockData(directional);
-        if (addDescText) {
-            signState.getSide(Side.FRONT).setLine(0, "Left click things");
-            signState.getSide(Side.FRONT).setLine(1, "for a description");
-            signState.getSide(Side.FRONT).setLine(2, "|");
-            signState.getSide(Side.FRONT).setLine(3, "V");
-        } else if (addPhaseText) {
-            signState.getSide(Side.FRONT).setLine(0, "/\\");
-            signState.getSide(Side.FRONT).setLine(1, "|");
-            signState.getSide(Side.FRONT).setLine(2, "Go to the next");
-            signState.getSide(Side.FRONT).setLine(3, "turn Phase");
-        } else {
-            signState.getSide(Side.FRONT).setLine(0, "");
-            signState.getSide(Side.FRONT).setLine(1, "");
-            signState.getSide(Side.FRONT).setLine(2, "");
-            signState.getSide(Side.FRONT).setLine(3, "");
-        }
-        signState.update();
-    }
-
-    private static void buildRow(Block startingCornerBlock, int zOffset, Material light, Material medium, Material dark) {
-        startingCornerBlock.getRelative(2, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(2, 0, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(2, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(3, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(3, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(3, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(4, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(4, 0, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(4, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(2, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(2, 1, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(2, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(3, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(3, 1, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(3, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(4, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(4, 1, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(4, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(5, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(5, 0, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(5, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(6, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(6, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(6, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(7, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(7, 0, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(7, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(5, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(5, 1, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(5, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(6, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(6, 1, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(6, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(7, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(7, 1, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(7, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(8, 0, zOffset).setType(light);
-        startingCornerBlock.getRelative(8, 0, zOffset+1).setType(light);
-        startingCornerBlock.getRelative(8, 0, zOffset+2).setType(light);
-        startingCornerBlock.getRelative(9, 0, zOffset).setType(light);
-        startingCornerBlock.getRelative(9, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(9, 0, zOffset+2).setType(light);
-        startingCornerBlock.getRelative(10, 0, zOffset).setType(light);
-        startingCornerBlock.getRelative(10, 0, zOffset+1).setType(light);
-        startingCornerBlock.getRelative(10, 0, zOffset+2).setType(light);
-        startingCornerBlock.getRelative(11, 0, zOffset).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(11, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(11, 0, zOffset+2).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(12, 0, zOffset).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(12, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(12, 0, zOffset+2).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(13, 0, zOffset).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(13, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(13, 0, zOffset+2).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(14, 0, zOffset).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(14, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(14, 0, zOffset+2).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(15, 0, zOffset).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(15, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(15, 0, zOffset+2).setType(FILL_BLOCK);
-        startingCornerBlock.getRelative(16, 0, zOffset).setType(light);
-        startingCornerBlock.getRelative(16, 0, zOffset+1).setType(light);
-        startingCornerBlock.getRelative(16, 0, zOffset+2).setType(light);
-        startingCornerBlock.getRelative(17, 0, zOffset).setType(light);
-        startingCornerBlock.getRelative(17, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(17, 0, zOffset+2).setType(light);
-        startingCornerBlock.getRelative(18, 0, zOffset).setType(light);
-        startingCornerBlock.getRelative(18, 0, zOffset+1).setType(light);
-        startingCornerBlock.getRelative(18, 0, zOffset+2).setType(light);
-        startingCornerBlock.getRelative(19, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(19, 0, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(19, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(20, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(20, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(20, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(21, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(21, 0, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(21, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(19, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(19, 1, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(19, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(20, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(20, 1, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(20, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(21, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(21, 1, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(21, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(22, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(22, 0, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(22, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(23, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(23, 0, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(23, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(24, 0, zOffset).setType(dark);
-        startingCornerBlock.getRelative(24, 0, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(24, 0, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(22, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(22, 1, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(22, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(23, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(23, 1, zOffset+1).setType(medium);
-        startingCornerBlock.getRelative(23, 1, zOffset+2).setType(dark);
-        startingCornerBlock.getRelative(24, 1, zOffset).setType(dark);
-        startingCornerBlock.getRelative(24, 1, zOffset+1).setType(dark);
-        startingCornerBlock.getRelative(24, 1, zOffset+2).setType(dark);
+        startingCorner.getWorld().getNearbyEntities(startingCorner, 60, 40, 50).stream().filter(e -> !e.getType().equals(EntityType.PLAYER)).forEach(Entity::remove);
     }
 }

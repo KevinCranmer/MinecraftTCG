@@ -7,6 +7,7 @@ import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.PlayerHealedEvent;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
+import me.crazycranberry.minecrafttcg.managers.utils.StadiumDefinition;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -94,6 +95,8 @@ public class Stadium {
     private final Deck player2Deck;
     private int player1MillDamage = 1;
     private int player2MillDamage = 1;
+    private final Material player1OutlookMaterial;
+    private final Material player2OutlookMaterial;
     public int turn = 0; //TODO: MAKE NOT PUBLIC
     private boolean cardAnimationInProgress = false;
     private Event phaseEventToCallAfterAnimationFinishes = null;
@@ -124,7 +127,7 @@ public class Stadium {
     private final int totalFireworkDuration = (fireworksLeft + 1) * fireworkInterval;
     private boolean duelDone = false;
 
-    public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck, Boolean ranked) {
+    public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck, Boolean ranked, StadiumDefinition sd) {
         this.startingCorner = startingCorner;
         this.player1 = player1;
         this.player1Deck = player1Deck;
@@ -132,6 +135,8 @@ public class Stadium {
         this.player2Deck = player2Deck;
         this.isRanked = ranked;
         this.currentPlayerTurnParticlesTaskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), this::generateParticlesForCurrentPlayersTurn, 0 /*<-- the initial delay */, 8 /*<-- the interval */).getTaskId();
+        this.player1OutlookMaterial = sd.player1OutlookBlock();
+        this.player2OutlookMaterial = sd.player2OutlookBlock();
     }
 
     public void setChickens(LivingEntity player1RedChicken, LivingEntity player1BlueChicken, LivingEntity player1GreenChicken, LivingEntity player2RedChicken, LivingEntity player2BlueChicken, LivingEntity player2GreenChicken) {
@@ -235,7 +240,13 @@ public class Stadium {
                 if (player2Target != null && player2Target.equals(player1Target)) {
                     startingCorner.clone().add(player1Target.offset()).subtract(0, 1, 0).getBlock().setType(PLAYER_2_TARGET_MATERIAL);
                 } else if (player1Target != null) {
-                    startingCorner.clone().add(player1Target.offset()).subtract(0, 1, 0).getBlock().setType(player1Target.material());
+                    if (player1Target.equals(PLAYER_1_OUTLOOK)) {
+                        startingCorner.clone().add(player1Target.offset()).subtract(0, 1, 0).getBlock().setType(player1OutlookMaterial);
+                    } else if (player1Target.equals(PLAYER_2_OUTLOOK)) {
+                        startingCorner.clone().add(player1Target.offset()).subtract(0, 1, 0).getBlock().setType(player2OutlookMaterial);
+                    } else {
+                        startingCorner.clone().add(player1Target.offset()).subtract(0, 1, 0).getBlock().setType(player1Target.material());
+                    }
                     hideName(player1Target);
                 }
                 showName(target);
@@ -247,7 +258,13 @@ public class Stadium {
                 if (player1Target != null && player1Target.equals(player2Target)) {
                     startingCorner.clone().add(player2Target.offset()).subtract(0, 1, 0).getBlock().setType(PLAYER_1_TARGET_MATERIAL);
                 } else if (player2Target != null) {
-                    startingCorner.clone().add(player2Target.offset()).subtract(0, 1, 0).getBlock().setType(player2Target.material());
+                    if (player2Target.equals(PLAYER_1_OUTLOOK)) {
+                        startingCorner.clone().add(player2Target.offset()).subtract(0, 1, 0).getBlock().setType(player1OutlookMaterial);
+                    } else if (player2Target.equals(PLAYER_2_OUTLOOK)) {
+                        startingCorner.clone().add(player2Target.offset()).subtract(0, 1, 0).getBlock().setType(player2OutlookMaterial);
+                    } else {
+                        startingCorner.clone().add(player2Target.offset()).subtract(0, 1, 0).getBlock().setType(player2Target.material());
+                    }
                     hideName(player2Target);
                 }
                 showName(target);

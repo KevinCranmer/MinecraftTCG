@@ -21,12 +21,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.EntityTransformEvent;
 
 import java.util.List;
 import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.handleOverkillDamage;
 import static me.crazycranberry.minecrafttcg.managers.StadiumManager.PLAYER_PROXY_ENTITY_TYPE;
+import static org.bukkit.event.entity.EntityTransformEvent.TransformReason.PIGLIN_ZOMBIFIED;
 
 public class MinionManager implements Listener {
     private static final List<EntityDamageEvent.DamageCause> damageTypesToIgnore = List.of(
@@ -113,6 +115,13 @@ public class MinionManager implements Listener {
             return;
         }
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    private void onTransform(EntityTransformEvent event) {
+        if (StadiumManager.stadium(event.getEntity().getLocation()) != null && event.getTransformReason().equals(PIGLIN_ZOMBIFIED)) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler

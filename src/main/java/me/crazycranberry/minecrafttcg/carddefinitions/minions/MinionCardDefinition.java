@@ -8,7 +8,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Hoglin;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -76,6 +78,8 @@ public interface MinionCardDefinition extends Card {
             if (entity.getAttribute(GENERIC_ATTACK_DAMAGE) == null) {
                 registerGenericAttribute(((CraftLivingEntity)entity).getHandle(), Attributes.ATTACK_DAMAGE);
             }
+            if (entity instanceof Piglin piglin) piglin.setImmuneToZombification(true);
+            if (entity instanceof Hoglin hoglin) hoglin.setImmuneToZombification(true);
             entityAdjustment.accept(entity);
             minion = c.newInstance(new MinionInfo(stadium, target, entity, caster));
             stadium.setMinionAtSpot(target, minion, false);
