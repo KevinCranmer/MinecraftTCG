@@ -168,13 +168,13 @@ public abstract class Minion {
     }
 
     public void onCombatStart() {
-        if ((!this.hasRally() && this.minionInfo().stadium().getAllyMinionInFront(this.minionInfo().spot()) != null) || this.strength() == 0) {
+        if (!canAttack()) {
             attacksLeft = 0;
         }
     }
 
     public void attackInFront() {
-        if (attacksLeft <= 0 || strength() == 0) {
+        if (attacksLeft <= 0) {
             this.minionInfo().stadium().doneAttacking();
             return;
         }
@@ -186,6 +186,10 @@ public abstract class Minion {
         } else {
             nmsMob.goalSelector.addGoal(1, new MeleeAttackGoal(nmsMob, 1, true));
         }
+    }
+
+    public boolean canAttack() {
+        return (this.hasRally() || this.minionInfo().stadium().getAllyMinionInFront(this.minionInfo().spot()) == null) && this.strength() != 0 && !this.minionInfo().stadium().isWalled(this);
     }
 
     public void onCombatEnd() {

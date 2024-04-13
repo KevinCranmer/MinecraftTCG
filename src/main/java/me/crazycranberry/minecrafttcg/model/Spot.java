@@ -3,40 +3,46 @@ package me.crazycranberry.minecrafttcg.model;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
 
+import static me.crazycranberry.minecrafttcg.model.Column.BLUE;
+import static me.crazycranberry.minecrafttcg.model.Column.GREEN;
+import static me.crazycranberry.minecrafttcg.model.Column.RED;
 import static me.crazycranberry.minecrafttcg.model.Stadium.BLUE_MATERIAL;
 import static me.crazycranberry.minecrafttcg.model.Stadium.GREEN_MATERIAL;
 import static me.crazycranberry.minecrafttcg.model.Stadium.RED_MATERIAL;
 
 public enum Spot {
-    RED_2_BACK(new Vector(20, 2, 1), RED_MATERIAL, false, true, true),
-    RED_2_FRONT(new Vector(17, 1, 1), RED_MATERIAL, false, true, true),
-    RED_1_FRONT(new Vector(9, 1, 1), RED_MATERIAL, true, true, true),
-    RED_1_BACK(new Vector(6, 2 ,1), RED_MATERIAL, true, true, true),
-    BLUE_2_BACK(new Vector(20, 2, 5), BLUE_MATERIAL, false, true, true),
-    BLUE_2_FRONT(new Vector(17, 1, 5), BLUE_MATERIAL, false, true, true),
-    BLUE_1_FRONT(new Vector(9, 1, 5), BLUE_MATERIAL, true, true, true),
-    BLUE_1_BACK(new Vector(6, 2,5), BLUE_MATERIAL, true, true, true),
-    GREEN_2_BACK(new Vector(20, 2, 9), GREEN_MATERIAL, false, true, true),
-    GREEN_2_FRONT(new Vector(17, 1, 9), GREEN_MATERIAL, false, true, true),
-    GREEN_1_FRONT(new Vector(9, 1, 9), GREEN_MATERIAL, true, true, true),
-    GREEN_1_BACK(new Vector(6, 2, 9), GREEN_MATERIAL, true, true, true),
-    PLAYER_1_OUTLOOK(new Vector(2, 8, 5), Material.BIRCH_PLANKS, true, false, true),
-    PLAYER_2_OUTLOOK(new Vector(24, 8, 5), Material.COBBLESTONE, false, false, true),
-    PLAYER_1_RED_CHICKEN(new Vector(3, 2, 1), RED_MATERIAL, true, false, false),
-    PLAYER_2_RED_CHICKEN(new Vector(23, 2, 1), RED_MATERIAL, true, false, false),
-    PLAYER_1_BLUE_CHICKEN(new Vector(3, 2, 5), BLUE_MATERIAL, true, false, false),
-    PLAYER_2_BLUE_CHICKEN(new Vector(23, 2, 5), BLUE_MATERIAL, true, false, false),
-    PLAYER_1_GREEN_CHICKEN(new Vector(3, 2, 9), GREEN_MATERIAL, true, false, false),
-    PLAYER_2_GREEN_CHICKEN(new Vector(23, 2, 9), GREEN_MATERIAL, true, false, false);
+    RED_2_BACK(new Vector(20, 2, 1), RED, RED_MATERIAL, false, true, true),
+    RED_2_FRONT(new Vector(17, 1, 1), RED, RED_MATERIAL, false, true, true),
+    RED_1_FRONT(new Vector(9, 1, 1), RED, RED_MATERIAL, true, true, true),
+    RED_1_BACK(new Vector(6, 2 ,1), RED, RED_MATERIAL, true, true, true),
+    BLUE_2_BACK(new Vector(20, 2, 5), BLUE, BLUE_MATERIAL, false, true, true),
+    BLUE_2_FRONT(new Vector(17, 1, 5), BLUE, BLUE_MATERIAL, false, true, true),
+    BLUE_1_FRONT(new Vector(9, 1, 5), BLUE, BLUE_MATERIAL, true, true, true),
+    BLUE_1_BACK(new Vector(6, 2,5), BLUE, BLUE_MATERIAL, true, true, true),
+    GREEN_2_BACK(new Vector(20, 2, 9), GREEN, GREEN_MATERIAL, false, true, true),
+    GREEN_2_FRONT(new Vector(17, 1, 9), GREEN, GREEN_MATERIAL, false, true, true),
+    GREEN_1_FRONT(new Vector(9, 1, 9), GREEN, GREEN_MATERIAL, true, true, true),
+    GREEN_1_BACK(new Vector(6, 2, 9), GREEN, GREEN_MATERIAL, true, true, true),
+    PLAYER_1_OUTLOOK(new Vector(2, 8, 5), null, Material.BIRCH_PLANKS, true, false, true),
+    PLAYER_2_OUTLOOK(new Vector(24, 8, 5), null, Material.COBBLESTONE, false, false, true),
+    PLAYER_1_RED_CHICKEN(new Vector(3, 2, 1), null, RED_MATERIAL, true, false, false),
+    PLAYER_2_RED_CHICKEN(new Vector(23, 2, 1), null, RED_MATERIAL, true, false, false),
+    PLAYER_1_BLUE_CHICKEN(new Vector(3, 2, 5), null, BLUE_MATERIAL, true, false, false),
+    PLAYER_2_BLUE_CHICKEN(new Vector(23, 2, 5), null, BLUE_MATERIAL, true, false, false),
+    PLAYER_1_GREEN_CHICKEN(new Vector(3, 2, 9), null, GREEN_MATERIAL, true, false, false),
+    PLAYER_2_GREEN_CHICKEN(new Vector(23, 2, 9), null, GREEN_MATERIAL, true, false, false);
 
     private final Vector offset;
+    private final Column column;
     private final Material material;
     private final Boolean isPlayer1Spot;
     private final Boolean isSummonableSpot;
     private final Boolean isTargetable;
+    public static final int MIDDLE_X = (int) ((RED_1_FRONT.offset().getX() + RED_2_FRONT.offset().getX()) / 2);
 
-    Spot(Vector offset, Material material, Boolean isPlayer1Spot, Boolean isSummonableSpot, Boolean isTargetable) {
+    Spot(Vector offset, Column column, Material material, Boolean isPlayer1Spot, Boolean isSummonableSpot, Boolean isTargetable) {
         this.offset = offset;
+        this.column = column;
         this.material = material;
         this.isPlayer1Spot = isPlayer1Spot;
         this.isSummonableSpot = isSummonableSpot;
@@ -45,6 +51,10 @@ public enum Spot {
 
     public Vector offset() {
         return offset;
+    }
+
+    public Column column() {
+        return column;
     }
 
     public Material material() {

@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Adrenaline;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.BaronsGrind;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.BloodSacrifice;
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.BuildWalls;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.FarmersBlessing;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.FireBlast;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.GhettoWarArmy;
@@ -73,6 +74,7 @@ public enum CardEnum {
     ADRENALINE(new Adrenaline()),
     BARONS_GRIND(new BaronsGrind()),
     BLOOD_SACRIFICE(new BloodSacrifice()),
+    BUILD_WALLS(new BuildWalls()),
     FARMERS_BLESSING(new FarmersBlessing()),
     FIRE_BLAST(new FireBlast()),
     GHETTO_WAR_ARMY(new GhettoWarArmy()),

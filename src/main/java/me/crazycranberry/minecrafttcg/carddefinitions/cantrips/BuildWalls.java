@@ -6,13 +6,15 @@ import me.crazycranberry.minecrafttcg.carddefinitions.MultiTargetCard;
 import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
+import me.crazycranberry.minecrafttcg.model.Wall;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.swapTwoSpots;
+public class BuildWalls implements CantripCardDefinition, MultiTargetCard {
+    public static Material MATERIAL = Material.BRICKS;
 
-public class Switch implements CantripCardDefinition, MultiTargetCard {
     @Override
     public Integer cost() {
         return 1;
@@ -20,12 +22,12 @@ public class Switch implements CantripCardDefinition, MultiTargetCard {
 
     @Override
     public String cardName() {
-        return "Switch";
+        return "Build Walls";
     }
 
     @Override
     public String cardDescription() {
-        return "Swap the position of two enemy minions, or two ally minions.";
+        return "Build a wall on up to 2 lanes. These walls last 2 turns.";
     }
 
     @Override
@@ -35,7 +37,12 @@ public class Switch implements CantripCardDefinition, MultiTargetCard {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
-        swapTwoSpots(stadium, targets.get(0), targets.get(1));
+        if (targets.get(0).column().equals(targets.get(1).column())) {
+            stadium.setWall(targets.get(0).column(), new Wall(stadium, targets.get(0).column(), MATERIAL, 2));
+        } else {
+            stadium.setWall(targets.get(0).column(), new Wall(stadium, targets.get(0).column(), MATERIAL, 2));
+            stadium.setWall(targets.get(1).column(), new Wall(stadium, targets.get(1).column(), MATERIAL, 2));
+        }
     }
 
     @Override
@@ -45,16 +52,12 @@ public class Switch implements CantripCardDefinition, MultiTargetCard {
 
     @Override
     public boolean isValidAdditionalTarget(Player p, Stadium stadium, Card card, List<Spot> targets, Spot newTarget) {
-        if (stadium.allyMinionSpots(p).contains(targets.get(0))) {
-            return stadium.allyMinionSpots(p).contains(newTarget);
-        } else {
-            return stadium.enemyMinionSpots(p).contains(newTarget);
-        }
+        return true;
     }
 
     @Override
     public TargetRules targetRules() {
-        return new TargetRules(true, true, false, false, false);
+        return new TargetRules(true, true, false, true, true);
     }
 
     @Override

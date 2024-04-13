@@ -78,7 +78,8 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         Map.entry("flying", flyingInfo()),
         Map.entry("rally", rallyInfo()),
         Map.entry("animal", animalInfo()),
-        Map.entry("undead", undeadInfo())
+        Map.entry("undead", undeadInfo()),
+        Map.entry("wall", wallInfo())
     );
 
     @Override
@@ -324,6 +325,13 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
             (It's very likely some of these don't have cards for them yet).%s""",
             GRAY,
             String.join(", ", UNDEAD_TYPES.stream().map(EntityType::name).toList()),
+            RESET);
+    }
+
+    private static String wallInfo() {
+        return String.format("""
+            %sWalls are temporary structures that prevent minions in their respective columns from attacking.%s""",
+            GRAY,
             RESET);
     }
 

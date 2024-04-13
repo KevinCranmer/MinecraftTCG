@@ -253,11 +253,12 @@ public class Collection {
     public static String spellOrCantripCardDescription(SpellOrCantripCardDefinition card) {
         return String.format("""
             %s%s%s%s [%s] Cost: %s
-            %s%sDescription:%s %s
+            %s%s
+            %sDescription:%s %s
             """,
-                RESET, card.rarity().color(), card.cardName(), RESET, card instanceof CantripCardDefinition ? "CANTRIP" : "SPELL", card.cost(),
-                String.format("%s%s", targetsDescription(card), card instanceof CantripCardDefinition cantrip && !cantrip.canCastDuringCombat() ? " [Cannot be cast during combat]" : ""),
-                BLUE, RESET, card.cardDescription()
+            RESET, card.rarity().color(), card.cardName(), RESET, card instanceof CantripCardDefinition ? "CANTRIP" : "SPELL", card.cost(),
+            targetsDescription(card), card instanceof CantripCardDefinition cantrip && !cantrip.canCastDuringCombat() ? " [Cannot be cast during combat]\n" : "",
+            BLUE, RESET, card.cardDescription()
         );
     }
 

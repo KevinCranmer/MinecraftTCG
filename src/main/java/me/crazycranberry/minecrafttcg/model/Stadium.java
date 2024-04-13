@@ -30,6 +30,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -119,6 +120,9 @@ public class Stadium {
     private LivingEntity player2RedChicken;
     private LivingEntity player2BlueChicken;
     private LivingEntity player2GreenChicken;
+    private Wall redWall;
+    private Wall blueWall;
+    private Wall greenWall;
     private Spot player1Target;
     private Spot player2Target;
     private int fireworksLeft = 10;
@@ -597,7 +601,7 @@ public class Stadium {
         ChatColor minionNameColor = targetedSpot.isPlayer1Spot() ? GREEN : GOLD;
         Minion targetedMinion = minionFromSpot(targetedSpot);
         if (targetedMinion == null) {
-            if (targetedSpot.equals(PLAYER_1_OUTLOOK) || targetedSpot.equals(Spot.PLAYER_2_OUTLOOK)) {
+            if (targetedSpot.equals(PLAYER_1_OUTLOOK) || targetedSpot.equals(PLAYER_2_OUTLOOK)) {
                 Sign sign1 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-1, (int) offset.getZ()).getState();
                 Sign sign2 = (Sign) startingCorner.getBlock().getRelative((int) offset.getX(), (int) offset.getY()-2, (int) offset.getZ()).getState();
                 Player targetedPlayer = player.equals(player1) ? player2 : player1;
@@ -701,8 +705,11 @@ public class Stadium {
     }
 
     public boolean isWalled(Minion minion) {
-        // TODO: IMPLEMENT
-        return false;
+        return switch(minion.minionInfo().spot().column()) {
+            case RED -> redWall != null;
+            case BLUE -> blueWall != null;
+            case GREEN -> greenWall != null;
+        };
     }
 
     public boolean isRanked() {
@@ -899,5 +906,13 @@ public class Stadium {
     public void healPlayer(Player p, int healAmount) {
         p.setHealth(Math.min(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), p.getHealth() + healAmount));
         Bukkit.getPluginManager().callEvent(new PlayerHealedEvent(this, p));
+    }
+
+    public void setWall(Column column, @Nullable Wall wall) {
+        switch(column) {
+            case RED -> { if (redWall != null) redWall.unregister(); redWall = wall; }
+            case BLUE -> { if (blueWall != null) blueWall.unregister(); blueWall = wall; }
+            case GREEN -> { if (greenWall != null) greenWall.unregister(); greenWall = wall; }
+        }
     }
 }

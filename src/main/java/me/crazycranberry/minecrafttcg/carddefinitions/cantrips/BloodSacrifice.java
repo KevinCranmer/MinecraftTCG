@@ -66,7 +66,7 @@ public class BloodSacrifice implements CantripCardDefinition {
 
     @Override
     public Boolean canCastDuringCombat() {
-        return true;
+        return false;
     }
 
     private static class BloodTracker {
