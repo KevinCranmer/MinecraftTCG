@@ -23,7 +23,7 @@ public class BaconDef implements MinionCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.UNCOMMON;
+        return CardRarity.COMMON;
     }
 
     @Override

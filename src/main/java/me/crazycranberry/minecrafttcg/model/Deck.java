@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
+import static me.crazycranberry.minecrafttcg.config.CollectionConfigs.DECK_SIZE;
 import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.COST;
 import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.NAME;
 import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.RARITY;
@@ -52,7 +53,7 @@ public class Deck {
     }
 
     public static Deck fromConfig(Player p) {
-        Inventory deckInv = Bukkit.createInventory(null, 27, "My Deck");
+        Inventory deckInv = Bukkit.createInventory(null, DECK_SIZE, "My Deck");
         YamlConfiguration collectionConfig = CollectionConfigs.collectionConfigOrCreateDefault(p);
         ConfigurationSection deckCs = collectionConfig.getConfigurationSection("deck");
         for (CardEnum cardEnum : deckCs.getKeys(false)

@@ -32,7 +32,7 @@ public class BuildWalls implements CantripCardDefinition, MultiTargetCard {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.UNCOMMON;
+        return CardRarity.COMMON;
     }
 
     @Override

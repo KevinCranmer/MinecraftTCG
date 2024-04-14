@@ -30,6 +30,7 @@ import java.util.Objects;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
+import static me.crazycranberry.minecrafttcg.config.CollectionConfigs.DECK_SIZE;
 import static me.crazycranberry.minecrafttcg.model.Collection.NEXT_PAGE_KEY;
 import static me.crazycranberry.minecrafttcg.model.Collection.IS_PAGING_KEY;
 import static org.bukkit.ChatColor.GRAY;
@@ -182,8 +183,8 @@ public class DeckManager implements Listener {
             cardCounts.put(card, numCopies + 1);
         }
         int numCardsInDeck = cardCounts.values().stream().reduce(0, Integer::sum);
-        if (weCanSaveTheDeck && numCardsInDeck != 27) {
-            p.sendMessage(String.format("%sCould not save deck. Your deck needs 27 cards. Yours had %s.%s", GRAY, numCardsInDeck, RESET));
+        if (weCanSaveTheDeck && numCardsInDeck != DECK_SIZE) {
+            p.sendMessage(String.format("%sCould not save deck. Your deck needs %s cards. Yours had %s.%s", GRAY, DECK_SIZE, numCardsInDeck, RESET));
             weCanSaveTheDeck = false;
         }
         return weCanSaveTheDeck;

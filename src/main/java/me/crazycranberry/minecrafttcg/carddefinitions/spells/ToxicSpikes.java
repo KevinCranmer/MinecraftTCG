@@ -39,7 +39,7 @@ public class ToxicSpikes implements SpellCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.UNCOMMON;
+        return CardRarity.COMMON;
     }
 
     @Override

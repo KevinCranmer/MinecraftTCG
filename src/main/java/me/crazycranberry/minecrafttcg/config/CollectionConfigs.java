@@ -22,6 +22,7 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 
 public class CollectionConfigs {
     public static final String COLLECTION_FOLDER = "collections";
+    public static final int DECK_SIZE = 36;
 
     public static YamlConfiguration collectionConfigOrCreateDefault(Player p) {
         File playersCollectionFile = collectionFile(p);
@@ -32,6 +33,8 @@ public class CollectionConfigs {
             deckCs = config.createSection("deck");
             deckCs.set(CardEnum.ADRENALINE.name(), 3);
             deckCs.set(CardEnum.AGGRESSIVE_BANDIT.name(), 3);
+            deckCs.set(CardEnum.BACON.name(), 3);
+            deckCs.set(CardEnum.BUILD_WALLS.name(), 3);
             deckCs.set(CardEnum.DINGY_SKELETON.name(), 3);
             deckCs.set(CardEnum.DIG_DEEPER.name(), 3);
             deckCs.set(CardEnum.HEAL.name(), 3);
@@ -39,6 +42,7 @@ public class CollectionConfigs {
             deckCs.set(CardEnum.HUNGRY_ZOMBIE.name(), 3);
             deckCs.set(CardEnum.PROTECT.name(), 3);
             deckCs.set(CardEnum.SEWER_ZOMBIE.name(), 3);
+            deckCs.set(CardEnum.TOXIC_SPIKES.name(), 3);
         }
         if (!playersCollectionFile.exists() || collectionCs == null) {
             collectionCs = config.createSection("collection");
@@ -81,8 +85,8 @@ public class CollectionConfigs {
         int totalCards = 0;
         for (String key : deckCs.getKeys(false)) {
             int numCopies = deckCs.getInt(key);
-            if (totalCards + numCopies > 27) {
-                int numCopiesToSendToCollection = 27 - totalCards;
+            if (totalCards + numCopies > DECK_SIZE) {
+                int numCopiesToSendToCollection = DECK_SIZE - totalCards;
                 deckCs.set(key, numCopies - numCopiesToSendToCollection);
                 int collectionCopies = collectionCs.contains(key) ? collectionCs.getInt(key) : 0;
                 collectionCs.set(key, collectionCopies + numCopiesToSendToCollection);
@@ -93,12 +97,12 @@ public class CollectionConfigs {
             }
         }
 
-        // Fill in cards if below 27
+        // Fill in cards if below DECK_SIZE
         for (CardEnum cardEnum : CardEnum.values()) {
-            if (totalCards == 27) {
+            if (totalCards == DECK_SIZE) {
                 break;
-            } else if (totalCards > 27) {
-                logger().severe("My Deck Cleaning algorithm is broke. Somehow I filled in more than 27 cards. Please contact Crazy_Cranberry to resolve this.");
+            } else if (totalCards > DECK_SIZE) {
+                logger().severe("My Deck Cleaning algorithm is broke. Somehow I filled in more than 36 cards. Please contact Crazy_Cranberry to resolve this.");
                 break;
             }
             if (!cardEnum.card().rarity().equals(CardRarity.COMMON)) {
@@ -107,12 +111,12 @@ public class CollectionConfigs {
             if (deckCs.contains(cardEnum.name())) {
                 int existingCopies = deckCs.getInt(cardEnum.name());
                 int numAllowedPerDeck = cardEnum.card().rarity().numAllowedPerDeck();
-                int amountToAdd = numAllowedPerDeck - existingCopies + totalCards > 27 ? 27 - totalCards : numAllowedPerDeck - existingCopies;
+                int amountToAdd = numAllowedPerDeck - existingCopies + totalCards > DECK_SIZE ? DECK_SIZE - totalCards : numAllowedPerDeck - existingCopies;
                 deckCs.set(cardEnum.name(), existingCopies + amountToAdd);
                 totalCards += amountToAdd;
             } else {
                 int numAllowedPerDeck = cardEnum.card().rarity().numAllowedPerDeck();
-                int amountToAdd = numAllowedPerDeck + totalCards > 27 ? 27 - totalCards : numAllowedPerDeck;
+                int amountToAdd = numAllowedPerDeck + totalCards > DECK_SIZE ? DECK_SIZE - totalCards : numAllowedPerDeck;
                 deckCs.set(cardEnum.name(), amountToAdd);
                 totalCards += amountToAdd;
             }

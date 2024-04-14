@@ -33,7 +33,7 @@ public class FarmersBlessing implements CantripCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.COMMON;
+        return CardRarity.UNCOMMON;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class FarmerDef implements MinionCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.COMMON;
+        return CardRarity.UNCOMMON;
     }
 
     @Override
