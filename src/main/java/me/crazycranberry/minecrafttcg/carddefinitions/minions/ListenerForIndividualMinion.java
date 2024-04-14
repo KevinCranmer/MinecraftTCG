@@ -6,6 +6,7 @@ import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
 import me.crazycranberry.minecrafttcg.events.EndOfTurnPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.MinionEnteredEvent;
+import me.crazycranberry.minecrafttcg.events.PlayerHealedEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -59,6 +60,13 @@ public class ListenerForIndividualMinion implements Listener {
             } else {
                 minion.onEnemyMinionEntered(event.minion());
             }
+        }
+    }
+
+    @EventHandler (priority = EventPriority.HIGH)
+    private void onPlayerHealedEvent(PlayerHealedEvent event) {
+        if (event.stadium().equals(minion.minionInfo().stadium())) {
+            minion.onPlayerHealed(event.player(), event.healAmount());
         }
     }
 }

@@ -25,6 +25,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.billy.BillyDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.borsharak.BorsharakDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.brunswick.BrunswickDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDozerDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.captainpiggie.CaptainPiggieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.couchpotato.CouchPotatoDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro.EmoVitroDef;
@@ -41,6 +42,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.liljim.LilJimDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.lurkingthief.LurkingThiefDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTellerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mom.MomDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.mournfulstrix.MournfulStrixDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.reaper.ReaperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef;
@@ -66,6 +68,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.SinfulSeduction;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.TheVoid;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ToxicSpikes;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.Unalive;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.VerticalFire;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ZooExpedition;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.awakenthealpha.AwakenTheAlpha;
 
@@ -98,6 +101,7 @@ public enum CardEnum {
     BORSHARAK(new BorsharakDef()),
     BRUNSWICK(new BrunswickDef()),
     BULLDOZER(new BullDozerDef()),
+    CAPTAIN_PIGGIE(new CaptainPiggieDef()),
     COUCH_POTATO(new CouchPotatoDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
     EMO_VITRO(new EmoVitroDef()),
@@ -114,6 +118,7 @@ public enum CardEnum {
     LURKING_THIEF(new LurkingThiefDef()),
     MIKE_THE_STORY_TELLER(new MikeTheStoryTellerDef()),
     MOM(new MomDef()),
+    MOURNFUL_STRIX(new MournfulStrixDef()),
     NINJA_MAC(new NinjaMacDef()),
     PACK_LEADER(new PackLeaderDef()),
     REAPER(new ReaperDef()),
@@ -143,6 +148,7 @@ public enum CardEnum {
     THE_VOID(new TheVoid()),
     TOXIC_SPIKES(new ToxicSpikes()),
     UNALIVE(new Unalive()),
+    VERTICAL_FIRE(new VerticalFire()),
     ZOO_EXPEDITION(new ZooExpedition());
 
     final Card card;

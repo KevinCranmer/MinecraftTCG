@@ -904,8 +904,10 @@ public class Stadium {
     }
 
     public void healPlayer(Player p, int healAmount) {
-        p.setHealth(Math.min(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), p.getHealth() + healAmount));
-        Bukkit.getPluginManager().callEvent(new PlayerHealedEvent(this, p));
+        if (p.getHealth() < p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
+            p.setHealth(Math.min(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), p.getHealth() + healAmount));
+            Bukkit.getPluginManager().callEvent(new PlayerHealedEvent(this, p, healAmount));
+        }
     }
 
     public void setWall(Column column, @Nullable Wall wall) {

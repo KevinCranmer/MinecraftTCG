@@ -16,10 +16,12 @@ public class PlayerHealedEvent extends Event {
 
     private final Stadium stadium;
     private final Player player;
+    private final int healAmount;
 
-    public PlayerHealedEvent(Stadium stadium, Player player) {
+    public PlayerHealedEvent(Stadium stadium, Player player, int healAmount) {
         this.stadium = stadium;
         this.player = player;
+        this.healAmount = healAmount;
     }
 
     public Stadium stadium() {
@@ -28,6 +30,10 @@ public class PlayerHealedEvent extends Event {
 
     public Player player() {
         return player;
+    }
+
+    public int healAmount() {
+        return healAmount;
     }
 
     @Override

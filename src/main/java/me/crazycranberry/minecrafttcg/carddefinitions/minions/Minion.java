@@ -21,6 +21,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.util.Vector;
@@ -206,6 +207,10 @@ public abstract class Minion {
     }
 
     public void onEnemyMinionEntered(Minion otherMinion) {
+
+    }
+
+    public void onPlayerHealed(Player playerHealed, int healedFor) {
 
     }
 
