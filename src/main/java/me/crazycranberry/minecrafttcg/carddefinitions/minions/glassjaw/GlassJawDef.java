@@ -19,7 +19,7 @@ public class GlassJawDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return String.format("%sOverkill%s. (Make sure this minions health buffed before it enters)", ChatColor.BOLD, ChatColor.RESET);
+        return String.format("%sOverkill, Rush%s. (Make sure this minions health is buffed before it enters)", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
@@ -45,5 +45,10 @@ public class GlassJawDef implements MinionCardDefinition {
     @Override
     public Class<? extends Minion> minionClass() {
         return GlassJaw.class;
+    }
+
+    @Override
+    public boolean hasRush() {
+        return true;
     }
 }

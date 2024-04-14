@@ -787,14 +787,14 @@ public class Stadium {
         }
         if (p.equals(player1)) {
             return switch (phase) {
-                case FIRST_PRECOMBAT_PHASE, SECOND_POSTCOMBAT_PHASE -> turn % 2 == 1;
-                case SECOND_PRECOMBAT_PHASE, FIRST_POSTCOMBAT_PHASE -> turn % 2 == 0;
+                case FIRST_PRECOMBAT_PHASE, SECOND_SUMMONING_PHASE -> turn % 2 == 1;
+                case SECOND_PRECOMBAT_PHASE, FIRST_SUMMONING_PHASE -> turn % 2 == 0;
                 default -> false;
             };
         } else {
             return switch (phase) {
-                case FIRST_PRECOMBAT_PHASE, SECOND_POSTCOMBAT_PHASE -> turn % 2 == 0;
-                case SECOND_PRECOMBAT_PHASE, FIRST_POSTCOMBAT_PHASE -> turn % 2 == 1;
+                case FIRST_PRECOMBAT_PHASE, SECOND_SUMMONING_PHASE -> turn % 2 == 0;
+                case SECOND_PRECOMBAT_PHASE, FIRST_SUMMONING_PHASE -> turn % 2 == 1;
                 default -> false;
             };
         }

@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
 public class UnstablePyroDef implements MinionCardDefinition {
@@ -18,7 +19,7 @@ public class UnstablePyroDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return "When this minion spawns and dies, it deals 1 damage to a random enemy.";
+        return String.format("%sRush%s. When this minion spawns and dies, it deals 1 damage to a random enemy.", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
@@ -44,5 +45,10 @@ public class UnstablePyroDef implements MinionCardDefinition {
     @Override
     public Class<? extends Minion> minionClass() {
         return UnstablePyro.class;
+    }
+
+    @Override
+    public boolean hasRush() {
+        return true;
     }
 }

@@ -200,8 +200,11 @@ public class DuelActionsManager implements Listener {
         } else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
             p.sendMessage(String.format("%s%sYou cannot cast this card while it's not your turn.%s", GRAY, ITALIC, RESET));
             return false;
-        }  else if (card instanceof CantripCardDefinition cantripCardDefinition && ((stadium.phase().equals(TurnPhase.COMBAT_PHASE) || stadium.phase().equals(TurnPhase.POST_COMBAT_CLEANUP)) && !cantripCardDefinition.canCastDuringCombat())) {
+        } else if (card instanceof CantripCardDefinition cantripCardDefinition && ((stadium.phase().equals(TurnPhase.COMBAT_PHASE) || stadium.phase().equals(TurnPhase.POST_COMBAT_CLEANUP)) && !cantripCardDefinition.canCastDuringCombat())) {
             p.sendMessage(String.format("%s%sThis card cannot be cast during combat.%s", GRAY, ITALIC, RESET));
+            return false;
+        } else if (card instanceof MinionCardDefinition minionCardDefinition && ((stadium.phase().equals(TurnPhase.FIRST_PRECOMBAT_PHASE) || stadium.phase().equals(TurnPhase.SECOND_PRECOMBAT_PHASE)) && !minionCardDefinition.hasRush())) {
+            p.sendMessage(String.format("%s%sThis minion can only be cast during your Summoning Phase.%s", GRAY, ITALIC, RESET));
             return false;
         } else if (card instanceof MultiTargetCard multiTargetCard && castsInProgressMap.containsKey(p.getUniqueId())) {
             CastInProgress cast = castsInProgressMap.get(p.getUniqueId());

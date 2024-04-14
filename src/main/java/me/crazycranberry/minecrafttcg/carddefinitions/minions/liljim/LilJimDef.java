@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.liljim;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Zombie;
@@ -22,7 +23,7 @@ public class LilJimDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return "";
+        return String.format("%sRush%s.", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class LilJimDef implements MinionCardDefinition {
 
     @Override
     public Integer strength() {
-        return 8;
+        return 7;
     }
 
     @Override
@@ -53,5 +54,10 @@ public class LilJimDef implements MinionCardDefinition {
     @Override
     public Consumer<LivingEntity> entityAdjustment() {
         return e -> ((Zombie) e).setBaby();
+    }
+
+    @Override
+    public boolean hasRush() {
+        return true;
     }
 }

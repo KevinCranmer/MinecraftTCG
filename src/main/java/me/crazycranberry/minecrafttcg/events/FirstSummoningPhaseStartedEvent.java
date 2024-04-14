@@ -5,12 +5,12 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class SecondPostCombatPhaseStartedEvent extends Event {
+public class FirstSummoningPhaseStartedEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final Stadium stadium;
 
-    public SecondPostCombatPhaseStartedEvent(Stadium stadium) {
+    public FirstSummoningPhaseStartedEvent(Stadium stadium) {
         this.stadium = stadium;
     }
 

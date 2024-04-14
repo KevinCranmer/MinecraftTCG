@@ -38,7 +38,7 @@ public class ApprenticeArcherDef implements MinionCardDefinition {
 
     @Override
     public Integer maxHealth() {
-        return 3;
+        return 4;
     }
 
     @Override

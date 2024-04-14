@@ -79,6 +79,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         Map.entry("rally", rallyInfo()),
         Map.entry("animal", animalInfo()),
         Map.entry("undead", undeadInfo()),
+        Map.entry("rush", rushInfo()),
         Map.entry("wall", wallInfo())
     );
 
@@ -338,6 +339,13 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
     private static String lifestealInfo() {
         return String.format("""
             %sMinions with Lifesteal heal their controller for any damage they deal.%s""",
+            GRAY,
+            RESET);
+    }
+
+    private static String rushInfo() {
+        return String.format("""
+            %sMinions with Rush can be summoned during your pre-combat phase.%s""",
             GRAY,
             RESET);
     }

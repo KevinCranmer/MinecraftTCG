@@ -8,10 +8,10 @@ import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
 import me.crazycranberry.minecrafttcg.events.DuelEndEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.events.EndOfTurnPhaseStartedEvent;
-import me.crazycranberry.minecrafttcg.events.FirstPostCombatPhaseStartedEvent;
+import me.crazycranberry.minecrafttcg.events.FirstSummoningPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.MulliganPhaseStartedEvent;
-import me.crazycranberry.minecrafttcg.events.SecondPostCombatPhaseStartedEvent;
+import me.crazycranberry.minecrafttcg.events.SecondSummoningPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.SecondPreCombatPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.TurnEndEvent;
 import me.crazycranberry.minecrafttcg.model.Spot;
@@ -53,11 +53,11 @@ import static me.crazycranberry.minecrafttcg.commands.RanksCommand.MIN_RANK_GAIN
 import static me.crazycranberry.minecrafttcg.commands.RanksCommand.UPPER_LIMIT_OF_RANK_DIFFERENTIAL_WEIGHTING;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.END_OF_TURN;
-import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_POSTCOMBAT_PHASE;
+import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_SUMMONING_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.MULLIGAN_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
-import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_POSTCOMBAT_PHASE;
+import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_SUMMONING_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.SECOND_PRECOMBAT_PHASE;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GOLD;
@@ -153,37 +153,37 @@ public class TurnManager implements Listener {
             return;
         }
         event.getStadium().updatePhase(POST_COMBAT_CLEANUP);
-        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstPostCombatPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstSummoningPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
     }
 
     @EventHandler
-    private void onFirstPostCombatPhaseStarted(FirstPostCombatPhaseStartedEvent event) {
+    private void onFirstSummoningPhaseStarted(FirstSummoningPhaseStartedEvent event) {
         if (event.getStadium().isDuelDone()) {
             return;
         }
-        event.getStadium().updatePhase(FIRST_POSTCOMBAT_PHASE);
+        event.getStadium().updatePhase(FIRST_SUMMONING_PHASE);
         int turn = event.getStadium().turn();
         Player p = event.getStadium().currentPlayersTurn();
         makeSoundForPlayerTurnStart(p);
-        String title = String.format("%s%s's Post-Combat Phase", event.getStadium().playersColor(p), p.getName());
+        String title = String.format("%s%s's Summoning Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
-        startTurnPhaseTimers(turn, FIRST_POSTCOMBAT_PHASE, event.getStadium());
-        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> maybeAutoSkipPhase(event.getStadium(), turn, FIRST_POSTCOMBAT_PHASE), 40);
+        startTurnPhaseTimers(turn, FIRST_SUMMONING_PHASE, event.getStadium());
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> maybeAutoSkipPhase(event.getStadium(), turn, FIRST_SUMMONING_PHASE), 40);
     }
 
     @EventHandler
-    private void onSecondPostCombatPhaseStarted(SecondPostCombatPhaseStartedEvent event) {
+    private void onSecondSummoningPhaseStarted(SecondSummoningPhaseStartedEvent event) {
         if (event.getStadium().isDuelDone()) {
             return;
         }
-        event.getStadium().updatePhase(SECOND_POSTCOMBAT_PHASE);
+        event.getStadium().updatePhase(SECOND_SUMMONING_PHASE);
         int turn = event.getStadium().turn();
         Player p = event.getStadium().currentPlayersTurn();
         makeSoundForPlayerTurnStart(p);
-        String title = String.format("%s%s's Post-Combat Phase", event.getStadium().playersColor(p), p.getName());
+        String title = String.format("%s%s's Summoning Phase", event.getStadium().playersColor(p), p.getName());
         sendTitles(title, "Turn " + turn, event.getStadium());
-        startTurnPhaseTimers(turn, SECOND_POSTCOMBAT_PHASE, event.getStadium());
-        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> maybeAutoSkipPhase(event.getStadium(), turn, SECOND_POSTCOMBAT_PHASE), 40);
+        startTurnPhaseTimers(turn, SECOND_SUMMONING_PHASE, event.getStadium());
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> maybeAutoSkipPhase(event.getStadium(), turn, SECOND_SUMMONING_PHASE), 40);
     }
 
     @EventHandler
