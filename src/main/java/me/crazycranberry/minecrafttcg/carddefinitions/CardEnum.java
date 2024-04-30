@@ -26,6 +26,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.borsharak.Borshara
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.brunswick.BrunswickDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDozerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.captainpiggie.CaptainPiggieDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.chaoticskeleton.ChaoticSkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.couchpotato.CouchPotatoDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro.EmoVitroDef;
@@ -44,6 +45,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mom.MomDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mournfulstrix.MournfulStrixDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.oliver.OliverDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.reaper.ReaperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.ScaredDuelistDef;
@@ -65,6 +67,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.FreshWaterBottle;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.KeepItSchwifty;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.PlantCrops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SinfulSeduction;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.StringOfMortality;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.TheVoid;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ToxicSpikes;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.Unalive;
@@ -102,6 +105,7 @@ public enum CardEnum {
     BRUNSWICK(new BrunswickDef()),
     BULLDOZER(new BullDozerDef()),
     CAPTAIN_PIGGIE(new CaptainPiggieDef()),
+    CHAOTIC_SKELETON(new ChaoticSkeletonDef()),
     COUCH_POTATO(new CouchPotatoDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
     EMO_VITRO(new EmoVitroDef()),
@@ -120,6 +124,7 @@ public enum CardEnum {
     MOM(new MomDef()),
     MOURNFUL_STRIX(new MournfulStrixDef()),
     NINJA_MAC(new NinjaMacDef()),
+    OLIVER(new OliverDef()),
     PACK_LEADER(new PackLeaderDef()),
     REAPER(new ReaperDef()),
     RECKLESS_STINKER(new RecklessStinkerDef()),
@@ -145,6 +150,7 @@ public enum CardEnum {
     KEEP_IT_SCHWIFTY(new KeepItSchwifty()),
     PLANT_CROPS(new PlantCrops()),
     SINFUL_SEDUCTION(new SinfulSeduction()),
+    STRING_OF_MORTALITY(new StringOfMortality()),
     THE_VOID(new TheVoid()),
     TOXIC_SPIKES(new ToxicSpikes()),
     UNALIVE(new Unalive()),

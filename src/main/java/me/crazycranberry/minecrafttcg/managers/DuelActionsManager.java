@@ -194,10 +194,10 @@ public class DuelActionsManager implements Listener {
         if (stadium.isCardAnimationInProgress()) {
             p.sendMessage(String.format("%s%sCannot cast cards while other card animations are playing.%s", GRAY, ITALIC, RESET));
             return false;
-        } else if (card.cost() > stadium.playerMana(p)) {
+        }/* else if (card.cost() > stadium.playerMana(p)) {
             p.sendMessage(String.format("%s%sYou only have %s mana, this card costs %s.%s", GRAY, ITALIC, stadium.playerMana(p), card.cost(), RESET));
             return false;
-        } else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
+        }*/ else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
             p.sendMessage(String.format("%s%sYou cannot cast this card while it's not your turn.%s", GRAY, ITALIC, RESET));
             return false;
         } else if (card instanceof CantripCardDefinition cantripCardDefinition && ((stadium.phase().equals(TurnPhase.COMBAT_PHASE) || stadium.phase().equals(TurnPhase.POST_COMBAT_CLEANUP)) && !cantripCardDefinition.canCastDuringCombat())) {

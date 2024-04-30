@@ -6,8 +6,10 @@ import me.crazycranberry.minecrafttcg.carddefinitions.ParticleBeamInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.ParticleBeamTracker;
 import me.crazycranberry.minecrafttcg.carddefinitions.TargetRules;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.model.Note;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
+import me.crazycranberry.minecrafttcg.utils.Song;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -23,11 +25,17 @@ import static org.bukkit.Sound.BLOCK_NOTE_BLOCK_HARP;
 public class SinfulSeduction implements SpellCardDefinition {
     private final static Integer particleBeamNumParticles = 1;
     private final static double particleBeamBlocksTraveledPerTick = 0.2;
-    private int taskId;
-    private int tickProgress = 0;
-    private int pitchProgress = 0;
-    private final int ticksBetweenEachNote = 3;
-    private final List<Float> pitches = List.of(0.707f, 0.794f, 0.891f, 0.944f, 1.059f, 1.189f, 1.335f, 1.414f);
+    private final List<Note> song = List.of(
+      new Note(0.707f, 3),
+      new Note(0.794f, 6),
+      new Note(0.891f, 9),
+      new Note(0.944f, 12),
+      new Note(1.059f, 15),
+      new Note(1.189f, 18),
+      new Note(1.335f, 21),
+      new Note(1.414f, 24)
+    );
+
     @Override
     public Integer cost() {
         return 8;
@@ -52,23 +60,7 @@ public class SinfulSeduction implements SpellCardDefinition {
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         newAnimationStarted(stadium, caster, 1);
         new ParticleBeamTracker(stadium, caster, List.of(stadium.minionFromSpot(targets.get(0)).minionInfo().entity()), Particle.HEART, null, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, SinfulSeduction::onParticleBeamCollided);
-        playHarpScale(caster);
-    }
-
-    private void playHarpScale(Player caster) {
-        tickProgress = 0;
-        pitchProgress = 0;
-        taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
-            if (pitchProgress >= pitches.size()) {
-                Bukkit.getScheduler().cancelTask(taskId);
-                return;
-            }
-            if (tickProgress % ticksBetweenEachNote == 0) {
-                caster.getWorld().playSound(caster.getLocation(), BLOCK_NOTE_BLOCK_HARP, 1, pitches.get(pitchProgress));
-                pitchProgress++;
-            }
-            tickProgress++;
-        }, 0 /*<-- the initial delay */, 1 /*<-- the interval */).getTaskId();
+        new Song(song, BLOCK_NOTE_BLOCK_HARP, caster.getLocation()).play();
     }
 
     public static void onParticleBeamCollided(Stadium stadium, Player caster, ParticleBeamInfo beam) {

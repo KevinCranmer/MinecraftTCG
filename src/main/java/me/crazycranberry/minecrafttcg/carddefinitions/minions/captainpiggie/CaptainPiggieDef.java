@@ -33,7 +33,7 @@ public class CaptainPiggieDef implements MinionCardDefinition {
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.RARE;
+        return CardRarity.LEGENDARY;
     }
 
     @Override

@@ -906,6 +906,7 @@ public class Stadium {
     public void healPlayer(Player p, int healAmount) {
         if (p.getHealth() < p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
             p.setHealth(Math.min(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), p.getHealth() + healAmount));
+            p.getWorld().spawnParticle(Particle.HEART, p.getEyeLocation(), 7, 0.5, 0.75, 0.5);
             Bukkit.getPluginManager().callEvent(new PlayerHealedEvent(this, p, healAmount));
         }
     }
