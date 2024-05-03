@@ -17,23 +17,29 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Optional;
 
-import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.A;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.B;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.C;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.D;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.E;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.F;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.G;
 import static org.bukkit.Sound.BLOCK_NOTE_BLOCK_HARP;
 
 public class SinfulSeduction implements SpellCardDefinition {
     private final static Integer particleBeamNumParticles = 1;
     private final static double particleBeamBlocksTraveledPerTick = 0.2;
     private final List<Note> song = List.of(
-      new Note(0.707f, 3),
-      new Note(0.794f, 6),
-      new Note(0.891f, 9),
-      new Note(0.944f, 12),
-      new Note(1.059f, 15),
-      new Note(1.189f, 18),
-      new Note(1.335f, 21),
-      new Note(1.414f, 24)
+      new Note(C, 3),
+      new Note(D, 6),
+      new Note(E, 9),
+      new Note(F, 12),
+      new Note(G, 15),
+      new Note(A, 18),
+      new Note(B, 21),
+      new Note(C, 24)
     );
 
     @Override

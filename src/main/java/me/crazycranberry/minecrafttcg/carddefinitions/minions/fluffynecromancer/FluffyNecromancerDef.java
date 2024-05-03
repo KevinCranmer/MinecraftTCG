@@ -9,6 +9,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefiniti
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Breedable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -87,5 +88,12 @@ public class FluffyNecromancerDef implements MinionCardDefinition, MultiTargetCa
         MinionCardDefinition.summonMinion(targets.get(0), stadium, caster, minionClass(), this);
         MinionCardDefinition skeleton = (MinionCardDefinition) DINGY_SKELETON.card();
         MinionCardDefinition.summonMinion(targets.get(1), stadium, caster, skeleton.minionClass(), skeleton);
+    }
+
+    @Override
+    public Map<EquipmentSlot, ItemStack> equipment() {
+        return Map.of(
+            EquipmentSlot.HAND, new ItemStack(Material.CROSSBOW)
+        );
     }
 }

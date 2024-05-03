@@ -9,34 +9,38 @@ import me.crazycranberry.minecrafttcg.model.Note;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import me.crazycranberry.minecrafttcg.utils.Song;
+import org.bukkit.ChatColor;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
-import static me.crazycranberry.minecrafttcg.model.Note.Octave1.C;
-import static me.crazycranberry.minecrafttcg.model.Note.Octave1.E;
-import static me.crazycranberry.minecrafttcg.model.Note.Octave1.F;
-import static org.bukkit.Color.BLACK;
-import static org.bukkit.Sound.BLOCK_NOTE_BLOCK_FLUTE;
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.UNDEAD_TYPES;
 import static me.crazycranberry.minecrafttcg.model.Note.Octave1.A;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.C;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.Csharp;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.Dsharp;
+import static me.crazycranberry.minecrafttcg.model.Note.Octave1.E;
+import static org.bukkit.Color.GRAY;
+import static org.bukkit.Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO;
 
-public class StringOfMortality implements SpellCardDefinition {
+public class DeadlyMobbing implements SpellCardDefinition {
     private final static Integer particleBeamNumParticles = 9;
-    private final static double particleBeamBlocksTraveledPerTick = 1;
+    private final static double particleBeamBlocksTraveledPerTick = 0.5;
     private final static List<Note> song = List.of(
-        new Note(A, 4),
-        new Note(C, 8),
-        new Note(E, 12),
-        new Note(F, 16),
-        new Note(E, 20)
+        new Note(C, 4),
+        new Note(E, 8),
+        new Note(Dsharp, 12),
+        new Note(Csharp, 16),
+        new Note(A, 24)
     );
-    private final static Sound instrument = BLOCK_NOTE_BLOCK_FLUTE;
-    private static final Particle.DustOptions dustOptions = new Particle.DustOptions(BLACK, 1);
+    private final static Sound instrument = BLOCK_NOTE_BLOCK_DIDGERIDOO;
+    private static final Particle.DustOptions dustOptions = new Particle.DustOptions(GRAY, 1);
 
     @Override
     public Integer cost() {
@@ -45,12 +49,12 @@ public class StringOfMortality implements SpellCardDefinition {
 
     @Override
     public String cardName() {
-        return "String of Mortality";
+        return "Deadly Mobbing";
     }
 
     @Override
     public String cardDescription() {
-        return "Deal 1 damage to target minion. If it kills that minion, draw a card.";
+        return String.format("Deal X * 2 damage to target minion where X is the number of %sUndead%s minions you control.", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
@@ -60,27 +64,30 @@ public class StringOfMortality implements SpellCardDefinition {
 
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
-        Minion target = stadium.minionFromSpot(targets.get(0));
         newAnimationStarted(stadium, caster, 1);
-        new ParticleBeamTracker(stadium, caster, List.of(target.minionInfo().entity()), Particle.REDSTONE, List.of(dustOptions), particleBeamBlocksTraveledPerTick, particleBeamNumParticles, StringOfMortality::onCollide);
+        new ParticleBeamTracker(stadium, caster, List.of(stadium.minionFromSpot(targets.get(0)).minionInfo().entity()), Particle.REDSTONE, List.of(dustOptions), particleBeamBlocksTraveledPerTick, particleBeamNumParticles, DeadlyMobbing::onCollide);
         new Song(song, instrument, caster.getEyeLocation()).play();
+    }
+
+    public static void onCollide(Stadium stadium, Player caster, ParticleBeamInfo beam) {
+        int numUndead = stadium.allyMinionSpots(caster).stream()
+            .map(stadium::minionFromSpot)
+            .filter(Objects::nonNull)
+            .filter(m -> UNDEAD_TYPES.contains(m.minionInfo().entity().getType()))
+            .toList().size();
+        if (numUndead == 0) {
+            return;
+        }
+        Optional<Minion> targetMinion = stadium.minionFromEntity(beam.target());
+        if (targetMinion.isPresent()) {
+            Minion target = targetMinion.get();
+            target.onDamageReceived(caster, 2 * numUndead, target.isProtected());
+        }
+        oneAnimationFinished(stadium, caster);
     }
 
     @Override
     public TargetRules targetRules() {
-        return new TargetRules(true, true, false, false, false);
-    }
-
-    public static void onCollide(Stadium stadium, Player caster, ParticleBeamInfo beam) {
-        Optional<Minion> targetMinion = stadium.minionFromEntity(beam.target());
-        if (targetMinion.isPresent()) {
-            Minion target = targetMinion.get();
-            target.onDamageReceived(caster, 1, target.isProtected());
-            if (target.health() <= 0) {
-                stadium.draw(caster);
-                caster.getWorld().spawnParticle(Particle.REDSTONE, target.minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5, dustOptions);
-            }
-        }
-        oneAnimationFinished(stadium, caster);
+        return new TargetRules(false, true, false, false, false);
     }
 }

@@ -18,7 +18,7 @@ public class ShowTemporaryEffectParticlesGoal<T> extends Goal {
 
     @Override
     public boolean canUse() {
-        return minion.isProtected() || minion.hasBonusStrength() || minion.hasOverkill();
+        return minion.isProtected() || minion.bonusStrength() != 0 || minion.hasOverkill();
     }
 
     @Override
@@ -29,9 +29,12 @@ public class ShowTemporaryEffectParticlesGoal<T> extends Goal {
     }
 
     private void bonusStrengthParticles() {
-        if (minion.hasBonusStrength()) {
+        if (minion.bonusStrength() > 0) {
             minion.minionInfo().entity().getWorld().spawnParticle(Particle.GLOW, minion.minionInfo().entity().getEyeLocation(), 2, 0.3, 0.3, 0.3);
             minion.minionInfo().entity().getWorld().spawnParticle(Particle.GLOW, minion.minionInfo().entity().getLocation(), 1, 0.3, 0.3, 0.3);
+        } else if (minion.bonusStrength() < 0) {
+            minion.minionInfo().entity().getWorld().spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, minion.minionInfo().entity().getEyeLocation(), 2, 0.3, 0.3, 0.3);
+            minion.minionInfo().entity().getWorld().spawnParticle(Particle.FALLING_OBSIDIAN_TEAR, minion.minionInfo().entity().getLocation(), 1, 0.3, 0.3, 0.3);
         }
     }
 

@@ -33,7 +33,9 @@ import org.bukkit.util.Vector;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -130,6 +132,7 @@ public class Stadium {
     private final int fireworkInterval = 10;
     private final int totalFireworkDuration = (fireworksLeft + 1) * fireworkInterval;
     private boolean duelDone = false;
+    private final Map<Integer, List<Minion>> graveyard = new HashMap<>();
 
     public Stadium(Location startingCorner, Player player1, Deck player1Deck, Player player2, Deck player2Deck, Boolean ranked, StadiumDefinition sd) {
         this.startingCorner = startingCorner;
@@ -732,7 +735,14 @@ public class Stadium {
     }
 
     public void minionDied(Spot spot) {
+        List<Minion> minionsThatDiedThisTurn = Optional.ofNullable(graveyard.get(turn())).orElse(new ArrayList<>());
+        Optional.ofNullable(minionFromSpot(spot)).ifPresent(minionsThatDiedThisTurn::add);
+        graveyard.put(turn(), minionsThatDiedThisTurn);
         setMinionAtSpot(spot, null, false); // The minions themselves cancel tasks when they die
+    }
+
+    public Map<Integer, List<Minion>> graveyard() {
+        return graveyard;
     }
 
     public int turn() {

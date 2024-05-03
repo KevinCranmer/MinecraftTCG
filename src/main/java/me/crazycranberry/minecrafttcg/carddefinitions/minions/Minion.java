@@ -42,6 +42,7 @@ public abstract class Minion {
     private final PathfinderMob nmsMob;
     private Integer numTurnsProtected = 0;
     private Integer temporaryBonusStrength = 0;
+    private Integer temporaryBonusHealth = 0;
     private final Map<Minion, Integer> staticBonusStrength = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
     private final Map<Minion, Integer> staticBonusMaxHealth = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
     private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
@@ -82,7 +83,7 @@ public abstract class Minion {
     }
 
     public Integer health() {
-        return health;
+        return health + temporaryBonusHealth;
     }
 
     public Integer maxHealth() {
@@ -165,6 +166,7 @@ public abstract class Minion {
         numTurnsProtected = Math.max(0, numTurnsProtected - 1);
         numTurnsOverkill = Math.max(0, numTurnsOverkill - 1);
         temporaryBonusStrength = 0;
+        temporaryBonusHealth = 0;
         minionInfo.stadium().updateCustomName(this);
     }
 
@@ -266,6 +268,12 @@ public abstract class Minion {
         this.minionInfo().stadium().updateCustomName(this);
     }
 
+    public void giveTemporaryHealth(Integer bonusHealth) {
+        temporaryBonusHealth += bonusHealth;
+        minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1, 1);
+        this.minionInfo().stadium().updateCustomName(this);
+    }
+
     public void setStaticStrengthBonus(Minion source, Integer staticStrength) {
         staticBonusStrength.put(source, staticStrength);
         this.minionInfo().stadium().updateCustomName(this);
@@ -297,12 +305,12 @@ public abstract class Minion {
         return numTurnsProtected > 0;
     }
 
-    public boolean hasBonusStrength() {
-        return temporaryBonusStrength > 0;
+    public int bonusStrength() {
+        return temporaryBonusStrength;
     }
 
     public void shouldIBeDead() {
-        if (health <= 0) {
+        if (health() <= 0) {
             this.onDeath();
         }
     }
@@ -359,6 +367,7 @@ public abstract class Minion {
         this.numTurnsOverkill = minion.numTurnsOverkill;
         this.numTurnsProtected = minion.numTurnsProtected;
         this.temporaryBonusStrength = minion.temporaryBonusStrength;
+        this.temporaryBonusHealth = minion.temporaryBonusHealth;
     }
 
     public PathfinderMob nmsMob() {

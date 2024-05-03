@@ -16,6 +16,7 @@ public class GlassJaw extends Minion {
     public void onEnter() {
         super.onEnter();
         Minion thisMinion = this;
+        thisMinion.setPermanentOverkill(true);
         Bukkit.getScheduler().runTaskLater(getPlugin(), thisMinion::shouldIBeDead, 2);
     }
 
