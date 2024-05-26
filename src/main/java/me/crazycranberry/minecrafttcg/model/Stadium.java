@@ -62,6 +62,7 @@ import static me.crazycranberry.minecrafttcg.model.TurnPhase.COMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.FIRST_PRECOMBAT_PHASE;
 import static me.crazycranberry.minecrafttcg.model.TurnPhase.POST_COMBAT_CLEANUP;
 import static org.bukkit.ChatColor.DARK_GREEN;
+import static org.bukkit.ChatColor.YELLOW;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
@@ -282,9 +283,11 @@ public class Stadium {
     }
 
     public void updateCustomName(Minion minion) {
-        minion.minionInfo().entity().setCustomName(String.format("%s%s %s%s%s:%s %s❤%s:%s/%s",
+        minion.minionInfo().entity().setCustomName(String.format("%s%s %s%s%s:%s %s❤%s:%s/%s%s",
             minion.minionInfo().spot().isPlayer1Spot() ? GREEN : GOLD, minion.name(),
-            DARK_GREEN, minion.hasFlying() ? "☁" : minion.hasRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.strength(), RED, RESET, minion.health(), minion.maxHealth()
+            DARK_GREEN, minion.hasFlying() ? "☁" : minion.hasRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minion.strength(),
+            RED, RESET, minion.health(), minion.maxHealth(),
+            minion.block() > 0 ? String.format("%s \uD83D\uDEE1:%s%s", YELLOW, minion.block(), RESET) : ""
         ));
     }
 
@@ -640,7 +643,7 @@ public class Stadium {
     }
 
     public void doneAttacking() {
-        if (phase != COMBAT_PHASE) {
+        if (phase != COMBAT_PHASE && phase != POST_COMBAT_CLEANUP) {
             System.out.println("Who the hell is calling doneAttacking outside of combat >:( ");
         }
         boolean everyoneDone = true;
@@ -652,7 +655,7 @@ public class Stadium {
                 }
             }
         }
-        if (everyoneDone) {
+        if (everyoneDone && phase == COMBAT_PHASE) {
             Bukkit.getPluginManager().callEvent(new CombatEndEvent(this));
         }
     }

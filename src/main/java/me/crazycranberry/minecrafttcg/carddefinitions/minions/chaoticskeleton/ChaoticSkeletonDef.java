@@ -63,7 +63,7 @@ public class ChaoticSkeletonDef implements MinionCardDefinition {
         ArmorMeta helmArmor = (ArmorMeta) helm.getItemMeta();
         helmArmor.setTrim(trim);
         helm.setItemMeta(helmArmor);
-        ItemStack pants = new ItemStack(Material.GOLDEN_HELMET);
+        ItemStack pants = new ItemStack(Material.GOLDEN_LEGGINGS);
         ArmorMeta pantsArmor = (ArmorMeta) helm.getItemMeta();
         pantsArmor.setTrim(trim);
         helm.setItemMeta(pantsArmor);

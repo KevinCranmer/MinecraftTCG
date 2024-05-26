@@ -3,6 +3,7 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton;
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
 public class DingySkeletonDef implements MinionCardDefinition {
@@ -23,7 +24,7 @@ public class DingySkeletonDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return "";
+        return String.format("%sRally%s", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
@@ -43,6 +44,11 @@ public class DingySkeletonDef implements MinionCardDefinition {
 
     @Override
     public boolean isRanged() {
+        return true;
+    }
+
+    @Override
+    public boolean hasRally() {
         return true;
     }
 

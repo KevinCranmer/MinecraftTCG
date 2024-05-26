@@ -24,6 +24,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.backmasseuse.BackM
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bacon.BaconDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.bigtim.BigTimDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.billy.BillyDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.boneabomination.BoneAbominationDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.borsharak.BorsharakDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.brunswick.BrunswickDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.brutalsniper.BrutalSniperDef;
@@ -31,15 +32,19 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.bulldozer.BullDoze
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.captainpiggie.CaptainPiggieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.chaoticskeleton.ChaoticSkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.couchpotato.CouchPotatoDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.cowardlybob.CowardlyBobDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.duodueler.DuoDuelerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro.EmoVitroDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.farmer.FarmerDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.flamejuggler.FlameJugglerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.fluffynecromancer.FluffyNecromancerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.glassjaw.GlassJawDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.happynarwhale.HappyNarwhaleDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch.HealWitchDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.heavyslammer.HeavySlammerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.hungryzombie.HungryZombieDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.jamesbaxter.JamesBaxterDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.kevinthesmith.KevinTheSmithDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.comradepig.ComradePigDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.lavaimp.LavaImpDef;
@@ -74,6 +79,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.KeepItSchwifty;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.PlantCrops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SinfulSeduction;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.StringOfMortality;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.TNT;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.TheVoid;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ToxicSpikes;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.Unalive;
@@ -109,6 +115,7 @@ public enum CardEnum {
     BACON(new BaconDef()),
     BIG_TIM(new BigTimDef()),
     BILLY(new BillyDef()),
+    BONE_ABOMINATION(new BoneAbominationDef()),
     BORSHARAK(new BorsharakDef()),
     BRUNSWICK(new BrunswickDef()),
     BRUTAL_SNIPER(new BrutalSniperDef()),
@@ -116,16 +123,20 @@ public enum CardEnum {
     CAPTAIN_PIGGIE(new CaptainPiggieDef()),
     CHAOTIC_SKELETON(new ChaoticSkeletonDef()),
     COMRADE_PIG(new ComradePigDef()),
+    COWARDLY_BOB(new CowardlyBobDef()),
     COUCH_POTATO(new CouchPotatoDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
+    DUO_DUELER(new DuoDuelerDef()),
     EMO_VITRO(new EmoVitroDef()),
     FARMER(new FarmerDef()),
+    FLAME_JUGGLER(new FlameJugglerDef()),
     FLUFFY_NECROMANCER(new FluffyNecromancerDef()),
     GLASS_JAW(new GlassJawDef()),
     HAPPY_NARWHALE(new HappyNarwhaleDef()),
     HEAL_WITCH(new HealWitchDef()),
     HEAVY_SLAMMER(new HeavySlammerDef()),
     HUNGRY_ZOMBIE(new HungryZombieDef()),
+    JAMES_BAXTER(new JamesBaxterDef()),
     KEVIN_THE_SMITH(new KevinTheSmithDef()),
     LAVA_IMP(new LavaImpDef()),
     LIL_JIM(new LilJimDef()),
@@ -163,6 +174,7 @@ public enum CardEnum {
     SINFUL_SEDUCTION(new SinfulSeduction()),
     STRING_OF_MORTALITY(new StringOfMortality()),
     THE_VOID(new TheVoid()),
+    TNT(new TNT()),
     TOXIC_SPIKES(new ToxicSpikes()),
     UNALIVE(new Unalive()),
     VERTICAL_FIRE(new VerticalFire()),

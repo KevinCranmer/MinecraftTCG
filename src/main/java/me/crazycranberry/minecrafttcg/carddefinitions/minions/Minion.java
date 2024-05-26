@@ -45,6 +45,7 @@ public abstract class Minion {
     private Integer temporaryBonusHealth = 0;
     private final Map<Minion, Integer> staticBonusStrength = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
     private final Map<Minion, Integer> staticBonusMaxHealth = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
+    private final Map<Minion, Integer> staticBonusBlock = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
     private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
     private Integer numTurnsOverkill = 0;
     private Boolean hasFlying;
@@ -53,6 +54,8 @@ public abstract class Minion {
     private Integer numTurnsRally = 0;
     private Boolean hasRanged;
     private Integer numTurnsRanged = 0;
+    private Integer block = 0;
+    private Integer temporaryBonusBlock = 0;
     private Boolean hasLifesteal = false;
     private Integer numTurnsLifesteal = 0;
     private final ListenerForIndividualMinion listener;
@@ -167,6 +170,7 @@ public abstract class Minion {
         numTurnsOverkill = Math.max(0, numTurnsOverkill - 1);
         temporaryBonusStrength = 0;
         temporaryBonusHealth = 0;
+        temporaryBonusBlock = 0;
         minionInfo.stadium().updateCustomName(this);
     }
 
@@ -239,6 +243,10 @@ public abstract class Minion {
         if (wasProtected) {
             return;
         }
+        if (block() > 0) {
+            damageReceived = Math.max(0, damageReceived - block());
+            minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.ITEM_SHIELD_BLOCK, 1, 1);
+        }
         health = Math.min(health - damageReceived, maxHealth());
         minionInfo.stadium().updateCustomName(this);
         this.minionInfo().entity().damage(0);
@@ -292,6 +300,11 @@ public abstract class Minion {
         this.minionInfo().stadium().updateCustomName(this);
     }
 
+    public void setStaticBlockBonus(Minion source, Integer staticBlock) {
+        staticBonusBlock.put(source, staticBlock);
+        this.minionInfo().stadium().updateCustomName(this);
+    }
+
     public void setProtected(int numTurns) {
         numTurnsProtected = numTurns;
         minionInfo.entity().getWorld().playSound(minionInfo.entity(), Sound.ITEM_SHIELD_BLOCK, 2, 1);
@@ -307,6 +320,10 @@ public abstract class Minion {
 
     public int bonusStrength() {
         return temporaryBonusStrength;
+    }
+
+    public Integer block() {
+        return block + temporaryBonusBlock + staticBonusBlock.values().stream().reduce(0, Integer::sum);
     }
 
     public void shouldIBeDead() {

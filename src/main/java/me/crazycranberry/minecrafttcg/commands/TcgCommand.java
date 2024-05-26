@@ -80,6 +80,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         Map.entry("animal", animalInfo()),
         Map.entry("undead", undeadInfo()),
         Map.entry("rush", rushInfo()),
+        Map.entry("block", blockInfo()),
         Map.entry("wall", wallInfo())
     );
 
@@ -346,6 +347,13 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
     private static String rushInfo() {
         return String.format("""
             %sMinions with Rush can be summoned during your pre-combat phase.%s""",
+            GRAY,
+            RESET);
+    }
+
+    private static String blockInfo() {
+        return String.format("""
+            %sMinions with Block X mean they take X less damage from all sources.%s""",
             GRAY,
             RESET);
     }

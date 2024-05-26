@@ -13,6 +13,8 @@ import java.util.Optional;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
+import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 
 public class UnstablePyro extends Minion {
     public UnstablePyro(MinionInfo minionInfo) {
@@ -40,6 +42,7 @@ public class UnstablePyro extends Minion {
         if (enemyToFireball.isEmpty()) {
             return;
         }
+        newAnimationStarted(this.minionInfo().stadium(), this.minionInfo().master(), 1);
         minionInfo().entity().getWorld().spawnParticle(Particle.LAVA, enemyToFireball.get().minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> minionInfo().entity().getWorld().spawnParticle(Particle.LAVA, enemyToFireball.get().minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5), 10);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
@@ -47,6 +50,7 @@ public class UnstablePyro extends Minion {
             enemyToFireball.ifPresent(minion -> minion.onDamageReceived(this.minionInfo().entity(), 1, isProtected));
             this.onDamageDealt(enemyToFireball.get().minionInfo().entity(), 1, false, isProtected);
             minionInfo().entity().getWorld().spawnParticle(Particle.LAVA, enemyToFireball.get().minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5);
+            oneAnimationFinished(this.minionInfo().stadium(), this.minionInfo().master());
             }, 20);
     }
 

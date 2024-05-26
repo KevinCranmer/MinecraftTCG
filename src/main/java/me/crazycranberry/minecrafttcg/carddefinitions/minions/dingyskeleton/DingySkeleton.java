@@ -11,6 +11,6 @@ public class DingySkeleton extends Minion {
 
     @Override
     public String signDescription() {
-        return "";
+        return "Rally";
     }
 }

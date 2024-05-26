@@ -33,7 +33,9 @@ import static org.bukkit.event.entity.EntityTransformEvent.TransformReason.PIGLI
 public class MinionManager implements Listener {
     private static final List<EntityDamageEvent.DamageCause> damageTypesToIgnore = List.of(
         EntityDamageEvent.DamageCause.DROWNING,
-        EntityDamageEvent.DamageCause.LIGHTNING
+        EntityDamageEvent.DamageCause.LIGHTNING,
+        EntityDamageEvent.DamageCause.ENTITY_EXPLOSION,
+        EntityDamageEvent.DamageCause.BLOCK_EXPLOSION
     );
 
     @EventHandler
