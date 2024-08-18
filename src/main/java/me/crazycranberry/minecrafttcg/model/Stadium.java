@@ -559,7 +559,7 @@ public class Stadium {
                 double xOffset = Math.random() * 26;
                 double yOffset = 8 + (Math.random() * 5);
                 double zOffset = Math.random() * 11;
-                Firework fw = (Firework) startingCorner.getWorld().spawnEntity(startingCorner.clone().add(new Vector(xOffset, yOffset, zOffset)), EntityType.FIREWORK);
+                Firework fw = (Firework) startingCorner.getWorld().spawnEntity(startingCorner.clone().add(new Vector(xOffset, yOffset, zOffset)), EntityType.FIREWORK_ROCKET);
                 FireworkMeta fwm = fw.getFireworkMeta();
                 fwm.setPower(1);
                 fwm.addEffect(FireworkEffect.builder().withColor(isTie ? BLACK : (winner.equals(player1) ? Color.GREEN : Color.ORANGE)).flicker(true).build());

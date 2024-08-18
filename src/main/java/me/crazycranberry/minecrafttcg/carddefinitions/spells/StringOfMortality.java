@@ -62,7 +62,7 @@ public class StringOfMortality implements SpellCardDefinition {
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         Minion target = stadium.minionFromSpot(targets.get(0));
         newAnimationStarted(stadium, caster, 1);
-        new ParticleBeamTracker(stadium, caster, List.of(target.minionInfo().entity()), Particle.REDSTONE, List.of(dustOptions), particleBeamBlocksTraveledPerTick, particleBeamNumParticles, StringOfMortality::onCollide);
+        new ParticleBeamTracker(stadium, caster, List.of(target.minionInfo().entity()), Particle.DUST, List.of(dustOptions), particleBeamBlocksTraveledPerTick, particleBeamNumParticles, StringOfMortality::onCollide);
         new Song(song, instrument, caster.getEyeLocation()).play();
     }
 
@@ -78,7 +78,7 @@ public class StringOfMortality implements SpellCardDefinition {
             target.onDamageReceived(caster, 1, target.isProtected());
             if (target.health() <= 0) {
                 stadium.draw(caster);
-                caster.getWorld().spawnParticle(Particle.REDSTONE, target.minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5, dustOptions);
+                caster.getWorld().spawnParticle(Particle.DUST, target.minionInfo().entity().getEyeLocation(), 7, 0.5, 0.75, 0.5, dustOptions);
             }
         }
         oneAnimationFinished(stadium, caster);

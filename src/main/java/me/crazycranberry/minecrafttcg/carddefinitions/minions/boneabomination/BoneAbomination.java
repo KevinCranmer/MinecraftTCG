@@ -103,7 +103,7 @@ public class BoneAbomination extends Minion {
                 double x = (Math.random() * (maxX - minX)) + minX;
                 double y = (Math.random() * (maxY - minY)) + minY;
                 double z = (Math.random() * (maxZ - minZ)) + minZ;
-                stadiumWorld.spawnParticle(Particle.REDSTONE, new Location(stadiumWorld, x, y, z), numParticlesPerSpawnParticle, randomFromList(dustOptions).get());
+                stadiumWorld.spawnParticle(Particle.DUST, new Location(stadiumWorld, x, y, z), numParticlesPerSpawnParticle, randomFromList(dustOptions).get());
             }
         }
     }

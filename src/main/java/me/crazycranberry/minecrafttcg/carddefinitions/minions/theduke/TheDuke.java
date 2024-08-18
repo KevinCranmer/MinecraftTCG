@@ -101,7 +101,7 @@ public class TheDuke extends Minion {
         }
 
         private void spawnParticles(ExodiaInfo exodia) {
-            stadiumWorld.spawnParticle(Particle.REDSTONE, exodia.particleLoc(), particlesPerTick, new Particle.DustOptions(exodia.exodiaPiece().color(), 1));
+            stadiumWorld.spawnParticle(Particle.DUST, exodia.particleLoc(), particlesPerTick, new Particle.DustOptions(exodia.exodiaPiece().color(), 1));
         }
     }
 

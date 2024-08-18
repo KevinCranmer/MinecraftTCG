@@ -24,7 +24,7 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.ANIMAL_TYPES;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition.summonMinion;
-import static org.bukkit.Particle.SPELL_INSTANT;
+import static org.bukkit.Particle.INSTANT_EFFECT;
 import static org.bukkit.Sound.BLOCK_SPONGE_ABSORB;
 
 public class ZooExpedition implements SpellCardDefinition {
@@ -84,7 +84,7 @@ public class ZooExpedition implements SpellCardDefinition {
         LivingEntity entity = minion.minionInfo().entity();
         entity.remove();
         entity.getWorld().playSound(entity.getEyeLocation(), BLOCK_SPONGE_ABSORB, 1, 1);
-        entity.getWorld().spawnParticle(SPELL_INSTANT, entity.getEyeLocation(), 5, 0.5, 0.25, 0.5);
+        entity.getWorld().spawnParticle(INSTANT_EFFECT, entity.getEyeLocation(), 5, 0.5, 0.25, 0.5);
         List<MinionCardDefinition> minionCardDefinitions = Arrays.stream(CardEnum.values())
             .map(CardEnum::card)
             .filter(c -> c instanceof MinionCardDefinition)

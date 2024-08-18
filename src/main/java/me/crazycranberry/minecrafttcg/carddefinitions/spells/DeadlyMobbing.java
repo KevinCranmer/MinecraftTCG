@@ -65,7 +65,7 @@ public class DeadlyMobbing implements SpellCardDefinition {
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         newAnimationStarted(stadium, caster, 1);
-        new ParticleBeamTracker(stadium, caster, List.of(stadium.minionFromSpot(targets.get(0)).minionInfo().entity()), Particle.REDSTONE, List.of(dustOptions), particleBeamBlocksTraveledPerTick, particleBeamNumParticles, DeadlyMobbing::onCollide);
+        new ParticleBeamTracker(stadium, caster, List.of(stadium.minionFromSpot(targets.get(0)).minionInfo().entity()), Particle.DUST, List.of(dustOptions), particleBeamBlocksTraveledPerTick, particleBeamNumParticles, DeadlyMobbing::onCollide);
         new Song(song, instrument, caster.getEyeLocation()).play();
     }
 

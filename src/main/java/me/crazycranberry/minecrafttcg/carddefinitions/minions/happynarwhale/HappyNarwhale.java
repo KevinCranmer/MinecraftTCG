@@ -13,7 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.util.Vector;
@@ -63,7 +63,7 @@ public class HappyNarwhale extends Minion {
         nmsMob().setTarget(((CraftLivingEntity) target).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
         if (hasRanged()) {
             Particle.DustOptions dustOptions = new Particle.DustOptions(minionInfo().master().equals(minionInfo().stadium().player1()) ? Color.GREEN : Color.ORANGE, 1);
-            nmsMob().goalSelector.addGoal(1, new ShootParticlesGoal<>(this, target, Particle.REDSTONE, strength(), dustOptions));
+            nmsMob().goalSelector.addGoal(1, new ShootParticlesGoal<>(this, target, Particle.DUST, strength(), dustOptions));
         } else {
             nmsMob().goalSelector.addGoal(0, new DolphinAttackTargetGoal((Dolphin) nmsMob(), nmsMob().getTarget(), this.minionInfo().stadium().minionFromEntity(target).map(Minion::hasFlying).orElse(false)));
         }

@@ -97,7 +97,7 @@ public class CardUtils {
         EntityType.GOAT,
         EntityType.HORSE,
         EntityType.LLAMA,
-        EntityType.MUSHROOM_COW,
+        EntityType.MOOSHROOM,
         EntityType.MULE,
         EntityType.OCELOT,
         EntityType.PANDA,

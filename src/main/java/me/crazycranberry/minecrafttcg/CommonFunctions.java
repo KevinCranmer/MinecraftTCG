@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -29,7 +30,9 @@ public class CommonFunctions {
         Field f = AttributeMap.class.getDeclaredField("b"); // b instead of "attributes" because we have to remap back to obfuscated before publishing a jar
         f.setAccessible(true);
         Map<Attribute, AttributeInstance> map = (Map<Attribute, AttributeInstance>) f.get(attributeMapBase);
-        AttributeInstance instance = new AttributeInstance(attribute, AttributeInstance::getAttribute);
+        System.out.println("Trying to set attack attribute. Did this work?");
+        System.out.println(Holder.direct(attribute).value().getClass());
+        AttributeInstance instance = new AttributeInstance(Holder.direct(attribute), AttributeInstance::getAttribute);
         map.put(attribute, instance);
     }
 }

@@ -85,11 +85,11 @@ public class ToxicSpikes implements SpellCardDefinition {
                 Location spotLoc = stadium.locOfSpot(spot);
                 int yStep = progressInTicks < (numTicks/2) ? progressInTicks : numTicks - progressInTicks;
                 double yOffset = ((double)yStep / (double)(numTicks/2)) * maxHeight;
-                spotLoc.getWorld().spawnParticle(Particle.REDSTONE, spotLoc.clone().add(0, yOffset, -1), 2, dustOptions);
-                spotLoc.getWorld().spawnParticle(Particle.REDSTONE, spotLoc.clone().add(0, yOffset, -0.5), 2, dustOptions);
-                spotLoc.getWorld().spawnParticle(Particle.REDSTONE, spotLoc.clone().add(0, yOffset, 0), 2, dustOptions);
-                spotLoc.getWorld().spawnParticle(Particle.REDSTONE, spotLoc.clone().add(0, yOffset, 0.5), 2, dustOptions);
-                spotLoc.getWorld().spawnParticle(Particle.REDSTONE, spotLoc.clone().add(0, yOffset, 1), 2, dustOptions);
+                spotLoc.getWorld().spawnParticle(Particle.DUST, spotLoc.clone().add(0, yOffset, -1), 2, dustOptions);
+                spotLoc.getWorld().spawnParticle(Particle.DUST, spotLoc.clone().add(0, yOffset, -0.5), 2, dustOptions);
+                spotLoc.getWorld().spawnParticle(Particle.DUST, spotLoc.clone().add(0, yOffset, 0), 2, dustOptions);
+                spotLoc.getWorld().spawnParticle(Particle.DUST, spotLoc.clone().add(0, yOffset, 0.5), 2, dustOptions);
+                spotLoc.getWorld().spawnParticle(Particle.DUST, spotLoc.clone().add(0, yOffset, 1), 2, dustOptions);
             }
         }
     }

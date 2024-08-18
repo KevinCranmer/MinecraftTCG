@@ -110,7 +110,7 @@ public class BloodSacrifice implements CantripCardDefinition {
 
         private static void spawnParticles(double currentXOffset, double zOffset, Location startingLoc) {
             Location middleOfParticleRow = startingLoc.add(currentXOffset, 0, 0);
-            startingLoc.getWorld().spawnParticle(Particle.REDSTONE, middleOfParticleRow.getX(), middleOfParticleRow.getY(), middleOfParticleRow.getZ(), numParticles, 0.3, 0.5, zOffset, dustOptions);
+            startingLoc.getWorld().spawnParticle(Particle.DUST, middleOfParticleRow.getX(), middleOfParticleRow.getY(), middleOfParticleRow.getZ(), numParticles, 0.3, 0.5, zOffset, dustOptions);
         }
     }
 }

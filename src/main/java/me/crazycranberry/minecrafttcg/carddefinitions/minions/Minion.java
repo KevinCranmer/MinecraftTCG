@@ -18,8 +18,8 @@ import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftMob;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -189,7 +189,7 @@ public abstract class Minion {
         nmsMob.setTarget(((CraftLivingEntity) target).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
         if (this.hasRanged()) {
             DustOptions dustOptions = new DustOptions(minionInfo().master().equals(minionInfo().stadium().player1()) ? Color.GREEN : Color.ORANGE, 1);
-            nmsMob.goalSelector.addGoal(1, new ShootParticlesGoal<>(this, target, Particle.REDSTONE, strength(), dustOptions));
+            nmsMob.goalSelector.addGoal(1, new ShootParticlesGoal<>(this, target, Particle.DUST, strength(), dustOptions));
         } else {
             nmsMob.goalSelector.addGoal(1, new MeleeAttackGoal(nmsMob, 1, true));
         }
@@ -340,8 +340,10 @@ public abstract class Minion {
     }
 
     private void removeGoals() {
-        nmsMob.targetSelector.getRunningGoals().forEach(WrappedGoal::stop);
-        nmsMob.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+//        nmsMob.targetSelector.getRunningGoals().forEach(WrappedGoal::stop);
+//        nmsMob.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+        nmsMob.targetSelector.getAvailableGoals().stream().peek(g -> System.out.println("Stopping target goal: " + g.getGoal().getClass().getSimpleName())).forEach(WrappedGoal::stop);
+        nmsMob.goalSelector.getAvailableGoals().stream().peek(g -> System.out.println("Stopping goal: " + g.getGoal().getClass().getSimpleName())).forEach(WrappedGoal::stop);
         nmsMob.removeAllGoals(g -> true);
     }
 

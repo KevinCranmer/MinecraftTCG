@@ -21,8 +21,8 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftSkeleton;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftZombie;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftSkeleton;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftZombie;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -249,11 +249,11 @@ public class TestCommands {
     private static void removeGoals(Player p) {
         CraftZombie craftZombie = (CraftZombie) zombie;
         net.minecraft.world.entity.monster.Zombie nmsZombie = craftZombie.getHandle();
-        nmsZombie.goalSelector.getRunningGoals().peek(g -> System.out.println("Stopping " + g.getGoal().getClass())).forEach(WrappedGoal::stop);
+        nmsZombie.goalSelector.getAvailableGoals().stream().peek(g -> System.out.println("Stopping " + g.getGoal().getClass())).forEach(WrappedGoal::stop);
         nmsZombie.removeAllGoals(g -> true);
         CraftSkeleton craftSkeleton = (CraftSkeleton) skeleton;
         net.minecraft.world.entity.monster.Skeleton nmsSkeleton = craftSkeleton.getHandle();
-        nmsSkeleton.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+        nmsSkeleton.goalSelector.getAvailableGoals().forEach(WrappedGoal::stop);
         nmsSkeleton.removeAllGoals(g -> true);
     }
 

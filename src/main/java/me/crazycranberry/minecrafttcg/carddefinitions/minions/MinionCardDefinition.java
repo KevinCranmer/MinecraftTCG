@@ -6,7 +6,7 @@ import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hoglin;
 import org.bukkit.entity.LivingEntity;
@@ -79,7 +79,7 @@ public interface MinionCardDefinition extends Card {
                 entity.getEquipment().setItem(entry.getKey(), entry.getValue());
             }
             if (entity.getAttribute(GENERIC_ATTACK_DAMAGE) == null) {
-                registerGenericAttribute(((CraftLivingEntity)entity).getHandle(), Attributes.ATTACK_DAMAGE);
+                registerGenericAttribute(((CraftLivingEntity)entity).getHandle(), Attributes.ATTACK_DAMAGE.value());
             }
             if (entity instanceof Piglin piglin) piglin.setImmuneToZombification(true);
             if (entity instanceof Hoglin hoglin) hoglin.setImmuneToZombification(true);

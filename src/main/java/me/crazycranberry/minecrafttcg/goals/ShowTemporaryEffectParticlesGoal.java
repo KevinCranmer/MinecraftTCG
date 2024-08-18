@@ -40,8 +40,8 @@ public class ShowTemporaryEffectParticlesGoal<T> extends Goal {
 
     private void protectionParticles() {
         if (minion.isProtected()) {
-            minion.minionInfo().entity().getWorld().spawnParticle(Particle.SPELL, minion.minionInfo().entity().getEyeLocation(), 2, 0.3, 0.3, 0.3);
-            minion.minionInfo().entity().getWorld().spawnParticle(Particle.SPELL, minion.minionInfo().entity().getLocation(), 1, 0.3, 0.3, 0.3);
+            minion.minionInfo().entity().getWorld().spawnParticle(Particle.EFFECT, minion.minionInfo().entity().getEyeLocation(), 2, 0.3, 0.3, 0.3);
+            minion.minionInfo().entity().getWorld().spawnParticle(Particle.EFFECT, minion.minionInfo().entity().getLocation(), 1, 0.3, 0.3, 0.3);
         }
     }
 
