@@ -43,7 +43,7 @@ public class DolphinAttackTargetGoal extends Goal {
     @Override
     public void tick() {
         if ((mob.distanceTo(target) < 1.2 || mob.blockPosition().below(1).distManhattan(target.blockPosition()) < 1) && attackCooldown == 0) {
-            mob.doHurtTarget(target);
+            mob.doHurtTarget(mob.level().getMinecraftWorld(), target);
             attackCooldown = 20;
         }
         if (targetIsFlying && !jumpStarted && mob.distanceTo(target) < 6.5) {

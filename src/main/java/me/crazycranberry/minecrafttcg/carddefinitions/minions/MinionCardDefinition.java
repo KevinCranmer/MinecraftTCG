@@ -6,7 +6,7 @@ import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hoglin;
 import org.bukkit.entity.LivingEntity;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.registerGenericAttribute;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
-import static org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE;
+import static org.bukkit.attribute.Attribute.ATTACK_DAMAGE;
 
 public interface MinionCardDefinition extends Card {
     Integer strength();
@@ -78,7 +78,7 @@ public interface MinionCardDefinition extends Card {
             for (Map.Entry<EquipmentSlot, ItemStack> entry : equipment.entrySet()) {
                 entity.getEquipment().setItem(entry.getKey(), entry.getValue());
             }
-            if (entity.getAttribute(GENERIC_ATTACK_DAMAGE) == null) {
+            if (entity.getAttribute(ATTACK_DAMAGE) == null) {
                 registerGenericAttribute(((CraftLivingEntity)entity).getHandle(), Attributes.ATTACK_DAMAGE.value());
             }
             if (entity instanceof Piglin piglin) piglin.setImmuneToZombification(true);

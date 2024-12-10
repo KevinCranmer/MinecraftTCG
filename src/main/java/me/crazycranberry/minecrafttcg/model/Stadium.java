@@ -187,7 +187,7 @@ public class Stadium {
         if (player1PendingDamage - player1PendingHeal > 0) {
             player1.damage(0); // In case it would kill the player, need to let the heal hit first
         }
-        player1.setHealth(Math.max(Math.min(player1.getHealth() + player1PendingHeal - player1PendingDamage, player1.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
+        player1.setHealth(Math.max(Math.min(player1.getHealth() + player1PendingHeal - player1PendingDamage, player1.getAttribute(Attribute.MAX_HEALTH).getValue()), 0));
         for (int i = 0; i < player1PendingDraws; i++) {
             draw(player1);
         }
@@ -202,7 +202,7 @@ public class Stadium {
         if (player2PendingDamage - player2PendingHeal > 0) {
             player2.damage(0); // In case it would kill the player, need to let the heal hit first
         }
-        player2.setHealth(Math.max(Math.min(player2.getHealth() + player2PendingHeal - player2PendingDamage, player2.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
+        player2.setHealth(Math.max(Math.min(player2.getHealth() + player2PendingHeal - player2PendingDamage, player2.getAttribute(Attribute.MAX_HEALTH).getValue()), 0));
         for (int i = 0; i < player2PendingDraws; i++) {
             draw(player2);
         }
@@ -917,8 +917,8 @@ public class Stadium {
     }
 
     public void healPlayer(Player p, int healAmount) {
-        if (p.getHealth() < p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
-            p.setHealth(Math.min(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), p.getHealth() + healAmount));
+        if (p.getHealth() < p.getAttribute(Attribute.MAX_HEALTH).getValue()) {
+            p.setHealth(Math.min(p.getAttribute(Attribute.MAX_HEALTH).getValue(), p.getHealth() + healAmount));
             p.getWorld().spawnParticle(Particle.HEART, p.getEyeLocation(), 7, 0.5, 0.75, 0.5);
             Bukkit.getPluginManager().callEvent(new PlayerHealedEvent(this, p, healAmount));
         }

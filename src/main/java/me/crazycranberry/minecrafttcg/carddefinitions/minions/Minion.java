@@ -18,8 +18,8 @@ import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftMob;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -233,7 +233,7 @@ public abstract class Minion {
             if (this.minionInfo().stadium().phase().equals(TurnPhase.COMBAT_PHASE)) {
                 this.minionInfo().stadium().pendingHealForPlayer(this.minionInfo().master(), damageDealt);
             } else {
-                this.minionInfo().master().setHealth(Math.max(Math.min(this.minionInfo().master().getHealth() + damageDealt, this.minionInfo().master().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
+                this.minionInfo().master().setHealth(Math.max(Math.min(this.minionInfo().master().getHealth() + damageDealt, this.minionInfo().master().getAttribute(Attribute.MAX_HEALTH).getValue()), 0));
             }
         }
     }
