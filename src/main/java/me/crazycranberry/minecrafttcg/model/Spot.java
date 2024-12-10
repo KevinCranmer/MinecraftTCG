@@ -39,6 +39,7 @@ public enum Spot {
     private final Boolean isSummonableSpot;
     private final Boolean isTargetable;
     public static final int MIDDLE_X = (int) ((RED_1_FRONT.offset().getX() + RED_2_FRONT.offset().getX()) / 2);
+    public static final double LENGTH_OF_BATTLEFIELD = GREEN_1_FRONT.offset().getZ() - RED_1_FRONT.offset().getZ();
 
     Spot(Vector offset, Column column, Material material, Boolean isPlayer1Spot, Boolean isSummonableSpot, Boolean isTargetable) {
         this.offset = offset;

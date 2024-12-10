@@ -70,6 +70,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.theknapper.TheKnap
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro.UnstablePyroDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.yousefssoulmender.YousefsSoulMenderDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.zookeeperallie.ZookeeperAllieDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.BloodWave;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DeadlyMobbing;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DoubleKill;
@@ -164,6 +165,7 @@ public enum CardEnum {
 
     // Spells
     AWAKEN_THE_ALPHA(new AwakenTheAlpha()),
+    BLOOD_WAVE(new BloodWave()),
     DEADLY_MOBBING(new DeadlyMobbing()),
     DIG_DEEPER(new DigDeeper()),
     DOUBLE_KILL(new DoubleKill()),

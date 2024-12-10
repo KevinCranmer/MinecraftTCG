@@ -47,6 +47,7 @@ import java.util.UUID;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.managers.utils.CsvLoader.loadBlocksCsv;
 import static me.crazycranberry.minecrafttcg.managers.utils.CsvLoader.loadMobsCsv;
 import static me.crazycranberry.minecrafttcg.managers.utils.StadiumDefinition.STADIUM_DEFINITIONS;
@@ -286,6 +287,7 @@ public class StadiumManager implements Listener {
     }
 
     private static void clearStadiumArea(Location startingCorner) {
+        logger().info("Clearing Stadium Area");
         for (int x = -20; x < 60; x++) {
             for (int y = -30; y < 20; y++) {
                 for (int z = -20; z < 50; z++) {
@@ -293,6 +295,6 @@ public class StadiumManager implements Listener {
                 }
             }
         }
-        startingCorner.getWorld().getNearbyEntities(startingCorner, 60, 40, 50).stream().filter(e -> !e.getType().equals(EntityType.PLAYER)).forEach(Entity::remove);
+        startingCorner.getWorld().getNearbyEntities(startingCorner, 60, 40, 50).stream().filter(e -> !e.getType().equals(EntityType.PLAYER)).peek(e -> logger().info("Removeing " + e.getType())).forEach(Entity::remove);
     }
 }
