@@ -7,7 +7,7 @@ import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.Animal;
 import org.bukkit.block.data.Levelled;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftAnimals;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftAnimals;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

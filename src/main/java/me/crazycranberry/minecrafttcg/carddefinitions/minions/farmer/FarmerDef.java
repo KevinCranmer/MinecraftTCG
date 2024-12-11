@@ -58,7 +58,6 @@ public class FarmerDef implements MinionCardDefinition {
         return e -> {
             ((Villager) e).setProfession(Villager.Profession.FARMER);
             ((Villager) e).setVillagerType(SAVANNA);
-            System.out.println("The villagers profession: " + ((Villager) e).getProfession());
         };
     }
 }

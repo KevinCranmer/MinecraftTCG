@@ -69,8 +69,6 @@ public class DuelActionsManager implements Listener {
 
     @EventHandler
     private void onAction(PlayerInteractEvent event) {
-        System.out.printf("%s just did an action %s", event.getPlayer().getName(), event.getAction());
-        logger().info(String.format("%s just did an action %s", event.getPlayer().getName(), event.getAction()));
         Player p = event.getPlayer();
         Stadium stadium = StadiumManager.stadium(p.getLocation());
         if (readingBookDetails(event, stadium)) {

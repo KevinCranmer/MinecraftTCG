@@ -60,7 +60,7 @@ public class BloodWave implements SpellCardDefinition {
     private static class BloodWaveTracker {
         private static final Map<Spot, Spot> oppositeStartingSpot = Map.of(BLUE_1_BACK, BLUE_2_BACK, BLUE_2_BACK, BLUE_1_BACK);
         private final static Particle.DustOptions dustOptions = new Particle.DustOptions(Color.RED, 1);
-        private static final double blocksPerTick = 0.2;
+        private static final double blocksPerTick = 0.4;
         private static final int bloodQuantity = 100;
         private static final int damage = 1;
         private final Stadium stadium;
@@ -69,6 +69,7 @@ public class BloodWave implements SpellCardDefinition {
         private Spot startingSpot;
         private int taskId;
         private Boolean minionDied;
+        private final int xOffset = 2;
 
         public BloodWaveTracker(Stadium stadium, Player caster) {
             this.stadium = stadium;
@@ -84,13 +85,12 @@ public class BloodWave implements SpellCardDefinition {
         }
 
         private void summonWave() {
-            Location currentLoc = stadium.locOfSpot(startingSpot).add(-direction, 0, 0);
+            Location currentLoc = stadium.locOfSpot(startingSpot).add(xOffset * direction, 0, 0);
             taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
                 drawBloodLine(currentLoc);
-                if ((currentLoc.getX() * direction) > (stadium.locOfSpot(oppositeStartingSpot.get(startingSpot)).getX() * direction) + direction) {
+                if ((currentLoc.getX() * direction) > (stadium.locOfSpot(oppositeStartingSpot.get(startingSpot)).getX() * direction) + (direction * xOffset)) {
                     // Have we made it to the other side
                     if (minionDied) {
-                        System.out.println("A minion did die so lets go again");
                         direction = direction * -1;
                         startingSpot = oppositeStartingSpot.get(startingSpot);
                         minionDied = null;
@@ -101,7 +101,6 @@ public class BloodWave implements SpellCardDefinition {
                     }
                 } else if (minionDied == null && (currentLoc.getX() * direction) > (MIDDLE_X * direction)) {
                     // Have we made it half way
-                    System.out.printf("We made it halfway because %s > %s%n", (currentLoc.getX() * direction), (MIDDLE_X * direction));
                     minionDied = damageAllMinions();
                 }
                 currentLoc.add(direction * blocksPerTick, 0, 0);
