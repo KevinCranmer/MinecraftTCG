@@ -4,13 +4,13 @@ import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.events.CombatEndEvent;
 import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
 import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
+import me.crazycranberry.minecrafttcg.events.DuelAcceptedEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
 import me.crazycranberry.minecrafttcg.goals.WalkToLocationGoal;
 import me.crazycranberry.minecrafttcg.managers.DuelActionsManager;
 import me.crazycranberry.minecrafttcg.managers.PlayerManager;
 import me.crazycranberry.minecrafttcg.managers.StadiumManager;
 import me.crazycranberry.minecrafttcg.managers.TurnManager;
-import me.crazycranberry.minecrafttcg.managers.utils.StadiumDefinition;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
@@ -21,8 +21,8 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftSkeleton;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftZombie;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftSkeleton;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftZombie;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -113,12 +113,19 @@ public class TestCommands {
             case "endCombat":
                 endCombat(p);
                 break;
+            case "duel":
+                duel(p);
+                break;
             case "deck":
                 deck(p);
                 break;
             default:
                 System.out.println("Unknown command: " + command[0]);
         }
+    }
+
+    private static void duel(Player p) {
+        Bukkit.getPluginManager().callEvent(new DuelAcceptedEvent(Bukkit.getServer().getPlayer("MildCranberry"), Bukkit.getServer().getPlayer("Crazy_Cranberry")));
     }
 
     private static void card(Player p, String s) {

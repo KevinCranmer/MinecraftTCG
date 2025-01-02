@@ -11,14 +11,10 @@ import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Entity;
@@ -27,8 +23,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.scoreboard.Criteria;
@@ -37,10 +31,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,19 +50,10 @@ import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_BLUE_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_GREEN_CHICKEN;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_OUTLOOK;
 import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_RED_CHICKEN;
-import static me.crazycranberry.minecrafttcg.model.Stadium.BLUE_MATERIAL;
-import static me.crazycranberry.minecrafttcg.model.Stadium.GREEN_MATERIAL;
-import static me.crazycranberry.minecrafttcg.model.Stadium.RED_MATERIAL;
 import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.restoreStartingWorldConfig;
 import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.saveStartingWorldConfig;
 import static org.bukkit.Material.AIR;
-import static org.bukkit.Material.BIRCH_BUTTON;
-import static org.bukkit.Material.BIRCH_WALL_SIGN;
-import static org.bukkit.Material.OAK_WALL_SIGN;
 import static org.bukkit.Material.REDSTONE_LAMP;
-import static org.bukkit.Material.STONE_BUTTON;
-import static org.bukkit.block.BlockFace.NORTH;
-import static org.bukkit.block.BlockFace.SOUTH;
 
 public class StadiumManager implements Listener {
     public static final Vector PLAYER_1_SIGN_OFFSET = new Vector(3, 10, 4);
@@ -98,7 +80,7 @@ public class StadiumManager implements Listener {
     }
 
     private static void setupStadium(Location startingCorner, Player player1, Player player2, Boolean ranked) {
-        clearStadiumArea(startingCorner);
+        clearStadiumBlocks(startingCorner);
         StadiumDefinition sd = randomFromList(STADIUM_DEFINITIONS).get();
         buildStadium(startingCorner, sd);
         Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2), ranked, sd);
@@ -109,6 +91,7 @@ public class StadiumManager implements Listener {
                 summonChicken(PLAYER_2_RED_CHICKEN, startingCorner),
                 summonChicken(PLAYER_2_BLUE_CHICKEN, startingCorner),
                 summonChicken(PLAYER_2_GREEN_CHICKEN, startingCorner));
+        clearStadiumMobs(startingCorner, newStadium);
     }
 
     public static Optional<Scoreboard> getOriginalScoreboardAndRemoveIt(Player p) {
@@ -286,8 +269,8 @@ public class StadiumManager implements Listener {
         signState.update();
     }
 
-    private static void clearStadiumArea(Location startingCorner) {
-        logger().info("Clearing Stadium Area");
+    private static void clearStadiumBlocks(Location startingCorner) {
+        logger().info("Clearing Stadium blocks");
         for (int x = -20; x < 60; x++) {
             for (int y = -30; y < 20; y++) {
                 for (int z = -20; z < 50; z++) {
@@ -295,6 +278,17 @@ public class StadiumManager implements Listener {
                 }
             }
         }
-        startingCorner.getWorld().getNearbyEntities(startingCorner, 60, 40, 50).stream().filter(e -> !e.getType().equals(EntityType.PLAYER)).peek(e -> logger().info("Removeing " + e.getType())).forEach(Entity::remove);
+    }
+
+    private static void clearStadiumMobs(Location startingCorner, Stadium newStadium) {
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+            logger().info("Clearing Stadium Mobs");
+            startingCorner.getWorld().getNearbyEntities(startingCorner, 60, 40, 50)
+                .stream()
+                .filter(e -> e.getType().equals(PLAYER_PROXY_ENTITY_TYPE))
+                .filter(e -> !newStadium.isOneOfTheStadiumChickens(e))
+                .peek(e -> logger().info("Removeing " + e.getType()))
+                .forEach(Entity::remove);
+        }, 2);
     }
 }

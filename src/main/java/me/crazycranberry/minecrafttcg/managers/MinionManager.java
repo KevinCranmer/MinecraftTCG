@@ -7,7 +7,7 @@ import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.Animal;
 import org.bukkit.block.data.Levelled;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftAnimals;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftAnimals;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -70,7 +70,7 @@ public class MinionManager implements Listener {
             CraftAnimals proxy = (CraftAnimals) event.getEntity();
             proxy.setSilent(true);
             Animal nmsAnimal = proxy.getHandle();
-            nmsAnimal.goalSelector.getAvailableGoals().stream().peek(g -> System.out.println("Stopping onSpawn goal: " + g.getGoal().getClass().getSimpleName())).forEach(WrappedGoal::stop);
+            nmsAnimal.goalSelector.getAvailableGoals().stream().forEach(WrappedGoal::stop);
             nmsAnimal.removeAllGoals(g -> true);
             nmsAnimal.goalSelector.addGoal(5, new WalkToLocationGoal(nmsAnimal, proxy.getLocation()));
         }

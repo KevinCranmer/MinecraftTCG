@@ -30,8 +30,6 @@ public class CommonFunctions {
         Field f = AttributeMap.class.getDeclaredField("b"); // b instead of "attributes" because we have to remap back to obfuscated before publishing a jar
         f.setAccessible(true);
         Map<Attribute, AttributeInstance> map = (Map<Attribute, AttributeInstance>) f.get(attributeMapBase);
-        System.out.println("Trying to set attack attribute. Did this work?");
-        System.out.println(Holder.direct(attribute).value().getClass());
         AttributeInstance instance = new AttributeInstance(Holder.direct(attribute), AttributeInstance::getAttribute);
         map.put(attribute, instance);
     }

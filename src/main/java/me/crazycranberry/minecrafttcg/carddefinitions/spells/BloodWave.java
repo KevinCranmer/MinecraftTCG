@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
@@ -85,10 +84,10 @@ public class BloodWave implements SpellCardDefinition {
         }
 
         private void summonWave() {
-            Location currentLoc = stadium.locOfSpot(startingSpot).add(xOffset * direction, 0, 0);
+            Location currentLoc = stadium.locOfSpot(startingSpot).add(-xOffset * direction, 0, 0);
             taskId = Bukkit.getScheduler().runTaskTimer(getPlugin(), () -> {
                 drawBloodLine(currentLoc);
-                if ((currentLoc.getX() * direction) > (stadium.locOfSpot(oppositeStartingSpot.get(startingSpot)).getX() * direction) + (direction * xOffset)) {
+                if ((currentLoc.getX() * direction) > (stadium.locOfSpot(oppositeStartingSpot.get(startingSpot)).getX() * direction) + xOffset) {
                     // Have we made it to the other side
                     if (minionDied) {
                         direction = direction * -1;

@@ -18,6 +18,7 @@ import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
@@ -930,5 +931,14 @@ public class Stadium {
             case BLUE -> { if (blueWall != null) blueWall.unregister(); blueWall = wall; }
             case GREEN -> { if (greenWall != null) greenWall.unregister(); greenWall = wall; }
         }
+    }
+
+    public boolean isOneOfTheStadiumChickens(Entity chicken) {
+        return chicken.equals(player1BlueChicken) ||
+            chicken.equals(player2BlueChicken) ||
+            chicken.equals(player1GreenChicken) ||
+            chicken.equals(player2GreenChicken) ||
+            chicken.equals(player1RedChicken) ||
+            chicken.equals(player2RedChicken);
     }
 }

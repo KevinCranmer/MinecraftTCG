@@ -18,8 +18,8 @@ import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftMob;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftMob;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -342,8 +342,8 @@ public abstract class Minion {
     private void removeGoals() {
 //        nmsMob.targetSelector.getRunningGoals().forEach(WrappedGoal::stop);
 //        nmsMob.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
-        nmsMob.targetSelector.getAvailableGoals().stream().peek(g -> System.out.println("Stopping target goal: " + g.getGoal().getClass().getSimpleName())).forEach(WrappedGoal::stop);
-        nmsMob.goalSelector.getAvailableGoals().stream().peek(g -> System.out.println("Stopping goal: " + g.getGoal().getClass().getSimpleName())).forEach(WrappedGoal::stop);
+        nmsMob.targetSelector.getAvailableGoals().stream().forEach(WrappedGoal::stop);
+        nmsMob.goalSelector.getAvailableGoals().stream().forEach(WrappedGoal::stop);
         nmsMob.removeAllGoals(g -> true);
     }
 
