@@ -30,6 +30,7 @@ import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -94,7 +95,7 @@ public class TurnManager implements Listener {
         startTurnPhaseTimers(event.getStadium().turn(), MULLIGAN_PHASE, event.getStadium());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     private void onFirstPreCombatPhaseStarted(FirstPreCombatPhaseStartedEvent event) {
         if (event.getStadium().isDuelDone()) {
             return;

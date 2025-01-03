@@ -1,8 +1,13 @@
 package me.crazycranberry.minecrafttcg.managers;
 
+import me.crazycranberry.minecrafttcg.events.CombatStartEvent;
 import me.crazycranberry.minecrafttcg.events.DuelCloseEvent;
 import me.crazycranberry.minecrafttcg.events.DuelStartEvent;
+import me.crazycranberry.minecrafttcg.events.FirstPreCombatPhaseStartedEvent;
+import me.crazycranberry.minecrafttcg.events.FirstSummoningPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.events.RegisterListenersEvent;
+import me.crazycranberry.minecrafttcg.events.SecondPreCombatPhaseStartedEvent;
+import me.crazycranberry.minecrafttcg.events.SecondSummoningPhaseStartedEvent;
 import me.crazycranberry.minecrafttcg.managers.utils.StadiumDefinition;
 import me.crazycranberry.minecrafttcg.model.Deck;
 import me.crazycranberry.minecrafttcg.model.Participant;
@@ -11,11 +16,14 @@ import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Lightable;
+import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -31,6 +39,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -38,7 +47,6 @@ import java.util.UUID;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
-import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 import static me.crazycranberry.minecrafttcg.managers.utils.CsvLoader.loadBlocksCsv;
 import static me.crazycranberry.minecrafttcg.managers.utils.CsvLoader.loadMobsCsv;
 import static me.crazycranberry.minecrafttcg.managers.utils.StadiumDefinition.STADIUM_DEFINITIONS;
@@ -53,6 +61,10 @@ import static me.crazycranberry.minecrafttcg.model.Spot.PLAYER_2_RED_CHICKEN;
 import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.restoreStartingWorldConfig;
 import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.saveStartingWorldConfig;
 import static org.bukkit.Material.AIR;
+import static org.bukkit.Material.LIME_CONCRETE;
+import static org.bukkit.Material.ORANGE_CONCRETE;
+import static org.bukkit.Material.QUARTZ_BLOCK;
+import static org.bukkit.Material.QUARTZ_SLAB;
 import static org.bukkit.Material.REDSTONE_LAMP;
 
 public class StadiumManager implements Listener {
@@ -60,6 +72,9 @@ public class StadiumManager implements Listener {
     public static final Vector PLAYER_1_MANA_OFFSET = new Vector(3, 13, 0);
     public static final Vector PLAYER_2_SIGN_OFFSET = new Vector(23, 10, 6);
     public static final Vector PLAYER_2_MANA_OFFSET = new Vector(23, 13, 10);
+    public static final int TURN_INDICATOR_X_OFFSET = 21;
+    public static final int TURN_INDICATOR_Y_OFFSET = 9;
+    public static final int TURN_INDICATOR_Z_OFFSET = 18;
     public static final int DISTANCE_BETWEEN_STADIUMS_Z = 100;
     public static final EntityType PLAYER_PROXY_ENTITY_TYPE = EntityType.COW;
     private static final Map<Location, Stadium> stadiums = new HashMap<>();
@@ -80,7 +95,7 @@ public class StadiumManager implements Listener {
     }
 
     private static void setupStadium(Location startingCorner, Player player1, Player player2, Boolean ranked) {
-        clearStadiumBlocks(startingCorner);
+        clearStadiumInitial(startingCorner);
         StadiumDefinition sd = randomFromList(STADIUM_DEFINITIONS).get();
         buildStadium(startingCorner, sd);
         Stadium newStadium = new Stadium(startingCorner, player1, Deck.fromConfig(player1), player2, Deck.fromConfig(player2), ranked, sd);
@@ -91,7 +106,7 @@ public class StadiumManager implements Listener {
                 summonChicken(PLAYER_2_RED_CHICKEN, startingCorner),
                 summonChicken(PLAYER_2_BLUE_CHICKEN, startingCorner),
                 summonChicken(PLAYER_2_GREEN_CHICKEN, startingCorner));
-        clearStadiumMobs(startingCorner, newStadium);
+        clearStadiumLingeringChickens(startingCorner, newStadium);
     }
 
     public static Optional<Scoreboard> getOriginalScoreboardAndRemoveIt(Player p) {
@@ -111,6 +126,21 @@ public class StadiumManager implements Listener {
         if (stadium(event.getEntity().getLocation()) != null) {
             event.getEntity().getWorld().playSound(event.getEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
             event.setCancelled(true);
+        }
+    }
+
+    private void surroundBlockSectionWithQuartz(int startingX, int endingX, int y, Location startingCorner) {
+        startingCorner.getBlock().getRelative(TURN_INDICATOR_X_OFFSET - startingX + 1, TURN_INDICATOR_Y_OFFSET + y, TURN_INDICATOR_Z_OFFSET).setType(QUARTZ_BLOCK);
+        startingCorner.getBlock().getRelative(TURN_INDICATOR_X_OFFSET - endingX, TURN_INDICATOR_Y_OFFSET + y, TURN_INDICATOR_Z_OFFSET).setType(QUARTZ_BLOCK);
+        for (int i = startingX; i < endingX; i++) {
+            startingCorner.getBlock().getRelative(TURN_INDICATOR_X_OFFSET - i, TURN_INDICATOR_Y_OFFSET + y + 1, TURN_INDICATOR_Z_OFFSET).setType(QUARTZ_SLAB);
+            Block bottomSlab = startingCorner.getBlock().getRelative(TURN_INDICATOR_X_OFFSET - i, TURN_INDICATOR_Y_OFFSET + y - 1, TURN_INDICATOR_Z_OFFSET);
+            bottomSlab.setType(QUARTZ_SLAB);
+            BlockState state = bottomSlab.getState();
+            Slab blockData = (Slab) state.getBlockData();
+            blockData.setType(Slab.Type.TOP);
+            state.setBlockData(blockData);
+            state.update();
         }
     }
 
@@ -249,6 +279,7 @@ public class StadiumManager implements Listener {
         Block p2SignTurnPhase = startingCorner.getBlock().getRelative((int) PLAYER_2_SIGN_OFFSET.getX(), (int) PLAYER_2_SIGN_OFFSET.getY()-2, (int) PLAYER_2_SIGN_OFFSET.getZ() - 2);
         addNextPhaseText(p1SignTurnPhase);
         addNextPhaseText(p2SignTurnPhase);
+        loadBlocksCsv(startingCorner.getWorld(), getPlugin().getResource("turn_indicators.csv"), (int) (startingCorner.getX() + TURN_INDICATOR_X_OFFSET), (int) (startingCorner.getY() + TURN_INDICATOR_Y_OFFSET), (int) (startingCorner.getZ() + TURN_INDICATOR_Z_OFFSET));
     }
 
     private static void addDescriptionText(Block sign) {
@@ -269,26 +300,89 @@ public class StadiumManager implements Listener {
         signState.update();
     }
 
-    private static void clearStadiumBlocks(Location startingCorner) {
-        logger().info("Clearing Stadium blocks");
+    private static void clearStadiumInitial(Location startingCorner) {
         for (int x = -20; x < 60; x++) {
-            for (int y = -30; y < 20; y++) {
+            for (int y = -30; y < 22; y++) {
                 for (int z = -20; z < 50; z++) {
                     startingCorner.getBlock().getRelative(x, y, z).setType(AIR);
                 }
             }
         }
+        startingCorner.getWorld().getNearbyEntities(startingCorner, 60, 40, 50)
+            .stream()
+            .filter(e -> !e.getType().equals(EntityType.PLAYER))
+            .forEach(Entity::remove);
     }
 
-    private static void clearStadiumMobs(Location startingCorner, Stadium newStadium) {
+    private static void clearStadiumLingeringChickens(Location startingCorner, Stadium newStadium) {
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            logger().info("Clearing Stadium Mobs");
             startingCorner.getWorld().getNearbyEntities(startingCorner, 60, 40, 50)
                 .stream()
                 .filter(e -> e.getType().equals(PLAYER_PROXY_ENTITY_TYPE))
                 .filter(e -> !newStadium.isOneOfTheStadiumChickens(e))
-                .peek(e -> logger().info("Removeing " + e.getType()))
                 .forEach(Entity::remove);
-        }, 2);
+        }, 3);
+    }
+
+    private void clearTurnIndicatorBlocks(Location startingCorner, Material... types) {
+        for (int x = 2; x <= 13; x++) {
+            for (int y = -1; y <= 7; y++) {
+                Block oldBlock = startingCorner.getBlock().getRelative(TURN_INDICATOR_X_OFFSET - x, TURN_INDICATOR_Y_OFFSET + y, TURN_INDICATOR_Z_OFFSET);
+                if (Arrays.stream(types).anyMatch(t -> t.equals(oldBlock.getType()))) {
+                    oldBlock.setType(AIR);
+                }
+            }
+        }
+    }
+
+    private void surroundPlayerTurnIndicatorWithQuartz(int startingX, int y, Location startingCorner) {
+        clearTurnIndicatorBlocks(startingCorner, QUARTZ_BLOCK, QUARTZ_SLAB);
+        if (y == 3) {
+            // Combat turn
+            surroundBlockSectionWithQuartz(3, 13, 3, startingCorner);
+        } else {
+            surroundBlockSectionWithQuartz(startingX, startingX + 4, y, startingCorner);
+        }
+    }
+
+    private void setupTurnIndicatorBlocksForNewTurn(Stadium stadium) {
+        Location startingCorner = stadium.startingCorner();
+        clearTurnIndicatorBlocks(startingCorner, LIME_CONCRETE, ORANGE_CONCRETE);
+        int[] player1Y = stadium.turn() % 2 == 0 ? new int[] {1, 5} : new int[] {0, 6};
+        int[] player2Y = stadium.turn() % 2 == 0 ? new int[] {0, 6} : new int[] {1, 5};
+        for (int x = 0; x < 4; x++) {
+            for (int y : player1Y) {
+                startingCorner.getBlock().getRelative(TURN_INDICATOR_X_OFFSET - 9 - x, TURN_INDICATOR_Y_OFFSET + y, TURN_INDICATOR_Z_OFFSET).setType(LIME_CONCRETE);
+            }
+            for (int y : player2Y) {
+                startingCorner.getBlock().getRelative(TURN_INDICATOR_X_OFFSET - 4 - x, TURN_INDICATOR_Y_OFFSET + y, TURN_INDICATOR_Z_OFFSET).setType(ORANGE_CONCRETE);
+            }
+        }
+    }
+
+    @EventHandler
+    private void onFirstPreCombatPhaseStarted(FirstPreCombatPhaseStartedEvent event) {
+        surroundPlayerTurnIndicatorWithQuartz(event.getStadium().turn() % 2 == 0 ? 4 : 9, 6, event.getStadium().startingCorner());
+        setupTurnIndicatorBlocksForNewTurn(event.getStadium());
+    }
+
+    @EventHandler
+    private void onSecondPreCombatPhaseStarted(SecondPreCombatPhaseStartedEvent event) {
+        surroundPlayerTurnIndicatorWithQuartz(event.getStadium().turn() % 2 == 0 ? 9 : 4, 5, event.getStadium().startingCorner());
+    }
+
+    @EventHandler
+    private void onCombatPhaseStarted(CombatStartEvent event) {
+        surroundPlayerTurnIndicatorWithQuartz(0, 3, event.getStadium().startingCorner());
+    }
+
+    @EventHandler
+    private void onFirstPostCombatPhaseStarted(FirstSummoningPhaseStartedEvent event) {
+        surroundPlayerTurnIndicatorWithQuartz(event.getStadium().turn() % 2 == 0 ? 9 : 4, 1, event.getStadium().startingCorner());
+    }
+
+    @EventHandler
+    private void onSecondPostCombatPhaseStarted(SecondSummoningPhaseStartedEvent event) {
+        surroundPlayerTurnIndicatorWithQuartz(event.getStadium().turn() % 2 == 0 ? 4 : 9, 0, event.getStadium().startingCorner());
     }
 }
