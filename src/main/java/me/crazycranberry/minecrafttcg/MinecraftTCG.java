@@ -98,6 +98,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        StadiumManager.cleanUpStadiums();
     }
 
     @EventHandler

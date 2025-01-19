@@ -80,6 +80,10 @@ public class StadiumManager implements Listener {
     private static final Map<Location, Stadium> stadiums = new HashMap<>();
     private static final Map<UUID, Scoreboard> playerOldScoreboards = new HashMap<>();
 
+    public static void cleanUpStadiums() {
+        stadiums.forEach((key, value) -> key.getWorld().getNearbyEntities(key, 100, 100, 100).stream().filter(entity -> !entity.getType().equals(EntityType.PLAYER)).forEach(Entity::remove));
+    }
+
     @EventHandler
     private void onDuelClose(DuelCloseEvent event) {
         if (event.stadium().player1().getWorld().equals(event.stadium().startingCorner().getWorld()) && !event.stadium().player1().isDead()) {

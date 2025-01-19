@@ -154,7 +154,7 @@ public class TurnManager implements Listener {
             return;
         }
         event.getStadium().updatePhase(POST_COMBAT_CLEANUP);
-        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> Bukkit.getPluginManager().callEvent(new FirstSummoningPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> event.getStadium().callThisPhaseEvent(new FirstSummoningPhaseStartedEvent(event.getStadium())), TITLE_DURATION);
     }
 
     @EventHandler

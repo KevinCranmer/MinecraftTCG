@@ -1,5 +1,6 @@
 package me.crazycranberry.minecrafttcg.carddefinitions;
 
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.events.CardAnimationFinishedEvent;
 import me.crazycranberry.minecrafttcg.events.CardAnimationStartedEvent;
 import me.crazycranberry.minecrafttcg.model.Stadium;
@@ -19,6 +20,10 @@ public class AnimatedCardHelper {
     public static void newAnimationStarted(Stadium stadium, Player caster, Integer numberOfAnimations) {
         animationsInProgress.put(caster.getUniqueId(), new AnimatedCardHelperInfo(numberOfAnimations == null ? 1 : numberOfAnimations, startNewTimer(stadium, caster)));
         Bukkit.getPluginManager().callEvent(new CardAnimationStartedEvent(stadium, caster));
+    }
+
+    public static void newAnimationStarted(Minion minion, Integer numberOfAnimations) {
+        newAnimationStarted(minion.minionInfo().stadium(), minion.minionInfo().master(), numberOfAnimations);
     }
 
     private static int startNewTimer(Stadium stadium, Player caster) {

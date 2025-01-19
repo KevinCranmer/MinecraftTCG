@@ -299,18 +299,18 @@ public class DuelActionsManager implements Listener {
         if (stadium.phase() == null) {
             return;
         }
-        if (stadium.isPlayersTurn(player)) {
+        if (!stadium.isPlayersTurn(player)) {
+            player.sendMessage(String.format("%sYou cannot change the turn phase, it's not your turn.%s", GRAY, RESET));
+        } else {
             try {
                 Constructor<? extends Event> c = stadium.phase().nextPhaseRequestEventClass().getConstructor(Stadium.class);
                 c.setAccessible(true);
                 Event nextPhaseEvent = c.newInstance(stadium);
-                Bukkit.getPluginManager().callEvent(nextPhaseEvent);
+                stadium.callThisPhaseEvent(nextPhaseEvent);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                      InvocationTargetException e) {
                 logger().severe("Exception trying to create the next phases event: " + e.getMessage());
             }
-        } else {
-            player.sendMessage(String.format("%sYou cannot change the turn phase, it's not your turn.%s", GRAY, RESET));
         }
     }
 }

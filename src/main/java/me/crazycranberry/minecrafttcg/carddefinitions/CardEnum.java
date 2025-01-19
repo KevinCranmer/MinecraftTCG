@@ -33,6 +33,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.captainpiggie.Capt
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.chaoticskeleton.ChaoticSkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.couchpotato.CouchPotatoDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.cowardlybob.CowardlyBobDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.cultist.CultistDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.duodueler.DuoDuelerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro.EmoVitroDef;
@@ -127,6 +128,7 @@ public enum CardEnum {
     COMRADE_PIG(new ComradePigDef()),
     COWARDLY_BOB(new CowardlyBobDef()),
     COUCH_POTATO(new CouchPotatoDef()),
+    CULTIST(new CultistDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
     DUO_DUELER(new DuoDuelerDef()),
     EMO_VITRO(new EmoVitroDef()),

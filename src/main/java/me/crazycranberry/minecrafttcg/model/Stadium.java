@@ -535,6 +535,7 @@ public class Stadium {
         cardAnimationInProgress = false;
         if (phaseEventToCallAfterAnimationFinishes != null) {
             Bukkit.getPluginManager().callEvent(phaseEventToCallAfterAnimationFinishes);
+            phaseEventToCallAfterAnimationFinishes = null;
         }
     }
 
