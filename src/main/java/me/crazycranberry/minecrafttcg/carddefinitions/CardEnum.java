@@ -55,6 +55,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.mom.MomDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mournfulstrix.MournfulStrixDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.oliver.OliverDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.persistence.PersistenceDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.reaper.ReaperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.ScaredDuelistDef;
@@ -148,6 +149,7 @@ public enum CardEnum {
     NINJA_MAC(new NinjaMacDef()),
     OLIVER(new OliverDef()),
     PACK_LEADER(new PackLeaderDef()),
+    PERSISTENCE(new PersistenceDef()),
     REAPER(new ReaperDef()),
     RECKLESS_STINKER(new RecklessStinkerDef()),
     SCARED_DUELIST(new ScaredDuelistDef()),

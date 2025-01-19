@@ -16,8 +16,10 @@ import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.Map;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.armorSet;
+import static org.bukkit.Material.IRON_INGOT;
+
 public class DuoDuelerDef implements MinionCardDefinition {
-    private static final ArmorTrim trim = new ArmorTrim(TrimMaterial.REDSTONE, TrimPattern.EYE);
     public static final int STRENGTH_BUFF = 3;
     public static final int HEALTH_BUFF = 3;
     public static final int BLOCK_BUFF = 1;
@@ -62,22 +64,10 @@ public class DuoDuelerDef implements MinionCardDefinition {
         return DuoDueler.class;
     }
 
-    private ItemStack trimmedArmorPiece(Material armor) {
-        ItemStack a = new ItemStack(armor);
-        ArmorMeta meta = (ArmorMeta) a.getItemMeta();
-        meta.setTrim(trim);
-        a.setItemMeta(meta);
-        return a;
-    }
-
     @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
-        return Map.of(
-            EquipmentSlot.HEAD, trimmedArmorPiece(Material.IRON_HELMET),
-            EquipmentSlot.CHEST, trimmedArmorPiece(Material.IRON_CHESTPLATE),
-            EquipmentSlot.LEGS, trimmedArmorPiece(Material.IRON_LEGGINGS),
-            EquipmentSlot.FEET, trimmedArmorPiece(Material.IRON_BOOTS),
-            EquipmentSlot.HAND, new ItemStack(Material.IRON_SWORD)
-        );
+        Map<EquipmentSlot, ItemStack> equipment = armorSet(IRON_INGOT, TrimMaterial.REDSTONE, TrimPattern.EYE);
+        equipment.put(EquipmentSlot.HAND, new ItemStack(Material.IRON_SWORD));
+        return equipment;
     }
 }

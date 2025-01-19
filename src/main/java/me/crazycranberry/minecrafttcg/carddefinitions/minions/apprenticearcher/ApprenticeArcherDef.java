@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.armor;
+
 public class ApprenticeArcherDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
@@ -58,9 +60,9 @@ public class ApprenticeArcherDef implements MinionCardDefinition {
 
     @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
-        return Map.of(
-            EquipmentSlot.HEAD, new ItemStack(Material.GOLDEN_HELMET),
-            EquipmentSlot.FEET, new ItemStack(Material.GOLDEN_BOOTS)
+        return Map.ofEntries(
+            armor(EquipmentSlot.HEAD, Material.GOLD_INGOT, null, null),
+            armor(EquipmentSlot.FEET, Material.GOLD_INGOT, null, null)
         );
     }
 }

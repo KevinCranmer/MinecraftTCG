@@ -17,6 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Map;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.armor;
+
 public class SupportiveZombieDef implements MinionCardDefinition, MultiTargetCard {
     public static final int BONUS_STRENGTH = 2;
 
@@ -72,9 +74,9 @@ public class SupportiveZombieDef implements MinionCardDefinition, MultiTargetCar
 
     @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
-        return Map.of(
-            EquipmentSlot.HEAD, new ItemStack(Material.GOLDEN_HELMET),
-            EquipmentSlot.LEGS, new ItemStack(Material.LEATHER_LEGGINGS)
+        return Map.ofEntries(
+            armor(EquipmentSlot.HEAD, Material.GOLD_INGOT, null, null),
+            armor(EquipmentSlot.LEGS, Material.LEATHER, null, null)
         );
     }
 

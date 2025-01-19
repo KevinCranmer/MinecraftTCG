@@ -4,11 +4,21 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import me.crazycranberry.minecrafttcg.model.TurnPhase;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
+import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -20,6 +30,30 @@ public class CardUtils {
             .map(stadium::minionFromSpot)
             .filter(Objects::nonNull)
             .toList();
+    }
+
+    public static Map.Entry<EquipmentSlot, ItemStack> armor(EquipmentSlot slot, Material armorMaterial, TrimMaterial trimMaterial, TrimPattern trimPattern) {
+        ItemStack item = new ItemStack(armorMaterialMap.get(armorMaterial).get(slot));
+        if (trimMaterial != null && trimPattern != null) {
+            ArmorTrim trim = new ArmorTrim(trimMaterial, trimPattern);
+            ArmorMeta meta = (ArmorMeta) item.getItemMeta();
+            meta.setTrim(trim);
+            item.setItemMeta(meta);
+        }
+        return new AbstractMap.SimpleEntry<>(slot, item);
+    }
+
+    public static Map<EquipmentSlot, ItemStack> armorSet(Material armorMaterial, TrimMaterial trimMaterial, TrimPattern trimPattern) {
+        Map<EquipmentSlot, ItemStack> armorSet = new HashMap<>(); // Let it be mutable what's the worst that could happen
+        var armorPiece = armor(EquipmentSlot.HEAD, armorMaterial, trimMaterial, trimPattern);
+        armorSet.put(armorPiece.getKey(), armorPiece.getValue());
+        armorPiece = armor(EquipmentSlot.CHEST, armorMaterial, trimMaterial, trimPattern);
+        armorSet.put(armorPiece.getKey(), armorPiece.getValue());
+        armorPiece = armor(EquipmentSlot.LEGS, armorMaterial, trimMaterial, trimPattern);
+        armorSet.put(armorPiece.getKey(), armorPiece.getValue());
+        armorPiece = armor(EquipmentSlot.FEET, armorMaterial, trimMaterial, trimPattern);
+        armorSet.put(armorPiece.getKey(), armorPiece.getValue());
+        return armorSet;
     }
 
     public static void handleOverkillDamage(Minion damageReceiver, int damageRemaining, LivingEntity damager, boolean wasCombatAttack) {
@@ -144,5 +178,48 @@ public class CardUtils {
         Spot.BLUE_2_BACK,
         Spot.GREEN_1_BACK,
         Spot.GREEN_2_BACK
+    );
+
+    private static final Map<EquipmentSlot, Material> netheriteArmor = Map.of(
+        EquipmentSlot.HEAD, Material.NETHERITE_HELMET,
+        EquipmentSlot.CHEST, Material.NETHERITE_CHESTPLATE,
+        EquipmentSlot.LEGS, Material.NETHERITE_LEGGINGS,
+        EquipmentSlot.FEET, Material.NETHERITE_BOOTS
+    );
+
+    private static final Map<EquipmentSlot, Material> goldArmor = Map.of(
+        EquipmentSlot.HEAD, Material.GOLDEN_HELMET,
+        EquipmentSlot.CHEST, Material.GOLDEN_CHESTPLATE,
+        EquipmentSlot.LEGS, Material.GOLDEN_LEGGINGS,
+        EquipmentSlot.FEET, Material.GOLDEN_BOOTS
+    );
+
+    private static final Map<EquipmentSlot, Material> diamondArmor = Map.of(
+        EquipmentSlot.HEAD, Material.DIAMOND_HELMET,
+        EquipmentSlot.CHEST, Material.DIAMOND_CHESTPLATE,
+        EquipmentSlot.LEGS, Material.DIAMOND_LEGGINGS,
+        EquipmentSlot.FEET, Material.DIAMOND_BOOTS
+    );
+
+    private static final Map<EquipmentSlot, Material> ironArmor = Map.of(
+        EquipmentSlot.HEAD, Material.IRON_HELMET,
+        EquipmentSlot.CHEST, Material.IRON_CHESTPLATE,
+        EquipmentSlot.LEGS, Material.IRON_LEGGINGS,
+        EquipmentSlot.FEET, Material.IRON_BOOTS
+    );
+
+    private static final Map<EquipmentSlot, Material> leatherArmor = Map.of(
+        EquipmentSlot.HEAD, Material.LEATHER_HELMET,
+        EquipmentSlot.CHEST, Material.LEATHER_CHESTPLATE,
+        EquipmentSlot.LEGS, Material.LEATHER_LEGGINGS,
+        EquipmentSlot.FEET, Material.LEATHER_BOOTS
+    );
+
+    private static final Map<Material, Map<EquipmentSlot, Material>> armorMaterialMap = Map.of(
+        Material.NETHERITE_INGOT, netheriteArmor,
+        Material.DIAMOND, diamondArmor,
+        Material.GOLD_INGOT, goldArmor,
+        Material.IRON_INGOT, ironArmor,
+        Material.LEATHER, leatherArmor
     );
 }

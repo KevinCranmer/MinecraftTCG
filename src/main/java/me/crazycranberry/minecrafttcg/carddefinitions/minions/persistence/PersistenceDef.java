@@ -1,4 +1,4 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.bigtim;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.persistence;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
@@ -7,54 +7,57 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.Map;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.armor;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.armorSet;
 
-public class BigTimDef implements MinionCardDefinition {
+public class PersistenceDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 10;
+        return 3;
     }
 
     @Override
     public String cardName() {
-        return "Big Tim";
+        return "Persistence";
     }
 
     @Override
     public String cardDescription() {
-        return "";
+        return "This minion resurrects itself when it dies during combat.";
     }
 
     @Override
     public CardRarity rarity() {
-        return CardRarity.UNCOMMON;
+        return CardRarity.LEGENDARY;
     }
 
     @Override
     public Integer strength() {
-        return 10;
+        return 1;
     }
 
     @Override
     public Integer maxHealth() {
-        return 10;
+        return 1;
     }
 
     @Override
     public EntityType minionType() {
-        return EntityType.ZOMBIE;
+        return EntityType.SKELETON;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return BigTim.class;
+        return Persistence.class;
     }
 
     @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
-        return armorSet(Material.NETHERITE_INGOT, null, null);
+        return armorSet(Material.LEATHER, TrimMaterial.NETHERITE, TrimPattern.BOLT);
     }
 }

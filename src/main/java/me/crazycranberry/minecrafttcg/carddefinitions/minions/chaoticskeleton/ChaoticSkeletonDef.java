@@ -12,7 +12,10 @@ import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
+import java.util.AbstractMap;
 import java.util.Map;
+
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.armor;
 
 public class ChaoticSkeletonDef implements MinionCardDefinition {
     private static final ArmorTrim trim = new ArmorTrim(TrimMaterial.NETHERITE, TrimPattern.SHAPER);
@@ -59,18 +62,10 @@ public class ChaoticSkeletonDef implements MinionCardDefinition {
 
     @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
-        ItemStack helm = new ItemStack(Material.GOLDEN_HELMET);
-        ArmorMeta helmArmor = (ArmorMeta) helm.getItemMeta();
-        helmArmor.setTrim(trim);
-        helm.setItemMeta(helmArmor);
-        ItemStack pants = new ItemStack(Material.GOLDEN_LEGGINGS);
-        ArmorMeta pantsArmor = (ArmorMeta) helm.getItemMeta();
-        pantsArmor.setTrim(trim);
-        helm.setItemMeta(pantsArmor);
-        return Map.of(
-            EquipmentSlot.HEAD, helm,
-            EquipmentSlot.LEGS, pants,
-            EquipmentSlot.HAND, new ItemStack(Material.WOODEN_AXE)
+        return Map.ofEntries(
+            armor(EquipmentSlot.HEAD, Material.GOLD_INGOT, TrimMaterial.NETHERITE, TrimPattern.SHAPER),
+            armor(EquipmentSlot.LEGS, Material.GOLD_INGOT, TrimMaterial.NETHERITE, TrimPattern.SHAPER),
+            new AbstractMap.SimpleEntry<EquipmentSlot, ItemStack>(EquipmentSlot.HAND, new ItemStack(Material.WOODEN_AXE))
         );
     }
 }

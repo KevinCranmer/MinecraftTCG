@@ -11,6 +11,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.armor;
+
 public class HungryZombieDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
@@ -54,8 +56,8 @@ public class HungryZombieDef implements MinionCardDefinition {
 
     @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
-        return Map.of(
-            EquipmentSlot.CHEST, new ItemStack(Material.LEATHER_CHESTPLATE)
+        return Map.ofEntries(
+            armor(EquipmentSlot.CHEST, Material.LEATHER, null, null)
         );
     }
 

@@ -10,6 +10,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
+import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.armor;
+import static org.bukkit.Material.LEATHER;
+
 public class StinkyGroanerDef implements MinionCardDefinition {
     public static final int MINUS_HEALTH = 1;
     public static final int MINUS_STRENGTH = 1;
@@ -56,8 +59,9 @@ public class StinkyGroanerDef implements MinionCardDefinition {
 
     @Override
     public Map<EquipmentSlot, ItemStack> equipment() {
+        var boots = armor(EquipmentSlot.FEET, LEATHER, null, null);
         return Map.of(
-            EquipmentSlot.FEET, new ItemStack(Material.LEATHER_BOOTS),
+            boots.getKey(), boots.getValue(),
             EquipmentSlot.HAND, new ItemStack(Material.WOODEN_SHOVEL),
             EquipmentSlot.OFF_HAND, new ItemStack(Material.WOODEN_PICKAXE)
         );
