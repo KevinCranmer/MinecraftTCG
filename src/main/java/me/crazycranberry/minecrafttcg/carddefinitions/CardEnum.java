@@ -78,6 +78,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DoubleKill;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FlingSmallPoops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FreshWaterBottle;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.Grief;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.KeepItSchwifty;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.PlantCrops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SinfulSeduction;
@@ -175,6 +176,7 @@ public enum CardEnum {
     DOUBLE_KILL(new DoubleKill()),
     FLING_SMALL_POOPS(new FlingSmallPoops()),
     FRESH_WATER_BOTTLE(new FreshWaterBottle()),
+    GRIEF(new Grief()),
     KEEP_IT_SCHWIFTY(new KeepItSchwifty()),
     PLANT_CROPS(new PlantCrops()),
     SINFUL_SEDUCTION(new SinfulSeduction()),
