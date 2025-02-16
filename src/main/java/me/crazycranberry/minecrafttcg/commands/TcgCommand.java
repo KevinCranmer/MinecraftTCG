@@ -19,11 +19,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static me.crazycranberry.minecrafttcg.CommonFunctions.textToLines;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.ANIMAL_TYPES;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.UNDEAD_TYPES;
@@ -172,19 +172,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(color + display);
         if (displayLore) {
-            List<String> lore = new ArrayList<>();
-            String commandDesc = commands.get(command);
-            while(true) {
-                if (commandDesc.length() < 25) {
-                    lore.add(GRAY + commandDesc);
-                    break;
-                }
-                String laterChunk = commandDesc.substring(24);
-                commandDesc = commandDesc.replace(laterChunk, laterChunk.replaceFirst(" ", "\n"));
-                String[] commandPieces = commandDesc.split("\n");
-                lore.add(GRAY + commandPieces[0]);
-                commandDesc = commandPieces.length > 1 ? commandPieces[1] : "";
-            }
+            List<String> lore = textToLines(commands.get(command), 25, GRAY);
             meta.setLore(lore);
         }
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

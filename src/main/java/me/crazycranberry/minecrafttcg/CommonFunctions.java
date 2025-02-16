@@ -1,24 +1,17 @@
 package me.crazycranberry.minecrafttcg;
 
-import com.mojang.serialization.Lifecycle;
-import net.minecraft.core.DefaultedMappedRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.RegistrationInfo;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import org.bukkit.ChatColor;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static net.minecraft.core.registries.Registries.ATTRIBUTE;
 
 public class CommonFunctions {
     public static final int TICKS_PER_SECOND = 20;
@@ -28,6 +21,24 @@ public class CommonFunctions {
         }
         int randomIndex = (int) (Math.random() * list.size());
         return Optional.of(list.get(randomIndex));
+    }
+
+    public static List<String> textToLines(String text, int maxCharsPerLine, ChatColor color) {
+        List<String> lines = new ArrayList<>();
+        while(true) {
+            if (text.length() < maxCharsPerLine) {
+                if (!text.isEmpty()) {
+                    lines.add(color + text);
+                }
+                break;
+            }
+            String laterChunk = text.substring(maxCharsPerLine - 1);
+            text = text.replace(laterChunk, laterChunk.replaceFirst(" ", "\n"));
+            String[] pieces = text.split("\n");
+            lines.add(color + pieces[0]);
+            text = pieces.length > 1 ? pieces[1] : "";
+        }
+        return lines;
     }
 
     public static String nthSuffix(int i) {

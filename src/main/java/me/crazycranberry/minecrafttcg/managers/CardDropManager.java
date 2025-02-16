@@ -44,9 +44,8 @@ import java.util.Optional;
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
-import static org.bukkit.ChatColor.DARK_GREEN;
+import static me.crazycranberry.minecrafttcg.model.Collection.minionCardStats;
 import static org.bukkit.ChatColor.GRAY;
-import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
 
 public class CardDropManager implements Listener {
@@ -186,8 +185,7 @@ public class CardDropManager implements Listener {
         TextComponent dropText = new TextComponent(String.format("%sA %s[%s]%s card has dropped for you.%s", GRAY, card.rarity().color(), card.cardName(), GRAY, RESET));
         String description = "";
         if (card instanceof MinionCardDefinition minionCard) {
-            description += String.format("%s%s%s:%s %s❤%s:%s/%s\n",
-                DARK_GREEN, minionCard.isFlying() ? "☁" : minionCard.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minionCard.strength(), RED, RESET, minionCard.maxHealth(), minionCard.maxHealth());
+            description += String.format("%s%n", minionCardStats(minionCard));
         }
         description += card.cardDescription();
         dropText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(description)));

@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.nthSuffix;
+import static me.crazycranberry.minecrafttcg.CommonFunctions.textToLines;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_COST_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
@@ -37,6 +38,7 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
 import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.COST;
 import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.NAME;
+import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.DARK_PURPLE;
@@ -45,6 +47,7 @@ import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.LIGHT_PURPLE;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
+import static org.bukkit.inventory.ItemFlag.HIDE_ADDITIONAL_TOOLTIP;
 
 public class Collection {
     public static final NamespacedKey IS_PAGING_KEY = new NamespacedKey(getPlugin(), "pagingitem");
@@ -203,13 +206,24 @@ public class Collection {
             page = spellOrCantripCardDescription(spellOrCantripCardDef);
         }
         bookMeta.addPage(page);
-        bookMeta.setLore(List.of(String.format("%sType \"/tcg\" to learn more!%s", GOLD, RESET)));
+        bookMeta.setLore(cardLore(cardDef));
+        bookMeta.addItemFlags(HIDE_ADDITIONAL_TOOLTIP);
         bookMeta.getPersistentDataContainer().set(IS_CARD_KEY, PersistentDataType.BOOLEAN, true);
         bookMeta.getPersistentDataContainer().set(CARD_NAME_KEY, PersistentDataType.STRING, cardEnum.name());
         bookMeta.getPersistentDataContainer().set(RANDOM_UUID_KEY, PersistentDataType.STRING, UUID.randomUUID().toString());
         bookMeta.getPersistentDataContainer().set(CARD_COST_KEY, PersistentDataType.INTEGER, cardDef.cost());
         book.setItemMeta(bookMeta);
         return book;
+    }
+
+    private static List<String> cardLore(Card cardDef) {
+        List<String> lore = new ArrayList<>();
+        if (cardDef instanceof MinionCardDefinition minionCardDefinition) {
+            lore.add(minionCardStats(minionCardDefinition));
+        }
+        lore.addAll(textToLines(cardDef.cardDescription(), 35, AQUA));
+        lore.add(String.format("%sType \"/tcg\" to learn more!%s", GOLD, RESET));
+        return lore;
     }
 
     public static String targetsString(TargetRules targetRules) {
@@ -264,16 +278,20 @@ public class Collection {
     public static String minionCardDescription(MinionCardDefinition card) {
         return String.format("""
             %s%s%s%s [MINION] Cost: %s
-            %s%s%s:%s %s❤%s:%s/%s
+            %s
             %sMinion Type:%s %s
             %s%sDescription:%s %s
             """,
                 RESET, card.rarity().color(), card.cardName(), RESET, card.cost(),
-                DARK_GREEN, card.isFlying() ? "☁" : card.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, card.strength(), RED, RESET, card.maxHealth(), card.maxHealth(),
+                minionCardStats(card),
                 LIGHT_PURPLE, RESET, card.minionType(),
                 String.format("%s", targetsDescription(card)),
                 BLUE, RESET, card.cardDescription()
         );
+    }
+
+    public static String minionCardStats(MinionCardDefinition card) {
+        return String.format("%s%s%s:%s %s❤%s:%s/%s", DARK_GREEN, card.isFlying() ? "☁" : card.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, card.strength(), RED, RESET, card.maxHealth(), card.maxHealth());
     }
 
     public enum SortBy {

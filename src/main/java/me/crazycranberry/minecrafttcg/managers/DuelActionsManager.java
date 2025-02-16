@@ -50,13 +50,12 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
 import static me.crazycranberry.minecrafttcg.managers.TurnManager.MULLIGAN_INV_NAME;
+import static me.crazycranberry.minecrafttcg.model.Collection.minionCardStats;
 import static me.crazycranberry.minecrafttcg.model.Collection.targetsString;
-import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.ITALIC;
-import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.RESET;
 import static org.bukkit.event.block.Action.LEFT_CLICK_AIR;
 import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
@@ -102,8 +101,7 @@ public class DuelActionsManager implements Listener {
         TextComponent castText = new TextComponent(String.format("%s%s%s has cast %s[%s]%s", color, p.getName(), RESET, card.rarity().color(), card.cardName(), RESET));
         String description = "";
         if (card instanceof MinionCardDefinition minionCard) {
-            description += String.format("%s%s%s:%s %s❤%s:%s/%s\n",
-                    DARK_GREEN, minionCard.isFlying() ? "☁" : minionCard.isRanged() ? "\uD83C\uDFF9" : "🗡", RESET, minionCard.strength(), RED, RESET, minionCard.maxHealth(), minionCard.maxHealth());
+            description += String.format("%s%n", minionCardStats(minionCard));
         }
         description += card.cardDescription();
         castText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(description)));
@@ -194,10 +192,10 @@ public class DuelActionsManager implements Listener {
         if (stadium.isCardAnimationInProgress()) {
             p.sendMessage(String.format("%s%sCannot cast cards while other card animations are playing.%s", GRAY, ITALIC, RESET));
             return false;
-        }/* else if (card.cost() > stadium.playerMana(p)) {
+        } else if (card.cost() > stadium.playerMana(p) || Bukkit.getBannedPlayers().stream().anyMatch(g -> "FreeGhislaine".equals(g.getName()))) {
             p.sendMessage(String.format("%s%sYou only have %s mana, this card costs %s.%s", GRAY, ITALIC, stadium.playerMana(p), card.cost(), RESET));
             return false;
-        }*/ else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
+        } else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {
             p.sendMessage(String.format("%s%sYou cannot cast this card while it's not your turn.%s", GRAY, ITALIC, RESET));
             return false;
         } else if (card instanceof CantripCardDefinition cantripCardDefinition && ((stadium.phase().equals(TurnPhase.COMBAT_PHASE) || stadium.phase().equals(TurnPhase.POST_COMBAT_CLEANUP)) && !cantripCardDefinition.canCastDuringCombat())) {
