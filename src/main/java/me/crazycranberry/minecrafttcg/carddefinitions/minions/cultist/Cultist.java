@@ -76,7 +76,6 @@ public class Cultist extends Minion {
 
     private static class RitualTracker {
         private static final Particle.DustOptions dustOptions = new Particle.DustOptions(Color.PURPLE, 1);
-        private static final double blocksPerTick = 0.3;
         private static final int auraParticlesPerTick = 10;
         private final Stadium stadium;
         private final Player caster;

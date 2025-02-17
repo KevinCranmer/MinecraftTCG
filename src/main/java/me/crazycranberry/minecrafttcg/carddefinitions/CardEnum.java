@@ -34,6 +34,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.chaoticskeleton.Ch
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.couchpotato.CouchPotatoDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.cowardlybob.CowardlyBobDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.cultist.CultistDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.deathhaven.DeathHavenDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.dingyskeleton.DingySkeletonDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.duodueler.DuoDuelerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro.EmoVitroDef;
@@ -130,6 +131,7 @@ public enum CardEnum {
     COWARDLY_BOB(new CowardlyBobDef()),
     COUCH_POTATO(new CouchPotatoDef()),
     CULTIST(new CultistDef()),
+    DEATH_HAVEN(new DeathHavenDef()),
     DINGY_SKELETON(new DingySkeletonDef()),
     DUO_DUELER(new DuoDuelerDef()),
     EMO_VITRO(new EmoVitroDef()),

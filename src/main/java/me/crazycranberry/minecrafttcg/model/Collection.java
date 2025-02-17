@@ -38,7 +38,6 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.RANDOM_UUID_KEY;
 import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.COST;
 import static me.crazycranberry.minecrafttcg.model.Collection.SortBy.NAME;
-import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.BLUE;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.DARK_PURPLE;
@@ -221,7 +220,7 @@ public class Collection {
         if (cardDef instanceof MinionCardDefinition minionCardDefinition) {
             lore.add(minionCardStats(minionCardDefinition));
         }
-        lore.addAll(textToLines(cardDef.cardDescription(), 35, AQUA));
+        lore.addAll(textToLines(cardDef.cardDescription(), 35, null));
         lore.add(String.format("%sType \"/tcg\" to learn more!%s", GOLD, RESET));
         return lore;
     }

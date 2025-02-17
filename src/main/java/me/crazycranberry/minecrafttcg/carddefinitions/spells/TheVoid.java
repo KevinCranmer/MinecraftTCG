@@ -85,14 +85,7 @@ public class TheVoid implements SpellCardDefinition {
                     Bukkit.getScheduler().cancelTask(taskId);
                     return;
                 } else if (progressInTicks == (numTicks / 2)) {
-                    stadium.allyMinionSpots(caster).stream()
-                        .map(stadium::minionFromSpot)
-                        .filter(Objects::nonNull)
-                        .forEach(Minion::onDeath);
-                    stadium.enemyMinionSpots(caster).stream()
-                        .map(stadium::minionFromSpot)
-                        .filter(Objects::nonNull)
-                        .forEach(Minion::onDeath);
+                    stadium.killAllMinions();
                 }
                 spawnParticles(minX, maxX, minY, maxY, minZ, maxZ);
                 progressInTicks++;

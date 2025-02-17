@@ -575,7 +575,7 @@ public class Stadium {
         }, 5 /*<-- the initial delay */, fireworkInterval /*<-- the interval */).getTaskId();
     }
 
-    private void killAllMinions() {
+    public void killAllMinions() {
         allyMinionSpots(player1).stream()
             .map(this::minionFromSpot)
             .filter(Objects::nonNull)

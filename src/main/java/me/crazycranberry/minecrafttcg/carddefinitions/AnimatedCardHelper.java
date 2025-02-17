@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
+import static me.crazycranberry.minecrafttcg.MinecraftTCG.logger;
 
 public class AnimatedCardHelper {
     private final static Map<UUID, AnimatedCardHelperInfo> animationsInProgress = new HashMap<>();
@@ -43,7 +44,11 @@ public class AnimatedCardHelper {
     }
 
     public static void allAnimationsFinished(Stadium stadium, Player caster) {
-        Bukkit.getScheduler().cancelTask(animationsInProgress.remove(caster.getUniqueId()).timeoutTimerTaskId());
+        AnimatedCardHelperInfo animationRemoved = animationsInProgress.remove(caster.getUniqueId());
+        if (animationRemoved == null) {
+            logger().severe("Attempted to finish an animation that didn't exist. This was an animation for " + caster.getName());
+        }
+        Bukkit.getScheduler().cancelTask(animationRemoved.timeoutTimerTaskId());
         Bukkit.getPluginManager().callEvent(new CardAnimationFinishedEvent(stadium, caster));
     }
 

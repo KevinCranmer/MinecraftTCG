@@ -192,7 +192,7 @@ public class DuelActionsManager implements Listener {
         if (stadium.isCardAnimationInProgress()) {
             p.sendMessage(String.format("%s%sCannot cast cards while other card animations are playing.%s", GRAY, ITALIC, RESET));
             return false;
-        } else if (card.cost() > stadium.playerMana(p) || Bukkit.getBannedPlayers().stream().anyMatch(g -> "FreeGhislaine".equals(g.getName()))) {
+        } else if (card.cost() > stadium.playerMana(p) && Bukkit.getBannedPlayers().stream().noneMatch(g -> "FreeGhislaine".equals(g.getName()))) {
             p.sendMessage(String.format("%s%sYou only have %s mana, this card costs %s.%s", GRAY, ITALIC, stadium.playerMana(p), card.cost(), RESET));
             return false;
         } else if ((!(card instanceof CantripCardDefinition)) && !stadium.isPlayersTurn(p)) {

@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.DINGY_SKELETON;
-
 public class BrutalSniperDef implements MinionCardDefinition, MultiTargetCard {
     @Override
     public Integer cost() {
