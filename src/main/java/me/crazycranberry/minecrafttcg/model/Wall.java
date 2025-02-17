@@ -45,6 +45,9 @@ public class Wall implements Listener {
 
     @EventHandler
     private void onTurnEnd(TurnEndEvent event) {
+        if (event.getStadium() != this.stadium()) {
+            return;
+        }
         this.turnsLeft--;
         if (turnsLeft <= 0 ) {
             deconstruct();

@@ -6,6 +6,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.BloodSacrifice;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.BuildWalls;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.FarmersBlessing;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Fatigue;
+import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.FeignDeath;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.FireBlast;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.GhettoWarArmy;
 import me.crazycranberry.minecrafttcg.carddefinitions.cantrips.Grievances;
@@ -101,6 +102,7 @@ public enum CardEnum {
     BUILD_WALLS(new BuildWalls()),
     FARMERS_BLESSING(new FarmersBlessing()),
     FATIGUE(new Fatigue()),
+    FEIGN_DEATH(new FeignDeath()),
     FIRE_BLAST(new FireBlast()),
     GHETTO_WAR_ARMY(new GhettoWarArmy()),
     GRIEVANCES(new Grievances()),

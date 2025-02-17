@@ -32,6 +32,7 @@ import java.util.Map;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 
 public abstract class Minion {
+    private final MinionCardDefinition cardDef;
     private Integer strength;
     private Integer health;
     private Integer maxHealth;
@@ -70,6 +71,7 @@ public abstract class Minion {
         this.hasRanged = minionCard.isRanged();
         this.hasRally = minionCard.hasRally();
         this.minionInfo = minionInfo;
+        this.cardDef = minionCard;
         CraftMob mob = (CraftMob) minionInfo.entity();
         this.nmsMob = (PathfinderMob) mob.getHandle();
         setupGoals();
@@ -398,4 +400,8 @@ public abstract class Minion {
      *  \n can be used as many times as you want, as it'll only be utilized in the cards book.
      */
     public abstract String signDescription();
+
+    public MinionCardDefinition cardDef() {
+        return cardDef;
+    }
 }

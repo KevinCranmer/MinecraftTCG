@@ -119,9 +119,16 @@ public class TestCommands {
             case "deck":
                 deck(p);
                 break;
+            case "m":
+                modify(p, command);
+                break;
             default:
                 System.out.println("Unknown command: " + command[0]);
         }
+    }
+
+    private static void modify(Player p, String[] s) {
+        // Nothing for now
     }
 
     private static void duel(Player p) {

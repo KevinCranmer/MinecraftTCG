@@ -19,7 +19,13 @@ public class AnimatedCardHelper {
     private final static int animatedMaxDuration = 200;
 
     public static void newAnimationStarted(Stadium stadium, Player caster, Integer numberOfAnimations) {
-        animationsInProgress.put(caster.getUniqueId(), new AnimatedCardHelperInfo(numberOfAnimations == null ? 1 : numberOfAnimations, startNewTimer(stadium, caster)));
+        AnimatedCardHelperInfo info = animationsInProgress.get(caster.getUniqueId());
+        int numAnimations = numberOfAnimations;
+        if (info != null) {
+            numAnimations += info.numAnimationsRemaining();
+            Bukkit.getScheduler().cancelTask(info.timeoutTimerTaskId());
+        }
+        animationsInProgress.put(caster.getUniqueId(), new AnimatedCardHelperInfo(numAnimations, startNewTimer(stadium, caster)));
         Bukkit.getPluginManager().callEvent(new CardAnimationStartedEvent(stadium, caster));
     }
 

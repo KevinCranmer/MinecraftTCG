@@ -66,10 +66,13 @@ public class FlingSmallPoops implements SpellCardDefinition {
             new Particle.DustOptions(MAROON, 1),
             new Particle.DustOptions(BLACK, 1)
         );
-        newAnimationStarted(stadium, caster, minionsToPoopOn.size());
-        new ParticleBeamTracker(stadium, caster, minionsToPoopOn, Particle.DUST, dustOptions, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, FlingSmallPoops::poopCollided);
         caster.getWorld().playSound(caster.getLocation(), randomFromList(poopSounds).get(), 1, 1);
         caster.damage(damage);
+        if (minionsToPoopOn.isEmpty()) {
+            return;
+        }
+        newAnimationStarted(stadium, caster, minionsToPoopOn.size());
+        new ParticleBeamTracker(stadium, caster, minionsToPoopOn, Particle.DUST, dustOptions, particleBeamBlocksTraveledPerTick, particleBeamNumParticles, FlingSmallPoops::poopCollided);
     }
 
     public static void poopCollided(Stadium stadium, Player caster, ParticleBeamInfo beam) {
