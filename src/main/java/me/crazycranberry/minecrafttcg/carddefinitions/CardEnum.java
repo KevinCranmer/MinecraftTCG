@@ -77,6 +77,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.BloodWave;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DeadlyMobbing;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DoubleKill;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.FellTheMighty;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FlingSmallPoops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FreshWaterBottle;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.Grief;
@@ -176,6 +177,7 @@ public enum CardEnum {
     DEADLY_MOBBING(new DeadlyMobbing()),
     DIG_DEEPER(new DigDeeper()),
     DOUBLE_KILL(new DoubleKill()),
+    FELL_THE_MIGHTY(new FellTheMighty()),
     FLING_SMALL_POOPS(new FlingSmallPoops()),
     FRESH_WATER_BOTTLE(new FreshWaterBottle()),
     GRIEF(new Grief()),
