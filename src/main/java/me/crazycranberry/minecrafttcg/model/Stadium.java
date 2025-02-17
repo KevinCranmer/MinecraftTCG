@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
@@ -576,13 +577,19 @@ public class Stadium {
     }
 
     public void killAllMinions() {
+        killAllMinions((minion) -> true);
+    }
+
+    public void killAllMinions(Predicate<Minion> filter) {
         allyMinionSpots(player1).stream()
             .map(this::minionFromSpot)
             .filter(Objects::nonNull)
+            .filter(filter)
             .forEach(Minion::onDeath);
         allyMinionSpots(player2).stream()
             .map(this::minionFromSpot)
             .filter(Objects::nonNull)
+            .filter(filter)
             .forEach(Minion::onDeath);
     }
 

@@ -28,14 +28,15 @@ public class CommonFunctions {
         while(true) {
             if (text.length() < maxCharsPerLine) {
                 if (!text.isEmpty()) {
-                    lines.add(String.format("%s%s", color == null ? "" : color, text));
+                    String line = String.format("%s%s", color == null ? "" : color, text);
+                    lines.add(line.replaceAll(ChatColor.RESET + "([a-zA-Z,\\.\\s;])", ChatColor.RESET.toString() + color + "$1"));
                 }
                 break;
             }
             String laterChunk = text.substring(maxCharsPerLine - 1);
             text = text.replace(laterChunk, laterChunk.replaceFirst(" ", "\n"));
             String[] pieces = text.split("\n");
-            lines.add(String.format("%s%s", color == null ? "" : color, pieces[0]));
+            lines.add(String.format("%s%s", color == null ? "" : color, pieces[0]).replaceAll(ChatColor.RESET + "([a-zA-Z,\\.\\s;])", ChatColor.RESET.toString() + color + "$1"));
             text = pieces.length > 1 ? pieces[1] : "";
         }
         return lines;

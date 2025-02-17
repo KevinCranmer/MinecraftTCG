@@ -21,7 +21,7 @@ public class KevinTheSmithDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return String.format("One of two Champions of %sThe Duke%s", THE_DUKE.card().rarity().color(), ChatColor.RESET);
+        return String.format("One of two Champions of %s%sThe Duke%s", ChatColor.RESET, THE_DUKE.card().rarity().color(), ChatColor.RESET);
     }
 
     @Override

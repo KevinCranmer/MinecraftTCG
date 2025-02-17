@@ -22,10 +22,10 @@ public class TheDukeDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return String.format("%sPacifist%s. If you control %sMike The Storyteller%s and " +
-            "%sKevin The Smith%s at the end of your turn, deal 1000 damage to your opponent.",
-            ChatColor.BOLD, ChatColor.RESET, MIKE_THE_STORY_TELLER.card().rarity().color(), ChatColor.RESET,
-            KEVIN_THE_SMITH.card().rarity().color(), ChatColor.RESET);
+        return String.format("%sPacifist%s. If you control %s%sMike The Storyteller%s and " +
+            "%s%sKevin The Smith%s at the end of your turn, deal 1000 damage to your opponent.",
+            ChatColor.BOLD, ChatColor.RESET, ChatColor.RESET, MIKE_THE_STORY_TELLER.card().rarity().color(),
+            ChatColor.RESET, ChatColor.RESET, KEVIN_THE_SMITH.card().rarity().color(), ChatColor.RESET);
     }
 
     @Override

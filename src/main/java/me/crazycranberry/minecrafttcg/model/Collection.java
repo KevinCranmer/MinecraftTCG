@@ -220,7 +220,7 @@ public class Collection {
         if (cardDef instanceof MinionCardDefinition minionCardDefinition) {
             lore.add(minionCardStats(minionCardDefinition));
         }
-        lore.addAll(textToLines(cardDef.cardDescription(), 35, null));
+        lore.addAll(textToLines(cardDef.cardDescription(), 35, GRAY));
         lore.add(String.format("%sType \"/tcg\" to learn more!%s", GOLD, RESET));
         return lore;
     }

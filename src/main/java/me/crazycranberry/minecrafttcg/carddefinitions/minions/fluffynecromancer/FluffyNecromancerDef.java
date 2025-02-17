@@ -37,7 +37,7 @@ public class FluffyNecromancerDef implements MinionCardDefinition, MultiTargetCa
 
     @Override
     public String cardDescription() {
-        return String.format("Summons a %s%s%s at target Spot.", DINGY_SKELETON.card().rarity().color(), DINGY_SKELETON.card().cardName(), ChatColor.RESET);
+        return String.format("Summons a %s%s%s%s at target Spot.", ChatColor.RESET, DINGY_SKELETON.card().rarity().color(), DINGY_SKELETON.card().cardName(), ChatColor.RESET);
     }
 
     @Override
