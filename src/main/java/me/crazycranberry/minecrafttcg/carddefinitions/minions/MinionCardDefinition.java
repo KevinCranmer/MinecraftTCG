@@ -44,6 +44,9 @@ public interface MinionCardDefinition extends Card {
     default boolean hasRush() {
         return false;
     }
+    default Integer block() {
+        return 0;
+    }
     default Map<EquipmentSlot, ItemStack> equipment() {
         return null;
     }

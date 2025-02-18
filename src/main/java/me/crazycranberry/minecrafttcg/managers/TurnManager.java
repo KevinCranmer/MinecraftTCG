@@ -162,6 +162,7 @@ public class TurnManager implements Listener {
         if (event.getStadium().isDuelDone()) {
             return;
         }
+        event.getStadium().teleportMinionsBackToTheirSpots();
         event.getStadium().updatePhase(FIRST_SUMMONING_PHASE);
         int turn = event.getStadium().turn();
         Player p = event.getStadium().currentPlayersTurn();

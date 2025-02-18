@@ -26,7 +26,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
@@ -45,8 +47,9 @@ public abstract class Minion {
     private Integer temporaryBonusStrength = 0;
     private Integer temporaryBonusHealth = 0;
     private final Map<Minion, Integer> staticBonusStrength = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
-    private final Map<Minion, Integer> staticBonusMaxHealth = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
-    private final Map<Minion, Integer> staticBonusBlock = new HashMap<>(); // Multiple sources will be trying to change the static strength bonus so we have to record each source
+    private final Map<Minion, Integer> staticBonusMaxHealth = new HashMap<>(); // Multiple sources will be trying to change the static health bonus so we have to record each source
+    private final Map<Minion, Integer> staticBonusBlock = new HashMap<>(); // Multiple sources will be trying to change the static block bonus so we have to record each source
+    private final List<Minion> staticRallyGiven = new ArrayList<>(); // Multiple sources will be trying to change the static rally value so we have to record each source
     private Boolean hasOverkill = false; // Overkill stuff is handled in the MinionManager.handleOverkillDamage() method
     private Integer numTurnsOverkill = 0;
     private Boolean hasFlying;
@@ -55,7 +58,7 @@ public abstract class Minion {
     private Integer numTurnsRally = 0;
     private Boolean hasRanged;
     private Integer numTurnsRanged = 0;
-    private Integer block = 0;
+    private Integer block;
     private Integer temporaryBonusBlock = 0;
     private Boolean hasLifesteal = false;
     private Integer numTurnsLifesteal = 0;
@@ -70,6 +73,7 @@ public abstract class Minion {
         this.hasFlying = minionCard.isFlying();
         this.hasRanged = minionCard.isRanged();
         this.hasRally = minionCard.hasRally();
+        this.block = minionCard.block();
         this.minionInfo = minionInfo;
         this.cardDef = minionCard;
         CraftMob mob = (CraftMob) minionInfo.entity();
@@ -285,7 +289,11 @@ public abstract class Minion {
     }
 
     public void setStaticStrengthBonus(Minion source, Integer staticStrength) {
-        staticBonusStrength.put(source, staticStrength);
+        if (staticStrength == 0) {
+            staticBonusStrength.remove(source);
+        } else {
+            staticBonusStrength.put(source, staticStrength);
+        }
         this.minionInfo().stadium().updateCustomName(this);
     }
 
@@ -297,14 +305,30 @@ public abstract class Minion {
         } else {
             healthChange = staticMaxHealth;
         }
-        staticBonusMaxHealth.put(source, staticMaxHealth);
+        if (staticMaxHealth == 0) {
+            staticBonusMaxHealth.remove(source);
+        } else {
+            staticBonusMaxHealth.put(source, staticMaxHealth);
+        }
         this.setHealthNoHealTrigger(this.health() + healthChange);
         this.minionInfo().stadium().updateCustomName(this);
     }
 
     public void setStaticBlockBonus(Minion source, Integer staticBlock) {
-        staticBonusBlock.put(source, staticBlock);
+        if (staticBlock == 0) {
+            staticBonusBlock.remove(source);
+        } else {
+            staticBonusBlock.put(source, staticBlock);
+        }
         this.minionInfo().stadium().updateCustomName(this);
+    }
+
+    public void giveRally(Minion source) {
+        staticRallyGiven.add(source);
+    }
+
+    public void removeRally(Minion source) {
+        staticRallyGiven.remove(source);
     }
 
     public void setProtected(int numTurns) {
@@ -375,7 +399,7 @@ public abstract class Minion {
     }
 
     public boolean hasRally() {
-        return hasRally || numTurnsRally > 0;
+        return hasRally || !staticRallyGiven.isEmpty() || numTurnsRally > 0;
     }
 
     public Boolean hasLifesteal() {

@@ -120,6 +120,7 @@ public class CardUtils {
     }
 
     public static final List<EntityType> ANIMAL_TYPES = List.of(
+        EntityType.ARMADILLO,
         EntityType.AXOLOTL,
         EntityType.BEE,
         EntityType.CAMEL,

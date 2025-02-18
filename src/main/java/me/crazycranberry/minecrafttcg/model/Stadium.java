@@ -949,4 +949,15 @@ public class Stadium {
             chicken.equals(player1RedChicken) ||
             chicken.equals(player2RedChicken);
     }
+
+    public void teleportMinionsBackToTheirSpots() {
+        allyMinionSpots(player1()).stream()
+            .map(this::minionFromSpot)
+            .filter(Objects::nonNull)
+            .forEach(m -> m.minionInfo().entity().teleport(locOfSpot(m.minionInfo().spot())));
+        allyMinionSpots(player2()).stream()
+            .map(this::minionFromSpot)
+            .filter(Objects::nonNull)
+            .forEach(m -> m.minionInfo().entity().teleport(locOfSpot(m.minionInfo().spot())));
+    }
 }

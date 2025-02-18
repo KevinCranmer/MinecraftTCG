@@ -53,12 +53,15 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.comradepig.Comrade
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.lavaimp.LavaImpDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.liljim.LilJimDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.lurkingthief.LurkingThiefDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.mango.MangoDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTellerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mom.MomDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mournfulstrix.MournfulStrixDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac.NinjaMacDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.oliver.OliverDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.persistence.PersistenceDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.pumpernickel.PumpernickelDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.raidleadertonka.RaidLeaderTonkaDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.reaper.ReaperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.ScaredDuelistDef;
@@ -151,6 +154,7 @@ public enum CardEnum {
     LAVA_IMP(new LavaImpDef()),
     LIL_JIM(new LilJimDef()),
     LURKING_THIEF(new LurkingThiefDef()),
+    MANGO(new MangoDef()),
     MIKE_THE_STORY_TELLER(new MikeTheStoryTellerDef()),
     MOM(new MomDef()),
     MOURNFUL_STRIX(new MournfulStrixDef()),
@@ -158,6 +162,8 @@ public enum CardEnum {
     OLIVER(new OliverDef()),
     PACK_LEADER(new PackLeaderDef()),
     PERSISTENCE(new PersistenceDef()),
+    PUMPERNICKEL(new PumpernickelDef()),
+    RAID_LEADER_TONKA(new RaidLeaderTonkaDef()),
     REAPER(new ReaperDef()),
     RECKLESS_STINKER(new RecklessStinkerDef()),
     SCARED_DUELIST(new ScaredDuelistDef()),
