@@ -222,6 +222,14 @@ public abstract class Minion {
 
     }
 
+    public void onAllyMinionDied(Minion otherMinion) {
+
+    }
+
+    public void onEnemyMinionDied(Minion otherMinion) {
+
+    }
+
     public void onPlayerHealed(Player playerHealed, int healedFor) {
 
     }

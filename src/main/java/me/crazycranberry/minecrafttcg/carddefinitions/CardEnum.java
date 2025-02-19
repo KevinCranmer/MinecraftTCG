@@ -96,6 +96,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.Unalive;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.VerticalFire;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ZooExpedition;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.awakenthealpha.AwakenTheAlpha;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.parasite.SummonParasite;
 
 public enum CardEnum {
     // Cantrips
@@ -193,6 +194,7 @@ public enum CardEnum {
     PLANT_CROPS(new PlantCrops()),
     SINFUL_SEDUCTION(new SinfulSeduction()),
     STRING_OF_MORTALITY(new StringOfMortality()),
+    SUMMON_PARASITE(new SummonParasite()),
     THE_VOID(new TheVoid()),
     TNT(new TNT()),
     TOXIC_SPIKES(new ToxicSpikes()),
