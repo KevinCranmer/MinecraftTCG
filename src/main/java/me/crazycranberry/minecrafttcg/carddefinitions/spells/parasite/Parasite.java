@@ -30,8 +30,8 @@ public class Parasite extends Minion {
 
     private void leech(Minion otherMinion) {
         World world = otherMinion.minionInfo().entity().getWorld();
-        world.spawnParticle(Particle.DUST, otherMinion.minionInfo().entity().getLocation().add(0, 0.25, 0), 10, 0.3, 0.25, 0.3, new Particle.DustOptions(Color.BLACK, 1));
-        world.spawnParticle(Particle.DUST, this.minionInfo().entity().getLocation().add(0, 0.25, 0), 10, 0.3, 0.25, 0.3, new Particle.DustOptions(Color.BLACK, 1));
+        world.spawnParticle(Particle.DUST, otherMinion.minionInfo().entity().getLocation().add(0, 0.4, 0), 15, 0.3, 0.25, 0.3, new Particle.DustOptions(Color.BLACK, 1));
+        world.spawnParticle(Particle.DUST, this.minionInfo().entity().getLocation().add(0, 0.25, 0), 15, 0.3, 0.25, 0.3, new Particle.DustOptions(Color.BLACK, 1));
         world.spawnParticle(Particle.DUST, this.minionInfo().master().getLocation().add(0, 0.25, 0), 10, 0.3, 0.25, 0.3, new Particle.DustOptions(Color.BLACK, 1));
         this.minionInfo().master().damage(1);
     }
