@@ -27,7 +27,7 @@ public class BuildWalls implements CantripCardDefinition, MultiTargetCard {
 
     @Override
     public String cardDescription() {
-        return "Build a wall on up to 2 lanes. These walls last 2 turns.";
+        return "Build a wall on up to 2 lanes. These walls last 1 turn.";
     }
 
     @Override
@@ -38,10 +38,10 @@ public class BuildWalls implements CantripCardDefinition, MultiTargetCard {
     @Override
     public void onCast(Stadium stadium, Player caster, List<Spot> targets) {
         if (targets.get(0).column().equals(targets.get(1).column())) {
-            stadium.setWall(targets.get(0).column(), new Wall(stadium, targets.get(0).column(), MATERIAL, 2));
+            stadium.setWall(targets.get(0).column(), new Wall(stadium, targets.get(0).column(), MATERIAL, 1));
         } else {
-            stadium.setWall(targets.get(0).column(), new Wall(stadium, targets.get(0).column(), MATERIAL, 2));
-            stadium.setWall(targets.get(1).column(), new Wall(stadium, targets.get(1).column(), MATERIAL, 2));
+            stadium.setWall(targets.get(0).column(), new Wall(stadium, targets.get(0).column(), MATERIAL, 1));
+            stadium.setWall(targets.get(1).column(), new Wall(stadium, targets.get(1).column(), MATERIAL, 1));
         }
     }
 

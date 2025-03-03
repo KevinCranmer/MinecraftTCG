@@ -41,7 +41,7 @@ public class MikeTheStoryTellerDef implements MinionCardDefinition {
 
     @Override
     public EntityType minionType() {
-        return EntityType.ZOGLIN;
+        return EntityType.DONKEY;
     }
 
     @Override

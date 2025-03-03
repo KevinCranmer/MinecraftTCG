@@ -37,6 +37,10 @@ public class AnimatedCardHelper {
         return Bukkit.getScheduler().runTaskLater(getPlugin(), () -> timerExpired(stadium, caster), animatedMaxDuration).getTaskId();
     }
 
+    public static boolean oneAnimationFinished(Minion minion) {
+        return oneAnimationFinished(minion.minionInfo().stadium(), minion.minionInfo().master());
+    }
+
     /** Returns true if that was the final animation. */
     public static boolean oneAnimationFinished(Stadium stadium, Player caster) {
         AnimatedCardHelperInfo info = animationsInProgress.get(caster.getUniqueId());

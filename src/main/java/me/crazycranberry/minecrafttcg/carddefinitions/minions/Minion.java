@@ -373,11 +373,9 @@ public abstract class Minion {
         setAlterationParticlesGoal();
     }
 
-    private void removeGoals() {
-//        nmsMob.targetSelector.getRunningGoals().forEach(WrappedGoal::stop);
-//        nmsMob.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
-        nmsMob.targetSelector.getAvailableGoals().stream().forEach(WrappedGoal::stop);
-        nmsMob.goalSelector.getAvailableGoals().stream().forEach(WrappedGoal::stop);
+    protected void removeGoals() {
+        nmsMob.targetSelector.getAvailableGoals().stream().peek(g -> System.out.println("targetSelector available goal: " + g.getGoal().getClass())).forEach(WrappedGoal::stop);
+        nmsMob.goalSelector.getAvailableGoals().stream().peek(g -> System.out.println("goalSelector available goal: " + g.getGoal().getClass())).forEach(WrappedGoal::stop);
         nmsMob.removeAllGoals(g -> true);
     }
 

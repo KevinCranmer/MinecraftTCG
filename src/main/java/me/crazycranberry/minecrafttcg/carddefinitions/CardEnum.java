@@ -65,6 +65,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.raidleadertonka.Ra
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.reaper.ReaperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.ScaredDuelistDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.slenderman.SlendermanDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.stinkygroaner.StinkyGroanerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.stoneclone.StoneCloneDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.yellowpanther.YellowPantherDef;
@@ -170,6 +171,7 @@ public enum CardEnum {
     SCARED_DUELIST(new ScaredDuelistDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),
     SKI_TURTLE(new SkiTurtleDef()),
+    SLENDERMAN(new SlendermanDef()),
     STINKY_GROANER(new StinkyGroanerDef()),
     STONE_CLONE(new StoneCloneDef()),
     SUPPORTIVE_ZOMBIE(new SupportiveZombieDef()),

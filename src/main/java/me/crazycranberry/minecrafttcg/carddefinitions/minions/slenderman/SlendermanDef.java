@@ -1,4 +1,4 @@
-package me.crazycranberry.minecrafttcg.carddefinitions.minions.kevinthesmith;
+package me.crazycranberry.minecrafttcg.carddefinitions.minions.slenderman;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
@@ -6,22 +6,20 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefiniti
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.THE_DUKE;
-
-public class KevinTheSmithDef implements MinionCardDefinition {
+public class SlendermanDef implements MinionCardDefinition {
     @Override
     public Integer cost() {
-        return 5;
+        return 3;
     }
 
     @Override
     public String cardName() {
-        return "Kevin The Smith";
+        return "Slenderman";
     }
 
     @Override
     public String cardDescription() {
-        return String.format("One of two Champions of %s%sThe Duke%s", ChatColor.RESET, THE_DUKE.card().rarity().color(), ChatColor.RESET);
+        return String.format("%sPacifist%s. At the start of each turn, this minion attacks an enemy minion - prioritizing minions in front of it, otherwise a random minion.", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override
@@ -31,21 +29,21 @@ public class KevinTheSmithDef implements MinionCardDefinition {
 
     @Override
     public Integer strength() {
-        return 5;
+        return 3;
     }
 
     @Override
     public Integer maxHealth() {
-        return 5;
+        return 2;
     }
 
     @Override
     public EntityType minionType() {
-        return EntityType.DONKEY;
+        return EntityType.CREAKING;
     }
 
     @Override
     public Class<? extends Minion> minionClass() {
-        return KevinTheSmith.class;
+        return Slenderman.class;
     }
 }

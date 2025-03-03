@@ -6,7 +6,6 @@ import me.crazycranberry.minecrafttcg.model.Stadium;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_21_R3.attribute.CraftAttribute;
 import org.bukkit.craftbukkit.v1_21_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hoglin;
