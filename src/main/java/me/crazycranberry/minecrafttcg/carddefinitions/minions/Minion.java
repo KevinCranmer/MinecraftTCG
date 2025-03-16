@@ -127,6 +127,10 @@ public abstract class Minion {
         this.attacksLeft = attacksPerTurn;
     }
 
+    public Integer getAttacksPerTurn() {
+        return this.attacksPerTurn;
+    }
+
     public void addPermanentStrength(Integer additionalStrength) {
         this.strength += additionalStrength;
         minionInfo.stadium().updateCustomName(this);
@@ -373,9 +377,9 @@ public abstract class Minion {
         setAlterationParticlesGoal();
     }
 
-    protected void removeGoals() {
-        nmsMob.targetSelector.getAvailableGoals().stream().peek(g -> System.out.println("targetSelector available goal: " + g.getGoal().getClass())).forEach(WrappedGoal::stop);
-        nmsMob.goalSelector.getAvailableGoals().stream().peek(g -> System.out.println("goalSelector available goal: " + g.getGoal().getClass())).forEach(WrappedGoal::stop);
+    public void removeGoals() {
+        nmsMob.targetSelector.getAvailableGoals().forEach(WrappedGoal::stop);
+        nmsMob.goalSelector.getAvailableGoals().forEach(WrappedGoal::stop);
         nmsMob.removeAllGoals(g -> true);
     }
 
