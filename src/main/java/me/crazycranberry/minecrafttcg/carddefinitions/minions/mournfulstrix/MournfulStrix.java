@@ -1,13 +1,12 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.mournfulstrix;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.MOURNFUL_STRIX;
-
 public class MournfulStrix extends Minion {
-    public MournfulStrix(MinionInfo minionInfo) {
-        super(MOURNFUL_STRIX.card(), minionInfo);
+    public MournfulStrix(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

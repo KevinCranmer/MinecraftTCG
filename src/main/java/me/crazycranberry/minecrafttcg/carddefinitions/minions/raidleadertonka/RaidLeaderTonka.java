@@ -1,21 +1,16 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.raidleadertonka;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLeader;
-import me.crazycranberry.minecrafttcg.model.Spot;
 import org.bukkit.ChatColor;
-
 
 import java.util.List;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.RAID_LEADER_TONKA;
-
 public class RaidLeaderTonka extends MinionWithStaticEffect {
-    public RaidLeaderTonka(MinionInfo minionInfo) {
-        super(RAID_LEADER_TONKA.card(), minionInfo, RaidLeaderTonka::getTargets, RaidLeaderTonka::effectForTargets, RaidLeaderTonka::removeEffect, true);
+    public RaidLeaderTonka(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo, RaidLeaderTonka::getTargets, RaidLeaderTonka::effectForTargets, RaidLeaderTonka::removeEffect, true);
     }
 
     public static List<Minion> getTargets(Minion m) {

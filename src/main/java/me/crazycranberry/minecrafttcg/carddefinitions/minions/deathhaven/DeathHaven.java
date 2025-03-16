@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.deathhaven;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Note;
 import me.crazycranberry.minecrafttcg.model.Spot;
@@ -20,7 +21,6 @@ import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.DEATH_HAVEN;
 import static me.crazycranberry.minecrafttcg.model.Note.Octave1.C;
 import static me.crazycranberry.minecrafttcg.model.Note.Octave1.Dsharp;
 import static me.crazycranberry.minecrafttcg.model.Note.Octave1.Fsharp;
@@ -33,8 +33,8 @@ public class DeathHaven extends Minion {
     private final static Integer numParticlesPerTick = 60;
     private final static Integer numParticlesPerSpawnParticle = 3;
 
-    public DeathHaven(MinionInfo minionInfo) {
-        super(DEATH_HAVEN.card(), minionInfo);
+    public DeathHaven(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

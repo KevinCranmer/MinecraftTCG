@@ -1,13 +1,12 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.farmer;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.FARMER;
-
 public class Farmer extends Minion {
-    public Farmer(MinionInfo minionInfo) {
-        super(FARMER.card(), minionInfo);
+    public Farmer(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

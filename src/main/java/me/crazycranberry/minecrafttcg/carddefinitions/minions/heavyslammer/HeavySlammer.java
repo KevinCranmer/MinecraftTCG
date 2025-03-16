@@ -1,15 +1,15 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.heavyslammer;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Optional;
 
 public class HeavySlammer extends Minion {
-    public HeavySlammer(MinionInfo minionInfo) {
-        super(CardEnum.HEAVY_SLAMMER.card(), minionInfo);
+    public HeavySlammer(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

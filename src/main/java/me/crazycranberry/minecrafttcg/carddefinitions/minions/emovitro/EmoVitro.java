@@ -1,17 +1,16 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.emovitro;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
 
 import java.util.List;
 import java.util.Objects;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.EMO_VITRO;
-
 public class EmoVitro extends MinionWithStaticEffect {
-    public EmoVitro(MinionInfo minionInfo) {
-        super(EMO_VITRO.card(), minionInfo, EmoVitro::getTargets, EmoVitro::effectForTargets, EmoVitro::removeEffect, false);
+    public EmoVitro(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo, EmoVitro::getTargets, EmoVitro::effectForTargets, EmoVitro::removeEffect, false);
     }
 
     public static List<Minion> getTargets(Minion m) {

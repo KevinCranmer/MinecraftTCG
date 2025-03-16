@@ -1,16 +1,15 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.lurkingthief;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.LURKING_THIEF;
-
 public class LurkingThief extends Minion {
-    public LurkingThief(MinionInfo minionInfo) {
-        super(LURKING_THIEF.card(), minionInfo);
+    public LurkingThief(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

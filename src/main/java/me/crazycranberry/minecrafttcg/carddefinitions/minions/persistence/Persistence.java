@@ -11,8 +11,8 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardD
 import static org.bukkit.Sound.BLOCK_TRIAL_SPAWNER_OMINOUS_ACTIVATE;
 
 public class Persistence extends Minion {
-    public Persistence(MinionInfo minionInfo) {
-        super(PERSISTENCE.card(), minionInfo);
+    public Persistence(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

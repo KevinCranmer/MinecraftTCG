@@ -4,6 +4,11 @@ import me.crazycranberry.minecrafttcg.carddefinitions.CardRarity;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Wolf;
+
+import java.util.function.Consumer;
 
 public class PackLeaderDef implements MinionCardDefinition {
     @Override
@@ -44,5 +49,10 @@ public class PackLeaderDef implements MinionCardDefinition {
     @Override
     public Class<? extends Minion> minionClass() {
         return PackLeader.class;
+    }
+
+    @Override
+    public Consumer<LivingEntity> entityAdjustment() {
+        return e -> ((Wolf) e).setVariant(Wolf.Variant.CHESTNUT);
     }
 }

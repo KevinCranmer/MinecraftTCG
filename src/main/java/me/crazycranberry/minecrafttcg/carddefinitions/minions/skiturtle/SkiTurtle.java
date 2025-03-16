@@ -2,14 +2,15 @@ package me.crazycranberry.minecrafttcg.carddefinitions.minions.skiturtle;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import org.bukkit.ChatColor;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class SkiTurtle extends Minion {
-    public SkiTurtle(MinionInfo minionInfo) {
-        super(CardEnum.SKI_TURTLE.card(), minionInfo);
+    public SkiTurtle(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
         this.minionInfo().entity().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 7200, 2));
     }
 

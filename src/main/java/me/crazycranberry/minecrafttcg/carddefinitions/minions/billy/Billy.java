@@ -1,7 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.billy;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import org.bukkit.entity.LivingEntity;
@@ -15,8 +15,8 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.swapTwoSp
 
 public class Billy extends Minion {
     private final List<Minion> minionsIHit = new ArrayList<>();
-    public Billy(MinionInfo minionInfo) {
-        super(CardEnum.BILLY.card(), minionInfo);
+    public Billy(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

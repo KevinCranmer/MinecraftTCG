@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.duodueler;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
 import me.crazycranberry.minecrafttcg.model.Spot;
@@ -9,14 +10,13 @@ import me.crazycranberry.minecrafttcg.model.Stadium;
 import java.util.List;
 import java.util.Objects;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.DUO_DUELER;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.duodueler.DuoDuelerDef.BLOCK_BUFF;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.duodueler.DuoDuelerDef.HEALTH_BUFF;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.duodueler.DuoDuelerDef.STRENGTH_BUFF;
 
 public class DuoDueler extends MinionWithStaticEffect {
-    public DuoDueler(MinionInfo minionInfo) {
-        super(DUO_DUELER.card(), minionInfo, DuoDueler::getTargets, DuoDueler::effectForTargets, DuoDueler::removeEffect, true);
+    public DuoDueler(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo, DuoDueler::getTargets, DuoDueler::effectForTargets, DuoDueler::removeEffect, true);
     }
 
     @Override

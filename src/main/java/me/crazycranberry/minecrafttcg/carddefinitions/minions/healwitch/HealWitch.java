@@ -1,7 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.healwitch;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Spot;
 
@@ -12,8 +12,8 @@ import java.util.Optional;
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 
 public class HealWitch extends Minion {
-    public HealWitch(MinionInfo minionInfo) {
-        super(CardEnum.HEAL_WITCH.card(), minionInfo);
+    public HealWitch(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

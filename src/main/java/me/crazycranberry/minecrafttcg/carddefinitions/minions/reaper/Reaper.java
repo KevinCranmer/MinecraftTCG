@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.reaper;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import org.bukkit.entity.LivingEntity;
@@ -9,13 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.REAPER;
-
 public class Reaper extends Minion {
     private final List<Minion> minionsReaperDamaged = new ArrayList<>();
 
-    public Reaper(MinionInfo minionInfo) {
-        super(REAPER.card(), minionInfo);
+    public Reaper(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

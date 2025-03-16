@@ -1,13 +1,12 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.liljim;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.LIL_JIM;
-
 public class LilJim extends Minion {
-    public LilJim(MinionInfo minionInfo) {
-        super(LIL_JIM.card(), minionInfo);
+    public LilJim(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

@@ -1,18 +1,18 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
 
 import java.util.List;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.RECKLESS_STINKER;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef.BONUS_HEALTH;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef.BONUS_STRENGTH;
 
 public class RecklessStinker extends MinionWithStaticEffect {
-    public RecklessStinker(MinionInfo minionInfo) {
-        super(RECKLESS_STINKER.card(), minionInfo, RecklessStinker::getTargets, RecklessStinker::effectForTargets, RecklessStinker::removeEffect, false);
+    public RecklessStinker(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo, RecklessStinker::getTargets, RecklessStinker::effectForTargets, RecklessStinker::removeEffect, false);
     }
 
     public static List<Minion> getTargets(Minion m) {

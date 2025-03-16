@@ -1,15 +1,15 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.ninjamac;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.TurnPhase;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class NinjaMac extends Minion {
-    public NinjaMac(MinionInfo minionInfo) {
-        super(CardEnum.NINJA_MAC.card(), minionInfo);
+    public NinjaMac(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
         this.setPermanentFlying(true);
     }
 

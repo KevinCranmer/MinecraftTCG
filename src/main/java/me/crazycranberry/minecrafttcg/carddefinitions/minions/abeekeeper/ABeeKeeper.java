@@ -5,11 +5,10 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefiniti
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.A_BEE;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.A_BEE_KEEPER;
 
 public class ABeeKeeper extends Minion {
-    public ABeeKeeper(MinionInfo minionInfo) {
-        super(A_BEE_KEEPER.card(), minionInfo);
+    public ABeeKeeper(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

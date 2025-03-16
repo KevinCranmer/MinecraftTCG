@@ -1,15 +1,13 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.captainpiggie;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.Card;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import org.bukkit.entity.Player;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.CAPTAIN_PIGGIE;
-
 public class CaptainPiggie extends Minion {
-    public CaptainPiggie(MinionInfo minionInfo) {
-        super(CAPTAIN_PIGGIE.card(), minionInfo);
+    public CaptainPiggie(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

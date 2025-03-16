@@ -1,16 +1,14 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.cultist;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.baby.Baby;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.baby.BabyDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.summoning.Summoning;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.summoning.SummoningDef;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
@@ -22,7 +20,6 @@ import java.util.Map;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.CULTIST;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition.summonMinion;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.cultist.CultistDef.CULTIST_SUMMONING_HEALTH;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.cultist.CultistDef.CULTIST_SUMMONING_STRENGTH;
@@ -42,8 +39,8 @@ public class Cultist extends Minion {
         Spot.RED_2_FRONT, Spot.BLUE_2_FRONT
     );
 
-    public Cultist(MinionInfo minionInfo) {
-        super(CULTIST.card(), minionInfo);
+    public Cultist(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

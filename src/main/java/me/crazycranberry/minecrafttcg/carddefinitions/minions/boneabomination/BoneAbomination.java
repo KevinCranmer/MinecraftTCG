@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.boneabomination;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
@@ -18,7 +19,6 @@ import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.newAnimationStarted;
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.BONE_ABOMINATION;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.UNDEAD_TYPES;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.boneabomination.BoneAbominationDef.DEATH_DAMAGE;
 import static org.bukkit.Color.BLACK;
@@ -36,8 +36,8 @@ public class BoneAbomination extends Minion {
         new Particle.DustOptions(BLACK, 1)
     );
 
-    public BoneAbomination(MinionInfo minionInfo) {
-        super(BONE_ABOMINATION.card(), minionInfo);
+    public BoneAbomination(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.comradepig;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
 import me.crazycranberry.minecrafttcg.model.Stadium;
@@ -13,8 +14,8 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.minions.comradepig.
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.comradepig.ComradePigDef.BONUS_STRENGTH;
 
 public class ComradePig extends MinionWithStaticEffect {
-    public ComradePig(MinionInfo minionInfo) {
-        super(COMRADE_PIG.card(), minionInfo, ComradePig::getTargets, ComradePig::effectForTargets, ComradePig::removeEffect, true);
+    public ComradePig(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo, ComradePig::getTargets, ComradePig::effectForTargets, ComradePig::removeEffect, true);
     }
 
     public static List<Minion> getTargets(Minion pig) {

@@ -1,17 +1,15 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.yousefssoulmender;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
-import me.crazycranberry.minecrafttcg.events.PlayerHealedEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.YOUSEFS_SOUL_MENDER;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.yousefssoulmender.YousefsSoulMenderDef.HEAL_AMOUNT;
 
 public class YousefsSoulMender extends Minion {
-    public YousefsSoulMender(MinionInfo minionInfo) {
-        super(YOUSEFS_SOUL_MENDER.card(), minionInfo);
+    public YousefsSoulMender(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

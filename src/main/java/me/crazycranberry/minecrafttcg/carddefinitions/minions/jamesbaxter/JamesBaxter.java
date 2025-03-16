@@ -1,18 +1,18 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.jamesbaxter;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.JAMES_BAXTER;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.jamesbaxter.JamesBaxterDef.HEAL_AMOUNT;
 
 public class JamesBaxter extends Minion {
-    public JamesBaxter(MinionInfo minionInfo) {
-        super(JAMES_BAXTER.card(), minionInfo);
+    public JamesBaxter(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

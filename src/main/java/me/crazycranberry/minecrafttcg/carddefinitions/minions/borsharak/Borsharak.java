@@ -1,7 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.borsharak;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
@@ -12,8 +12,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Borsharak extends Minion {
-    public Borsharak(MinionInfo minionInfo) {
-        super(CardEnum.BORSHARAK.card(), minionInfo);
+    public Borsharak(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

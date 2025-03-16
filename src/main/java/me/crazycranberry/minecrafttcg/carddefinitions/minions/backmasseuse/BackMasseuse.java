@@ -1,18 +1,18 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.backmasseuse;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
 
 import java.util.List;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.BACK_MASSEUSE;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.backmasseuse.BackMasseuseDef.BONUS_HEALTH;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.backmasseuse.BackMasseuseDef.BONUS_STRENGTH;
 
 public class BackMasseuse extends MinionWithStaticEffect {
-    public BackMasseuse(MinionInfo minionInfo) {
-        super(BACK_MASSEUSE.card(), minionInfo, BackMasseuse::getTargets, BackMasseuse::effectForTargets, BackMasseuse::removeEffect, true);
+    public BackMasseuse(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo, BackMasseuse::getTargets, BackMasseuse::effectForTargets, BackMasseuse::removeEffect, true);
     }
 
     public static List<Minion> getTargets(Minion m) {

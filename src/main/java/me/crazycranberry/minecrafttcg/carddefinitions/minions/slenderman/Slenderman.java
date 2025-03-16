@@ -1,7 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.slenderman;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 import org.bukkit.Bukkit;
@@ -20,8 +20,8 @@ public class Slenderman extends Minion {
     Location targetLoc;
     Location slendermanLoc;
 
-    public Slenderman(MinionInfo minionInfo) {
-        super(CardEnum.SLENDERMAN.card(), minionInfo);
+    public Slenderman(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
         this.setAttacksPerTurn(0);
     }
 

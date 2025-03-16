@@ -5,23 +5,20 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefiniti
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-
 import java.util.Map;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.SHRINKADINK;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition.summonMinion;
 import static org.bukkit.Sound.BLOCK_TRIAL_SPAWNER_OMINOUS_ACTIVATE;
 
 public class ShrinkaDink extends Minion {
-    Map<Material, MinionCardDefinition> shrinkies = Map.of(
-        Material.DIAMOND_SWORD, new ShrinkaDink4Def(),
-        Material.GOLDEN_SWORD, new ShrinkaDink3Def(),
-        Material.IRON_SWORD, new ShrinkaDink2Def(),
-        Material.WOODEN_SWORD, new ShrinkaDink1Def()
+    Map<Integer, MinionCardDefinition> shrinkies = Map.of(
+        4, new ShrinkaDink3Def(),
+        3, new ShrinkaDink2Def(),
+        2, new ShrinkaDink1Def()
     );
 
-    public ShrinkaDink(MinionInfo minionInfo) {
-        super(SHRINKADINK.card(), minionInfo);
+    public ShrinkaDink(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

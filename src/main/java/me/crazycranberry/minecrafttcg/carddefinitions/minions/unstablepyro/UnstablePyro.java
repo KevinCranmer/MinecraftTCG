@@ -1,7 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import org.bukkit.Bukkit;
@@ -17,8 +17,8 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 
 public class UnstablePyro extends Minion {
-    public UnstablePyro(MinionInfo minionInfo) {
-        super(CardEnum.UNSTABLE_PYRO.card(), minionInfo);
+    public UnstablePyro(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

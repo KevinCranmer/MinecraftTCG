@@ -1,17 +1,17 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.chaoticskeleton;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Spot;
 import me.crazycranberry.minecrafttcg.model.Stadium;
 
 import static me.crazycranberry.minecrafttcg.CommonFunctions.randomFromList;
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.CHAOTIC_SKELETON;
 import static me.crazycranberry.minecrafttcg.carddefinitions.CardUtils.swapTwoSpots;
 
 public class ChaoticSkeleton extends Minion {
-    public ChaoticSkeleton(MinionInfo minionInfo) {
-        super(CHAOTIC_SKELETON.card(), minionInfo);
+    public ChaoticSkeleton(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override

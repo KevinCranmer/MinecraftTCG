@@ -1,20 +1,19 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.stinkygroaner;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
 import me.crazycranberry.minecrafttcg.model.Stadium;
-
 import java.util.List;
 import java.util.Objects;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.STINKY_GROANER;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.stinkygroaner.StinkyGroanerDef.MINUS_HEALTH;
 import static me.crazycranberry.minecrafttcg.carddefinitions.minions.stinkygroaner.StinkyGroanerDef.MINUS_STRENGTH;
 
 public class StinkyGroaner extends MinionWithStaticEffect {
-    public StinkyGroaner(MinionInfo minionInfo) {
-        super(STINKY_GROANER.card(), minionInfo, StinkyGroaner::getTargets, StinkyGroaner::effectForTargets, StinkyGroaner::removeEffect, true);
+    public StinkyGroaner(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo, StinkyGroaner::getTargets, StinkyGroaner::effectForTargets, StinkyGroaner::removeEffect, true);
     }
 
     public static List<Minion> getTargets(Minion groaner) {

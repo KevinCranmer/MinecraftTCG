@@ -1,6 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionWithStaticEffect;
 import me.crazycranberry.minecrafttcg.model.Spot;
@@ -8,11 +9,9 @@ import me.crazycranberry.minecrafttcg.model.Spot;
 import java.util.List;
 import java.util.Objects;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.PACK_LEADER;
-
 public class PackLeader extends MinionWithStaticEffect {
-    public PackLeader(MinionInfo minionInfo) {
-        super(PACK_LEADER.card(), minionInfo, PackLeader::getTargets, PackLeader::effectForTargets, PackLeader::removeEffect, true);
+    public PackLeader(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo, PackLeader::getTargets, PackLeader::effectForTargets, PackLeader::removeEffect, true);
     }
 
     public static List<Minion> getTargets(Minion m) {

@@ -1,7 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.happynarwhale;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.goals.DolphinAttackTargetGoal;
 import me.crazycranberry.minecrafttcg.goals.ShootParticlesGoal;
@@ -33,8 +33,8 @@ public class HappyNarwhale extends Minion {
     private Block waterBlock;
     private final double dolphinRestingY;
 
-    public HappyNarwhale(MinionInfo minionInfo) {
-        super(CardEnum.HAPPY_NARWHALE.card(), minionInfo);
+    public HappyNarwhale(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
         this.minionInfo().entity().teleport(this.minionInfo().entity().getLocation().add(0, 1, 0));
         dolphinRestingY = this.minionInfo().stadium().locOfSpot(RED_1_BACK).getY();
         Location loc = this.minionInfo().entity().getLocation().clone();

@@ -74,7 +74,7 @@ public interface MinionCardDefinition extends Card {
                     equipment.put(EquipmentSlot.HAND, new ItemStack(Material.BOW));
                 }
             }
-            Constructor<? extends Minion> c = minionClass.getConstructor(MinionInfo.class);
+            Constructor<? extends Minion> c = minionClass.getConstructor(MinionCardDefinition.class, MinionInfo.class);
             c.setAccessible(true);
             Minion minion;
             LivingEntity entity = (LivingEntity) caster.getWorld().spawnEntity(stadium.locOfSpot(target), minionDefClass.minionType(), false);

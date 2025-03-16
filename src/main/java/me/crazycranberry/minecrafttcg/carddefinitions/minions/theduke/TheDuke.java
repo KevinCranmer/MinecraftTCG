@@ -1,7 +1,7 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.theduke;
 
-import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.kevinthesmith.KevinTheSmith;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.mikethestoryteller.MikeTheStoryTeller;
@@ -23,8 +23,8 @@ import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.
 import static me.crazycranberry.minecrafttcg.carddefinitions.AnimatedCardHelper.oneAnimationFinished;
 
 public class TheDuke extends Minion {
-    public TheDuke(MinionInfo minionInfo) {
-        super(CardEnum.THE_DUKE.card(), minionInfo);
+    public TheDuke(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
         this.setAttacksPerTurn(0);
     }
 

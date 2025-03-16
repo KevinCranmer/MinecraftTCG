@@ -1,19 +1,18 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.minions.cowardlybob;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import me.crazycranberry.minecrafttcg.model.Column;
 import me.crazycranberry.minecrafttcg.model.Wall;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 
-import static me.crazycranberry.minecrafttcg.carddefinitions.CardEnum.COWARDLY_BOB;
-
 public class CowardlyBob extends Minion {
     public static Material MATERIAL = Material.CHISELED_SANDSTONE;
 
-    public CowardlyBob(MinionInfo minionInfo) {
-        super(COWARDLY_BOB.card(), minionInfo);
+    public CowardlyBob(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override
