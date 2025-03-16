@@ -53,6 +53,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
 
     private static final Map<String, String> commands = Map.ofEntries(
         Map.entry("/autocollect", "Toggle whether or not card drops should automatically go to your collection"),
+        Map.entry("/cards", "View and take from all possible cards (requires tcgop permission)"),
         Map.entry("/collection", "View, add to, or take from your card collection"),
         Map.entry("/deck", "View and edit your deck"),
         Map.entry("/duel", "Challenge someone to a duel"),
@@ -129,6 +130,7 @@ public class TcgCommand implements CommandExecutor, TabCompleter {
         tcgInv.setItem(22, createMenuItem(BOOKSHELF, "/collection", LIGHT_PURPLE));
         tcgInv.setItem(23, createAutoCollectItem(p));
         tcgInv.setItem(31, createMenuItem(PAPER, "/tcg info", GRAY));
+        tcgInv.setItem(35, createMenuItem(BOOKSHELF, "/cards", RED));
         return tcgInv;
     }
 

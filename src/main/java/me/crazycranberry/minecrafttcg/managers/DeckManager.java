@@ -2,6 +2,7 @@ package me.crazycranberry.minecrafttcg.managers;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.CardEnum;
 import me.crazycranberry.minecrafttcg.config.CollectionConfigs;
+import me.crazycranberry.minecrafttcg.events.CardsViewRequestEvent;
 import me.crazycranberry.minecrafttcg.events.CollectionViewRequestEvent;
 import me.crazycranberry.minecrafttcg.events.DeckViewRequestEvent;
 import me.crazycranberry.minecrafttcg.model.Collection;
@@ -31,8 +32,11 @@ import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.CARD_NAME_KEY;
 import static me.crazycranberry.minecrafttcg.carddefinitions.Card.IS_CARD_KEY;
 import static me.crazycranberry.minecrafttcg.config.CollectionConfigs.DECK_SIZE;
+import static me.crazycranberry.minecrafttcg.model.Collection.ALL_CARDS_INV_NAME;
+import static me.crazycranberry.minecrafttcg.model.Collection.COLLECTION_INV_NAME;
 import static me.crazycranberry.minecrafttcg.model.Collection.NEXT_PAGE_KEY;
 import static me.crazycranberry.minecrafttcg.model.Collection.IS_PAGING_KEY;
+import static me.crazycranberry.minecrafttcg.model.Collection.createCard;
 import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.RESET;
 
@@ -60,6 +64,14 @@ public class DeckManager implements Listener {
         Inventory collectionInv = collection.collection();
         event.getPlayer().openInventory(collectionInv);
         playersLookingAtCollection.put(event.getPlayer(), collection);
+    }
+
+    @EventHandler
+    private void onCardsViewRequest(CardsViewRequestEvent event) {
+        Collection allCards = Collection.allCards(event.sortBy());
+        Inventory allCardsInv = allCards.collection();
+        event.getPlayer().openInventory(allCardsInv);
+        playersLookingAtCollection.put(event.getPlayer(), allCards);
     }
 
     @EventHandler
@@ -124,9 +136,32 @@ public class DeckManager implements Listener {
         } else if (isPagingItem) {
             playersLookingAtCollection.get(p).otherPage(event.getClickedInventory(), p, dataContainer.get(NEXT_PAGE_KEY, PersistentDataType.BOOLEAN));
             event.setCancelled(true);
-        } else if (stadium != null && stadium.isPlayerParticipating(p)) {
+        } else if (stadium != null && stadium.isPlayerParticipating(p) && COLLECTION_INV_NAME.equals(event.getView().getTitle())) {
             p.sendMessage(String.format("%sYou cannot edit your collection mid-duel.%s", GRAY, RESET));
             event.setCancelled(true);
+        } else if (ALL_CARDS_INV_NAME.equals(event.getView().getTitle())) {
+            replinishGrabbedCard(event);
+        }
+    }
+
+    private void replinishGrabbedCard(InventoryClickEvent event) {
+        Inventory inv = event.getClickedInventory();
+        int slot = event.getSlot();
+        ItemStack cardItem = event.getCurrentItem();
+        ItemMeta meta;
+        PersistentDataContainer dataContainer;
+        if (cardItem == null || inv == null) {
+            return;
+        }
+        meta = cardItem.getItemMeta();
+        if (meta == null) {
+            return;
+        }
+        dataContainer = meta.getPersistentDataContainer();
+        String cardName = dataContainer.get(CARD_NAME_KEY, PersistentDataType.STRING);
+        CardEnum card = CardEnum.fromString(cardName);
+        if (card != null) {
+            Bukkit.getScheduler().runTaskLater(getPlugin(), () -> inv.setItem(slot, createCard(card)), 3);
         }
     }
 

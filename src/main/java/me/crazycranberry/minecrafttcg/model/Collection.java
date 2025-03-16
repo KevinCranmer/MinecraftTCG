@@ -51,6 +51,8 @@ import static org.bukkit.inventory.ItemFlag.HIDE_ADDITIONAL_TOOLTIP;
 public class Collection {
     public static final NamespacedKey IS_PAGING_KEY = new NamespacedKey(getPlugin(), "pagingitem");
     public static final NamespacedKey NEXT_PAGE_KEY = new NamespacedKey(getPlugin(), "nextpage");
+    public static final String COLLECTION_INV_NAME = "My Collection";
+    public static final String ALL_CARDS_INV_NAME = "All Cards";
     public static final int CARDS_PER_PAGE = 45;
     private static final int previousPageIndex = 48;
     private static final int nextPageIndex = 50;
@@ -60,18 +62,18 @@ public class Collection {
     private final SortBy sortBy;
     private final Inventory inventory;
 
-    private Collection(Map<CardEnum, Integer> collectionMap, SortBy sortBy) {
+    private Collection(Map<CardEnum, Integer> collectionMap, SortBy sortBy, String inventoryName) {
         this.collectionMap = collectionMap;
         this.sortBy = sortBy;
-        this.inventory = collectionInventory();
+        this.inventory = collectionInventory(inventoryName);
     }
 
     public Inventory collection() {
         return inventory;
     }
 
-    private Inventory collectionInventory() {
-        Inventory collectionInv = Bukkit.createInventory(null, CARDS_PER_PAGE + 9, "My Collection");
+    private Inventory collectionInventory(String inventoryName) {
+        Inventory collectionInv = Bukkit.createInventory(null, CARDS_PER_PAGE + 9, inventoryName);
         int page = 0;
         List<ItemStack> pageContents = Arrays.asList(contentArrayForPage(page));
         pages.add(pageContents);
@@ -182,7 +184,15 @@ public class Collection {
         for (String key : collectionCs.getKeys(false)) {
             collection.put(CardEnum.fromString(key), collectionCs.getInt(key));
         }
-        return new Collection(collection, sortBy);
+        return new Collection(collection, sortBy, COLLECTION_INV_NAME);
+    }
+
+    public static Collection allCards(SortBy sortBy) {
+        Map<CardEnum, Integer> allCards = new HashMap<>();
+        for (CardEnum card : CardEnum.values()) {
+            allCards.put(card, 1);
+        }
+        return new Collection(allCards, sortBy, ALL_CARDS_INV_NAME);
     }
 
     public static ItemStack createCard(CardEnum cardEnum) {
