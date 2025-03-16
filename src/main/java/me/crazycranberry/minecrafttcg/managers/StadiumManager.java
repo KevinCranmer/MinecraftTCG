@@ -320,7 +320,7 @@ public class StadiumManager implements Listener {
 
     private static void clearStadiumLingeringChickens(Location startingCorner, Stadium newStadium) {
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            startingCorner.getWorld().getNearbyEntities(startingCorner, 60, 40, 50)
+            startingCorner.getWorld().getNearbyEntities(startingCorner, 80, 40, 60)
                 .stream()
                 .filter(e -> e.getType().equals(PLAYER_PROXY_ENTITY_TYPE))
                 .filter(e -> !newStadium.isOneOfTheStadiumChickens(e))

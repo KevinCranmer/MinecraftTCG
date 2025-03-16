@@ -65,6 +65,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.raidleadertonka.Ra
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.reaper.ReaperDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.recklessstinker.RecklessStinkerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.ScaredDuelistDef;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.shrinkadink.ShrinkaDink4Def;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.slenderman.SlendermanDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.stinkygroaner.StinkyGroanerDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.stoneclone.StoneCloneDef;
@@ -79,6 +80,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.unstablepyro.Unsta
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.yousefssoulmender.YousefsSoulMenderDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.zookeeperallie.ZookeeperAllieDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.BloodWave;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.ConstructionZone;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DeadlyMobbing;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DigDeeper;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.DoubleKill;
@@ -170,6 +172,7 @@ public enum CardEnum {
     RECKLESS_STINKER(new RecklessStinkerDef()),
     SCARED_DUELIST(new ScaredDuelistDef()),
     SEWER_ZOMBIE(new SewerZombieDef()),
+    SHRINKADINK(new ShrinkaDink4Def()),
     SKI_TURTLE(new SkiTurtleDef()),
     SLENDERMAN(new SlendermanDef()),
     STINKY_GROANER(new StinkyGroanerDef()),
@@ -185,6 +188,7 @@ public enum CardEnum {
     // Spells
     AWAKEN_THE_ALPHA(new AwakenTheAlpha()),
     BLOOD_WAVE(new BloodWave()),
+    CONSTRUCTION_ZONE(new ConstructionZone()),
     DEADLY_MOBBING(new DeadlyMobbing()),
     DIG_DEEPER(new DigDeeper()),
     DOUBLE_KILL(new DoubleKill()),

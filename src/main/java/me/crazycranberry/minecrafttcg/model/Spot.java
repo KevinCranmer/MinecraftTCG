@@ -39,6 +39,8 @@ public enum Spot {
     private final Boolean isSummonableSpot;
     private final Boolean isTargetable;
     public static final int MIDDLE_X = (int) ((RED_1_FRONT.offset().getX() + RED_2_FRONT.offset().getX()) / 2);
+    public static final int RADIUS_X = (int) ((PLAYER_1_RED_CHICKEN.offset().getX() + PLAYER_2_GREEN_CHICKEN.offset().getX()) / 2);
+    public static final int RADIUS_Z = (int) ((PLAYER_1_RED_CHICKEN.offset().getZ() + PLAYER_2_GREEN_CHICKEN.offset().getZ()) / 2);
     public static final double LENGTH_OF_BATTLEFIELD = GREEN_1_FRONT.offset().getZ() - RED_1_FRONT.offset().getZ();
 
     Spot(Vector offset, Column column, Material material, Boolean isPlayer1Spot, Boolean isSummonableSpot, Boolean isTargetable) {

@@ -58,10 +58,11 @@ public interface MinionCardDefinition extends Card {
     }
 
     static Minion summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, MinionCardDefinition minionDefClass) {
-        return summonMinion(target, stadium, caster, minionClass, minionDefClass.minionType(), minionDefClass.equipment(), minionDefClass.entityAdjustment(), true);
+        return summonMinion(target, stadium, caster, minionClass, minionDefClass, true);
     }
 
-    static Minion summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, EntityType minionType, Map<EquipmentSlot, ItemStack> equipment, Consumer<LivingEntity> entityAdjustment, boolean triggerOnEnter) {
+    static Minion summonMinion(Spot target, Stadium stadium, Player caster, Class<? extends Minion> minionClass, MinionCardDefinition minionDefClass, boolean triggerOnEnter) {
+        Map<EquipmentSlot, ItemStack> equipment = minionDefClass.equipment();
         if (stadium.minionFromSpot(target) != null) {
             caster.sendMessage(String.format("%sA minion tried to be summoned on a spot that already has a minion. The new minion was not summoned.%s", ChatColor.GRAY, ChatColor.RESET));
             return null;
@@ -69,14 +70,14 @@ public interface MinionCardDefinition extends Card {
         try {
             if (equipment == null) {
                 equipment = new HashMap<>();
-                if (minionType.equals(EntityType.SKELETON)) {
+                if (minionDefClass.minionType().equals(EntityType.SKELETON)) {
                     equipment.put(EquipmentSlot.HAND, new ItemStack(Material.BOW));
                 }
             }
             Constructor<? extends Minion> c = minionClass.getConstructor(MinionInfo.class);
             c.setAccessible(true);
             Minion minion;
-            LivingEntity entity = (LivingEntity) caster.getWorld().spawnEntity(stadium.locOfSpot(target), minionType, false);
+            LivingEntity entity = (LivingEntity) caster.getWorld().spawnEntity(stadium.locOfSpot(target), minionDefClass.minionType(), false);
             entity.getEquipment().clear();
             for (Map.Entry<EquipmentSlot, ItemStack> entry : equipment.entrySet()) {
                 entity.getEquipment().setItem(entry.getKey(), entry.getValue());
@@ -86,8 +87,8 @@ public interface MinionCardDefinition extends Card {
             }
             if (entity instanceof Piglin piglin) piglin.setImmuneToZombification(true);
             if (entity instanceof Hoglin hoglin) hoglin.setImmuneToZombification(true);
-            entityAdjustment.accept(entity);
-            minion = c.newInstance(new MinionInfo(stadium, target, entity, caster));
+            minionDefClass.entityAdjustment().accept(entity);
+            minion = c.newInstance(minionDefClass, new MinionInfo(stadium, target, entity, caster));
             stadium.setMinionAtSpot(target, minion, false);
             stadium.showName(target);
             if (triggerOnEnter) {

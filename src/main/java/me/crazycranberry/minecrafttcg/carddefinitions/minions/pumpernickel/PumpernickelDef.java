@@ -19,7 +19,7 @@ public class PumpernickelDef implements MinionCardDefinition {
 
     @Override
     public String cardDescription() {
-        return String.format("%sBlock 4%s", ChatColor.BOLD, ChatColor.RESET);
+        return String.format("%sBlock 3%s", ChatColor.BOLD, ChatColor.RESET);
     }
 
     @Override

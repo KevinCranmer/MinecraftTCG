@@ -93,7 +93,7 @@ public class ZooExpedition implements SpellCardDefinition {
             .filter(c -> ANIMAL_TYPES.contains(c.minionType()))
             .toList();
         MinionCardDefinition minionCard = randomFromList(minionCardDefinitions).get();
-        Minion newMinion = summonMinion(minion.minionInfo().spot(), minion.minionInfo().stadium(), minion.minionInfo().master(), minionCard.minionClass(), minionCard.minionType(), minionCard.equipment(), minionCard.entityAdjustment(),false);
+        Minion newMinion = summonMinion(minion.minionInfo().spot(), minion.minionInfo().stadium(), minion.minionInfo().master(), minionCard.minionClass(), minionCard, false);
         newMinion.loadTemporaryEffects(minion);
         newMinion.setupGoals();
     }

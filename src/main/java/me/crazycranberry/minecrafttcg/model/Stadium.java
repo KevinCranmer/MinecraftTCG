@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static me.crazycranberry.minecrafttcg.MinecraftTCG.getPlugin;
@@ -576,21 +577,29 @@ public class Stadium {
         }, 5 /*<-- the initial delay */, fireworkInterval /*<-- the interval */).getTaskId();
     }
 
+    public void forAllMinions(Consumer<Minion> action) {
+        forAllMinions(action, (minion) -> true);
+    }
+
+    public void forAllMinions(Consumer<Minion> action, Predicate<Minion> filter) {
+        allyMinionSpots(player1).stream()
+            .map(this::minionFromSpot)
+            .filter(Objects::nonNull)
+            .filter(filter)
+            .forEach(action);
+        allyMinionSpots(player2).stream()
+            .map(this::minionFromSpot)
+            .filter(Objects::nonNull)
+            .filter(filter)
+            .forEach(action);
+    }
+
     public void killAllMinions() {
         killAllMinions((minion) -> true);
     }
 
     public void killAllMinions(Predicate<Minion> filter) {
-        allyMinionSpots(player1).stream()
-            .map(this::minionFromSpot)
-            .filter(Objects::nonNull)
-            .filter(filter)
-            .forEach(Minion::onDeath);
-        allyMinionSpots(player2).stream()
-            .map(this::minionFromSpot)
-            .filter(Objects::nonNull)
-            .filter(filter)
-            .forEach(Minion::onDeath);
+        forAllMinions(Minion::onDeath, filter);
     }
 
     public int fireworkDuration() {
@@ -951,13 +960,6 @@ public class Stadium {
     }
 
     public void teleportMinionsBackToTheirSpots() {
-        allyMinionSpots(player1()).stream()
-            .map(this::minionFromSpot)
-            .filter(Objects::nonNull)
-            .forEach(m -> m.minionInfo().entity().teleport(locOfSpot(m.minionInfo().spot())));
-        allyMinionSpots(player2()).stream()
-            .map(this::minionFromSpot)
-            .filter(Objects::nonNull)
-            .forEach(m -> m.minionInfo().entity().teleport(locOfSpot(m.minionInfo().spot())));
+        forAllMinions(m -> m.minionInfo().entity().teleport(locOfSpot(m.minionInfo().spot())));
     }
 }
