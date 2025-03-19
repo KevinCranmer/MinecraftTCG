@@ -48,9 +48,8 @@ public class FarmersBlessing implements CantripCardDefinition {
             bonusStrength++;
             bonusHealth++;
         }
-        targetedMinion.setStrength(targetedMinion.strength() + bonusStrength);
-        targetedMinion.setMaxHealth(targetedMinion.maxHealth() + bonusHealth);
-        targetedMinion.setHealthNoHealTrigger(targetedMinion.health() + bonusHealth);
+        targetedMinion.addPermanentStrength(bonusStrength);
+        targetedMinion.addPermanentMaxHealth(bonusHealth);
     }
 
     @Override

@@ -229,6 +229,4 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
         pagingItem.setItemMeta(meta);
         return pagingItem;
     }
-
-
 }

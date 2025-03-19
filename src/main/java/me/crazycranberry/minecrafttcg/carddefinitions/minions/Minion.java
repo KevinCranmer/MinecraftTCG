@@ -62,6 +62,7 @@ public abstract class Minion {
     private Integer temporaryBonusBlock = 0;
     private Boolean hasLifesteal = false;
     private Integer numTurnsLifesteal = 0;
+    // If adding new minion stats, do they also need to be added to loadAllMinionStats() or loadTemporaryEffects() ?
     private final ListenerForIndividualMinion listener;
 
     public Minion(Card card, MinionInfo minionInfo) {
@@ -102,6 +103,11 @@ public abstract class Minion {
     public void setMaxHealth(int newMaxHealth) {
         maxHealth = Math.max(newMaxHealth, 0);
         minionInfo.stadium().updateCustomName(this);
+    }
+
+    public void addPermanentMaxHealth(int additionalMaxHealth) {
+        setMaxHealth(maxHealth + additionalMaxHealth);
+        setHealthNoHealTrigger(health + additionalMaxHealth);
     }
 
     public void setHealthNoHealTrigger(int newHealth) {
@@ -421,8 +427,33 @@ public abstract class Minion {
         this.numTurnsFlying = minion.numTurnsFlying;
         this.numTurnsOverkill = minion.numTurnsOverkill;
         this.numTurnsProtected = minion.numTurnsProtected;
+        this.numTurnsRally = minion.numTurnsRally;
         this.temporaryBonusStrength = minion.temporaryBonusStrength;
         this.temporaryBonusHealth = minion.temporaryBonusHealth;
+        this.temporaryBonusBlock = minion.temporaryBonusBlock;
+    }
+
+    public void loadAllMinionStats(Minion minion) {
+        this.strength = minion.strength;
+        this.maxHealth = minion.maxHealth;
+        this.health = minion.health;
+        this.attacksPerTurn = minion.attacksPerTurn;
+        this.attacksLeft = minion.attacksLeft;
+        this.numTurnsProtected = minion.numTurnsProtected;
+        this.temporaryBonusStrength = minion.temporaryBonusStrength;
+        this.temporaryBonusHealth = minion.temporaryBonusHealth;
+        this.temporaryBonusBlock = minion.temporaryBonusBlock;
+        this.hasOverkill = minion.hasOverkill;
+        this.numTurnsOverkill = minion.numTurnsOverkill;
+        this.hasFlying = minion.hasFlying;
+        this.numTurnsFlying = minion.numTurnsFlying;
+        this.hasRally = minion.hasRally;
+        this.numTurnsRally = minion.numTurnsRally;
+        this.hasRanged = minion.hasRanged;
+        this.numTurnsRanged = minion.numTurnsRanged;
+        this.block = minion.block;
+        this.hasLifesteal = minion.hasLifesteal;
+        this.numTurnsLifesteal = minion.numTurnsLifesteal;
     }
 
     public PathfinderMob nmsMob() {

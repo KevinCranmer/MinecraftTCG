@@ -48,9 +48,8 @@ public class WithersBlessing implements CantripCardDefinition {
             strengthLoss++;
             healthLoss++;
         }
-        targetedMinion.setStrength(targetedMinion.strength() - strengthLoss);
-        targetedMinion.setMaxHealth(targetedMinion.maxHealth() - healthLoss);
-        targetedMinion.setHealthNoHealTrigger(targetedMinion.health() - healthLoss);
+        targetedMinion.addPermanentStrength(-strengthLoss);
+        targetedMinion.addPermanentMaxHealth(-healthLoss);
     }
 
     @Override

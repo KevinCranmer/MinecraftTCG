@@ -259,16 +259,24 @@ public class Collection {
         StringBuilder description = new StringBuilder();
         if (card instanceof MultiTargetCard multiTargetCard) {
             if (card instanceof MinionCardDefinition) {
-                description.append(String.format("%s1st Target:%s Empty Spot%n", DARK_PURPLE, RESET));
+                description.append(String.format("""
+                    %s1st Target:%s Empty Spot
+                    """, DARK_PURPLE, RESET));
             } else if (card instanceof SpellOrCantripCardDefinition spellOrCantripCardDefinition) {
-                description.append(String.format("%s1st Target:%s %s%n", DARK_PURPLE, RESET, targetsString(spellOrCantripCardDefinition.targetRules())));
+                description.append(String.format("""
+                    %s1st Target:%s %s
+                    """, DARK_PURPLE, RESET, targetsString(spellOrCantripCardDefinition.targetRules())));
             }
             for (int i = 0; i < multiTargetCard.targetRulesForExtraTargets().size(); i++) {
                 String targetNumberString = nthSuffix(i + 1);
-                description.append(String.format("%s%s Target:%s %s%n", DARK_PURPLE, targetNumberString, RESET, targetsString(multiTargetCard.targetRulesForExtraTargets().get(i))));
+                description.append(String.format("""
+                    %s%s Target:%s %s
+                    """, DARK_PURPLE, targetNumberString, RESET, targetsString(multiTargetCard.targetRulesForExtraTargets().get(i))));
             }
         } else if (card instanceof SpellOrCantripCardDefinition spellOrCantripCardDefinition) {
-                description.append(String.format("%sTarget:%s %s%n", DARK_PURPLE, RESET, targetsString(spellOrCantripCardDefinition.targetRules())));
+                description.append(String.format("""
+                    %sTarget:%s %s
+                    """, DARK_PURPLE, RESET, targetsString(spellOrCantripCardDefinition.targetRules())));
         }
         return description.toString();
     }

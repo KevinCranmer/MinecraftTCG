@@ -20,12 +20,12 @@ public class SummonParasite implements SpellCardDefinition {
 
     @Override
     public String cardName() {
-        return "Parasite";
+        return "Summon Parasite";
     }
 
     @Override
     public String cardDescription() {
-        return "Deals 1 damage to controller whenever an ally minion enters or dies";
+        return "Summons a 1/1 Parasite on your opponents board that deals 1 damage to its master whenever an ally minion enters or dies";
     }
 
     @Override

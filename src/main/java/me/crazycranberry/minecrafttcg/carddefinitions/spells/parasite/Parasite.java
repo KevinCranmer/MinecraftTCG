@@ -1,14 +1,15 @@
 package me.crazycranberry.minecrafttcg.carddefinitions.spells.parasite;
 
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.Minion;
+import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionCardDefinition;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.MinionInfo;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.World;
 
 public class Parasite extends Minion {
-    public Parasite(MinionInfo minionInfo) {
-        super(new ParasiteDef(), minionInfo);
+    public Parasite(MinionCardDefinition cardDef, MinionInfo minionInfo) {
+        super(cardDef, minionInfo);
     }
 
     @Override
