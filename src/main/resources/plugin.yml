@@ -17,6 +17,10 @@ commands:
   forfeit:
     description: Forfeit your current duel.
     aliases: [ff, surrender]
+  givecard:
+    permission: tcgop
+    description: Give a card to a player. Useful for card shops or other rewards. "Random" is a possible option.
+    usage: /givecard <card_name|"random"> (<player>)
   rankedduel:
     description: Challenge other players to ranked duels.
   ranks:

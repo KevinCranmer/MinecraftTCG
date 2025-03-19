@@ -6,6 +6,7 @@ import me.crazycranberry.minecrafttcg.commands.CollectionCommand;
 import me.crazycranberry.minecrafttcg.commands.DeckCommand;
 import me.crazycranberry.minecrafttcg.commands.DuelCommand;
 import me.crazycranberry.minecrafttcg.commands.ForfeitCommand;
+import me.crazycranberry.minecrafttcg.commands.GiveCardCommand;
 import me.crazycranberry.minecrafttcg.commands.RankedDuelCommand;
 import me.crazycranberry.minecrafttcg.commands.RanksCommand;
 import me.crazycranberry.minecrafttcg.commands.RefreshCommand;
@@ -43,6 +44,7 @@ import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.rest
 import static me.crazycranberry.minecrafttcg.utils.StartingWorldConfigUtils.startingWorldConfigExists;
 
 public final class MinecraftTCG extends JavaPlugin implements Listener {
+    public static final String OP_PERMISSION_TITLE = "tcgop";
     private static Logger logger;
     private static MinecraftTCG plugin;
     private static boolean managersRegistered = false;
@@ -80,6 +82,7 @@ public final class MinecraftTCG extends JavaPlugin implements Listener {
         setCommandManager("collection", new CollectionCommand());
         setCommandManager("deck", new DeckCommand());
         setCommandManager("duel", new DuelCommand());
+        setCommandManager("givecard", new GiveCardCommand());
         setCommandManager("forfeit", new ForfeitCommand());
         setCommandManager("rankedduel", new RankedDuelCommand());
         setCommandManager("ranks", new RanksCommand());
