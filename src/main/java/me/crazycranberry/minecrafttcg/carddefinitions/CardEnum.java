@@ -68,7 +68,6 @@ import me.crazycranberry.minecrafttcg.carddefinitions.minions.scaredduelist.Scar
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.shrinkadink.ShrinkaDink4Def;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.slenderman.SlendermanDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.stinkygroaner.StinkyGroanerDef;
-import me.crazycranberry.minecrafttcg.carddefinitions.minions.stoneclone.StoneCloneDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.yellowpanther.YellowPantherDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.packleader.PackLeaderDef;
 import me.crazycranberry.minecrafttcg.carddefinitions.minions.sewerzombie.SewerZombieDef;
@@ -89,6 +88,7 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.Fight;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FlingSmallPoops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.FreshWaterBottle;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.Grief;
+import me.crazycranberry.minecrafttcg.carddefinitions.spells.ImprovedClone;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.KeepItSchwifty;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.PlantCrops;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.SinfulSeduction;
@@ -101,6 +101,9 @@ import me.crazycranberry.minecrafttcg.carddefinitions.spells.VerticalFire;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.ZooExpedition;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.awakenthealpha.AwakenTheAlpha;
 import me.crazycranberry.minecrafttcg.carddefinitions.spells.parasite.SummonParasite;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum CardEnum {
     // Cantrips
@@ -177,7 +180,6 @@ public enum CardEnum {
     SKI_TURTLE(new SkiTurtleDef()),
     SLENDERMAN(new SlendermanDef()),
     STINKY_GROANER(new StinkyGroanerDef()),
-    STONE_CLONE(new StoneCloneDef()),
     SUPPORTIVE_ZOMBIE(new SupportiveZombieDef()),
     THE_DUKE(new TheDukeDef()),
     THE_KNAPPER(new TheKnapperDef()),
@@ -189,6 +191,7 @@ public enum CardEnum {
     // Spells
     AWAKEN_THE_ALPHA(new AwakenTheAlpha()),
     BLOOD_WAVE(new BloodWave()),
+    IMPROVED_CLONE(new ImprovedClone()),
     CONSTRUCTION_ZONE(new ConstructionZone()),
     DEADLY_MOBBING(new DeadlyMobbing()),
     DIG_DEEPER(new DigDeeper()),
@@ -227,5 +230,11 @@ public enum CardEnum {
             }
         }
         return null;
+    }
+
+    public static Optional<CardEnum> byName(String name) {
+        return Arrays.stream(CardEnum.values())
+            .filter(c -> name.equalsIgnoreCase(c.card().cardName()))
+            .findFirst();
     }
 }
