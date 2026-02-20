@@ -38,8 +38,8 @@ public class WorldManager implements Listener {
                     """).generateStructures(false);
         }
         tcgWorld = God.createWorld();
-        tcgWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        tcgWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        tcgWorld.setGameRule(GameRule.ADVANCE_TIME, false);
+        tcgWorld.setGameRule(GameRule.ADVANCE_WEATHER, false);
         StadiumManager.sendPlayersToDuel(tcgWorld, event.requester(), event.accepter(), event.isRanked());
     }
 }

@@ -21,8 +21,8 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftSkeleton;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftZombie;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftSkeleton;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftZombie;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -43,7 +43,7 @@ public class TestCommands {
     static PlayerManager playerManager;
     static DuelActionsManager duelActionsManager;
 
-    static RangedBowAttackGoal<net.minecraft.world.entity.monster.Skeleton> shootingGoal;
+    static RangedBowAttackGoal<net.minecraft.world.entity.monster.skeleton.Skeleton> shootingGoal;
 
     public static void executeTestCommand(String[] command, Player p) {
         switch (command[0]) {
@@ -222,7 +222,7 @@ public class TestCommands {
 
     private static void stopShooting(Player p) {
         CraftSkeleton craftSkeleton = (CraftSkeleton) skeleton;
-        net.minecraft.world.entity.monster.Skeleton nmsSkeleton = craftSkeleton.getHandle();
+        net.minecraft.world.entity.monster.skeleton.Skeleton nmsSkeleton = craftSkeleton.getHandle();
         nmsSkeleton.goalSelector.removeGoal(shootingGoal);
     }
 
@@ -247,7 +247,7 @@ public class TestCommands {
 
     private static void attack(Player p) {
         CraftZombie craftZombie = (CraftZombie) zombie;
-        net.minecraft.world.entity.monster.Zombie nmsZombie = craftZombie.getHandle();
+        net.minecraft.world.entity.monster.zombie.Zombie nmsZombie = craftZombie.getHandle();
         nmsZombie.setTarget(((CraftSkeleton) skeleton).getHandle(), EntityTargetEvent.TargetReason.CUSTOM, true);
         nmsZombie.goalSelector.addGoal(1, new MeleeAttackGoal(nmsZombie, 1, true));
     }
@@ -262,25 +262,25 @@ public class TestCommands {
 
     private static void removeGoals(Player p) {
         CraftZombie craftZombie = (CraftZombie) zombie;
-        net.minecraft.world.entity.monster.Zombie nmsZombie = craftZombie.getHandle();
+        net.minecraft.world.entity.monster.zombie.Zombie nmsZombie = craftZombie.getHandle();
         nmsZombie.goalSelector.getAvailableGoals().stream().peek(g -> System.out.println("Stopping " + g.getGoal().getClass())).forEach(WrappedGoal::stop);
         nmsZombie.removeAllGoals(g -> true);
         CraftSkeleton craftSkeleton = (CraftSkeleton) skeleton;
-        net.minecraft.world.entity.monster.Skeleton nmsSkeleton = craftSkeleton.getHandle();
+        net.minecraft.world.entity.monster.skeleton.Skeleton nmsSkeleton = craftSkeleton.getHandle();
         nmsSkeleton.goalSelector.getAvailableGoals().forEach(WrappedGoal::stop);
         nmsSkeleton.removeAllGoals(g -> true);
     }
 
     private static void move(Player p, double x, double y, double z) {
         CraftZombie craftZombie = (CraftZombie) zombie;
-        net.minecraft.world.entity.monster.Zombie nmsZombie = craftZombie.getHandle();
+        net.minecraft.world.entity.monster.zombie.Zombie nmsZombie = craftZombie.getHandle();
         nmsZombie.goalSelector.addGoal(1, new WalkToLocationGoal(nmsZombie, new Location(p.getWorld(), x, y, z)));
 
     }
 
     private static void walk(Player p) {
         CraftZombie craftZombie = (CraftZombie) zombie;
-        net.minecraft.world.entity.monster.Zombie nmsZombie = craftZombie.getHandle();
+        net.minecraft.world.entity.monster.zombie.Zombie nmsZombie = craftZombie.getHandle();
         nmsZombie.setTarget((LivingEntity) skeleton);
         nmsZombie.goalSelector.addGoal(1, new MoveTowardsTargetGoal(nmsZombie, 1.0, 100));
     }
@@ -297,13 +297,13 @@ public class TestCommands {
             return;
         }
         CraftSkeleton craftSkeleton = (CraftSkeleton) skeleton;
-        net.minecraft.world.entity.monster.Skeleton nmsSkeleton = craftSkeleton.getHandle();
+        net.minecraft.world.entity.monster.skeleton.Skeleton nmsSkeleton = craftSkeleton.getHandle();
         System.out.println("\nSkele goals:");
         nmsSkeleton.goalSelector.getAvailableGoals()
                 .forEach(g -> System.out.printf("%s %s%n", g.getGoal().getClass(), g.getGoal().toString()));
 
         CraftZombie craftZombie = (CraftZombie) zombie;
-        net.minecraft.world.entity.monster.Zombie nmsZombie = craftZombie.getHandle();
+        net.minecraft.world.entity.monster.zombie.Zombie nmsZombie = craftZombie.getHandle();
         System.out.println("\nZombie goals:");
         nmsZombie.goalSelector.getAvailableGoals()
                 .forEach(g -> System.out.printf("%s %s%n", g.getGoal().getClass(), g.getGoal().toString()));
